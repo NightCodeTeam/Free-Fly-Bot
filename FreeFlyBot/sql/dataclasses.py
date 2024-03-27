@@ -19,7 +19,7 @@ class Type:
     channel: str
     
 @dataclass    
-class Discord_server:
+class DiscordServer:
     server_id: int
     server_name: str
     
@@ -30,7 +30,7 @@ class Pilot:
     discord_nick: str
     
 @dataclass    
-class Pilot_role:
+class PilotRole:
     pilot_id: int
     type_id: int
     
