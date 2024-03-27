@@ -1,4 +1,3 @@
 toml
-python-dotenv
 discord.py
 aiosqlite
