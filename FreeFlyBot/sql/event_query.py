@@ -32,7 +32,9 @@ async def db_get_events(*args):
         for i in args:
             event_query += f" OR type_id = {i}"
         event_query += ';'
-        await db.execute(event_query)
+        cursor = await db.execute(event_query)
+        # вот тут надо попилить курсор...
+        
         await db.commit()
 
   
