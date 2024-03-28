@@ -14,15 +14,17 @@ class BotCommands:
 ENV_FILE: Final = ".env"
 
 BOT_PREFIX: Final = "!"
+EVENTS_TABLE_NAME: Final = ""
+TYPES_TABLE_NAME: Final = ""
+DS_SERVERS_TABLE_NAME: Final = ""
+PILOTS_TABLE_NAME: Final = ""
+PILOT_ROLES_TABLE_NAME: Final = ""
+
+
+BOT_PREFIX: Final = "!"
 
 SQL_BD_NAME: Final = "data.sqlite"
 
-EVENTS: Final = ""
-TYPES: Final = ""
-DS_SERVERS: Final = ""
-PILOTS: Final = ""
-PILOT_ROLES: Final = ""
-DB_NAME: Final = ""
 
 CREATE_TABLE_EVENTS: Final = """CREATE TABLE IF NOT EXISTS events (
     event_id INTEGER PRIMARY KEY,
