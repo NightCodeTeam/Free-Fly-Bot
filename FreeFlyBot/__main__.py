@@ -1,17 +1,17 @@
-from pprint import pprint
-import discord
+from sys import argv
+from core import create_log, get_env, update_env
+from bot import Bot
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print(f'Logged on as {self.user}!')
 
-    async def on_message(self, message):
-        #pprint(f'{message}')
-        print(f'{message.guild}\n{message.channel}\nMessage from {message.author.nick}: {message.content}')
+def main(args):
+    update_env()
+    bot = Bot()
+    bot.run(get_env("BOT_TOKEN"))
+    #bot.run(get_env("BOT_TOKEN"))
 
-intents = discord.Intents.default()
-intents.message_content = True
 
-client = MyClient(intents=intents)
-
-client.run('token')
+if __name__ == "__main__":
+    try:
+        main(argv[1:])
+    except Exception as err:
+        create_log(err, "crit")
