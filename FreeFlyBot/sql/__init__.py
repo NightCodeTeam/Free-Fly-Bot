@@ -1,4 +1,4 @@
-from .dataclasses import (
+from .data_classes import (
     Type,
     Event,
     DiscordServer,
