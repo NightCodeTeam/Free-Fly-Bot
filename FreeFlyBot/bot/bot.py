@@ -1,5 +1,7 @@
 import discord
 
+from sql import DiscordServer, db_check_for_exist, db_add_server
+
 from settings import (
     BotCommands,
     BOT_PREFIX,
@@ -29,6 +31,10 @@ class Bot(discord.Client):
         return list(map(lambda x: x.id, list(self.guilds)))
 
     async def on_ready(self):
+        for ids, names in zip(self.__get_guilds_ids(), self.__get_guilds_names()):
+            if not await db_check_for_exist(ids):
+                await db_add_server(DiscordServer(ids, names))
+
         print(f'Guilds: {self.__get_guilds_names()}\nLogged on as {self.user}!')
 
     async def on_message(self, message: discord.message.Message):

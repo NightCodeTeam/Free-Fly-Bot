@@ -14,19 +14,16 @@ class BotCommands:
 ENV_FILE: Final = ".env"
 
 BOT_PREFIX: Final = "!"
-EVENTS_TABLE_NAME: Final = ""
-TYPES_TABLE_NAME: Final = ""
-DS_SERVERS_TABLE_NAME: Final = ""
+EVENTS_TABLE_NAME: Final = "events"
+TYPES_TABLE_NAME: Final = "types"
+DS_SERVERS_TABLE_NAME: Final = "servers"
 PILOTS_TABLE_NAME: Final = ""
 PILOT_ROLES_TABLE_NAME: Final = ""
 
-
-BOT_PREFIX: Final = "!"
-
-SQL_BD_NAME: Final = "data.sqlite"
+SQL_BD_NAME: Final = "data.db"
 
 
-CREATE_TABLE_EVENTS: Final = """CREATE TABLE IF NOT EXISTS events (
+CREATE_TABLE_EVENTS: Final = f"""CREATE TABLE IF NOT EXISTS {EVENTS_TABLE_NAME} (
     event_id INTEGER PRIMARY KEY,
     server_id INTEGER NOT NULL,
     event_name VARCHAR(30),
@@ -36,7 +33,7 @@ CREATE_TABLE_EVENTS: Final = """CREATE TABLE IF NOT EXISTS events (
     FOREIGN KEY(server_id) REFERENCES servers(server_id),
     FOREIGN KEY(type_id) REFERENCES types(type_id));"""
 
-CREATE_TABLE_TYPES: Final = """CREATE TABLE IF NOT EXISTS types (
+CREATE_TABLE_TYPES: Final = f"""CREATE TABLE IF NOT EXISTS {TYPES_TABLE_NAME} (
     type_id INTEGER PRIMARY KEY,
     server_id INTEGER NOT NULL,
     type_name VARCHAR(15) NOT NULL, 
@@ -44,6 +41,6 @@ CREATE_TABLE_TYPES: Final = """CREATE TABLE IF NOT EXISTS types (
     role_name VARCHAR(30) NOT NULL,
     FOREIGN KEY(server_id) REFERENCES servers(server_id));"""
 
-CREATE_TABLE_SERVERS: Final = """CREATE TABLE IF NOT EXISTS servers (
+CREATE_TABLE_SERVERS: Final = f"""CREATE TABLE IF NOT EXISTS {DS_SERVERS_TABLE_NAME} (
     server_id INTEGER PRIMARY KEY,
     server_name VARCHAR(50) UNIQUE);"""
