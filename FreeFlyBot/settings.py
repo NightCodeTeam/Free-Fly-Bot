@@ -12,5 +12,12 @@ class BotCommands:
 
 
 ENV_FILE: Final = ".env"
+  
 BOT_PREFIX: Final = "!"
 
+EVENTS: Final = ""
+TYPES: Final = ""
+DS_SERVERS: Final = ""
+PILOTS: Final = ""
+PILOT_ROLES: Final = ""
+DB_NAME: Final = ""
