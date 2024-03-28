@@ -52,7 +52,7 @@ class Bot(discord.Client):
                         await message.reply(HELP_COMMAND_NOT_FOUND.format(args[0]))
             else:
                 print(f"{message.guild}\n{message.channel}\n{message.author}: {message.content}")
-                print(message.author.roles)
+                #print(message.author.roles)
                 #return await message.reply(message.content)
     
     async def help(self, message: discord.message.Message, *args):
