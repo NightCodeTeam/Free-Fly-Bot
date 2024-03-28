@@ -20,4 +20,4 @@ HELP_EVENTS: Final = '''Команда events\n'''
 HELP_ADD_EVENT: Final = '''Команда addevent\n'''
 HELP_DELETE_EVENT: Final = '''Команда deleteevent\n'''
 
-HELP_COMMAND_NOT_FOUND: Final = '''Команды {} не найдена. Используейте /help для выводы всех команд\n'''
+HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте /help для выводы всех команд\n'''

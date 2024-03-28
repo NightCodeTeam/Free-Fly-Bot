@@ -1,1 +1,3 @@
-from .main_bot import bot
+from .bot import Bot
+
+#from .main_bot import bot

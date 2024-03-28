@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from .spec_commands import MyHelpCommand
+
 from settings import BOT_PREFIX
 from message_text import (
     HELP,
@@ -17,8 +19,7 @@ class Bot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
-        super().__init__(command_prefix=BOT_PREFIX, intents=intents)
-        #self.help_command = None
+        super().__init__(command_prefix=BOT_PREFIX, intents=intents, help_command=None)
 
     async def on_ready(self):
         print(f"Logged on as {self.user}!\n----")
@@ -53,6 +54,7 @@ async def helpme(ctx: commands.Context, *args):
                     msg += HELP_COMMAND_NOT_FOUND.format(i)
         await ctx.reply(msg)
 
+
 @bot.command(name="events", brief='This is the brief description', description='This is the full description')
 async def eventlist(ctx: commands.Context):
     await ctx.reply('ЫЫЫ')
@@ -85,7 +87,6 @@ async def addtype(ctx: commands.Context):
     pass
 
 
-                    
 @bot.command(name="deletetype")
 async def deletetype(ctx: commands.Context):
     pass
@@ -99,4 +100,3 @@ async def test2(ctx: commands.Context):
 @bot.command(name="test1")
 async def test(ctx: commands.Context):
     pass
-
