@@ -4,11 +4,11 @@ from data_classes import *
 
 from settings import (  # аыы не забудь воткнуть название таблицы!11
     EVENTS_TABLE_NAME,
-    DB_NAME,
+    SQL_BD_NAME,
 )
 
 async def db_add_event(data: Event):
-    async with aiosqlite.connect(DB_NAME) as db:
+    async with aiosqlite.connect(SQL_BD_NAME) as db:
         await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
             f"""
             INSERT INTO {EVENTS_TABLE_NAME} (event_id, server_id, event_name, type_id, comment, event_time) 
@@ -20,21 +20,21 @@ async def db_add_event(data: Event):
         await db.commit()
 
 async def db_delete_event(event_id :int):
-    async with aiosqlite.connect(DB_NAME)as db:
+    async with aiosqlite.connect(SQL_BD_NAME)as db:
         await db.execute(
             f"""DELETE FROM {EVENTS_TABLE_NAME} WHERE event_id = {event_id};"""    
         )
         await db.commit()
 
 async def db_get_events(*args):
-    async with aiosqlite.connect(DB_NAME)as db:
+    async with aiosqlite.connect(SQL_BD_NAME)as db:
         event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} WHERE 0"""
         for i in args:
             event_query += f" OR type_id = {i}"
         event_query += ';'
         cursor = await db.execute(event_query)
         # вот тут надо попилить курсор...
-        
+
         await db.commit()
 
   
