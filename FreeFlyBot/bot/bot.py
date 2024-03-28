@@ -25,6 +25,9 @@ class Bot(discord.Client):
     def __get_guilds_names(self):
         return list(map(lambda x: x.name, list(self.guilds)))
 
+    def __get_guilds_ids(self):
+        return list(map(lambda x: x.id, list(self.guilds)))
+
     async def on_ready(self):
         print(f'Guilds: {self.__get_guilds_names()}\nLogged on as {self.user}!')
 
