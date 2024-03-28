@@ -26,5 +26,16 @@ async def db_delete_event(event_id :int):
         )
         await db.commit()
 
+async def db_get_events(*args):
+    async with aiosqlite.connect(DB_NAME)as db:
+        event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} WHERE 0"""
+        for i in args:
+            event_query += f" OR type_id = {i}"
+        event_query += ';'
+        await db.execute(event_query)
+        await db.commit()
+
+  
+
 
 
