@@ -1,10 +1,16 @@
 from sys import argv
 from core import create_log, get_env, update_env
+from sql import create_bd
 from bot import Bot
+
+from os.path import exists
+from settings import SQL_BD_NAME
 
 
 def main(args):
     update_env()
+    if not exists(SQL_BD_NAME):
+        create_bd()
     bot = Bot()
     bot.run(get_env("BOT_TOKEN"))
     #bot.run(get_env("BOT_TOKEN"))

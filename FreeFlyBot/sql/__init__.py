@@ -5,3 +5,4 @@ from .data_classes import (
     Pilot,
     PilotRole
 )
+from .create_sql import create_bd
