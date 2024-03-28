@@ -12,9 +12,9 @@ async def db_add_event(data: Event):
         await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
             f"""
             INSERT INTO {EVENTS} (event_id, server_id, event_name, type_id, comment, event_time) 
-            VALUES ({Event.event_id}, {Event.server_id},
-            '{Event.event_name}', {Event.type_id}, 
-            '{Event.comment}', '{Event.event_time}')   
+            VALUES ({data.event_id}, {data.server_id},
+            '{data.event_name}', {data.type_id}, 
+            '{data.comment}', '{data.event_time}')   
             """   
         )
         await db.commit()
