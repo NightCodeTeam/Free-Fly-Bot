@@ -9,12 +9,12 @@ from settings import (  # аыы не забудь воткнуть назван
 
 
 
-async def db_add_type(data: EventType): # это не работает
-    async with aiosqlite.connect(SQL_BD_NAME) as db:
-        await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
+async def db_add_type(data: EventType):               #это работает, к стати, фани факт, ему в принципе вообще поебать 
+    async with aiosqlite.connect(SQL_BD_NAME) as db:  #ссылаюсь я на реальный server_id или нет...
+        await db.execute(
             f"""
-            INSERT INTO {TYPES_TABLE_NAME} (type_id, server_id, type_name, channel, role_name) 
-            VALUES ({data.type_id}, {data.server_id}, '{data.type_name}', '{data.channel}', '{data.role_name}');
+            INSERT INTO {TYPES_TABLE_NAME} (type_id, server_id, type_name, channel_id, role_id) 
+            VALUES ({data.type_id}, {data.server_id}, '{data.type_name}', {data.channel_id}, {data.role_id});
             """   
         )
         await db.commit()

@@ -17,8 +17,8 @@ class EventType:
     type_id: int
     server_id: int
     type_name: str
-    channel: str #цифорка
-    role_name: str #цифорка
+    channel_id: int #цифорка
+    role_id: int #цифорка
     
 @dataclass    
 class DiscordServer:
