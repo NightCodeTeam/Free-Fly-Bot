@@ -1,3 +1,4 @@
+from dis import disco
 import discord
 
 from sql import DiscordServer, db_check_for_exist, db_add_server
@@ -24,11 +25,17 @@ class Bot(discord.Client):
         intents.message_content = True  
         super().__init__(intents=intents)
 
-    def __get_guilds_names(self):
+    def __get_guilds_names(self) -> list[str]:
         return list(map(lambda x: x.name, list(self.guilds)))
 
-    def __get_guilds_ids(self):
+    def __get_guilds_ids(self) -> list[int]:
         return list(map(lambda x: x.id, list(self.guilds)))
+    
+    def __get_channel(self, channel_id: str):
+        return self.get_channel(int(channel_id[2:-1]))
+    
+    def __get_role(self, guild: discord.Guild, role_id: str):
+        return discord.utils.get(guild.roles, id=int(role_id[3:-1]))
 
     async def on_ready(self):
         for ids, names in zip(self.__get_guilds_ids(), self.__get_guilds_names()):
@@ -106,7 +113,8 @@ class Bot(discord.Client):
         pass
     
     async def types(self, message: discord.message.Message, *args):
-        pass
+        for i in args:
+            print(self.__get_role(message.guild, i))
     
     async def add_type(self, message: discord.message.Message, *args):
         pass
