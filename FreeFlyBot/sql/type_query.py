@@ -14,7 +14,7 @@ async def db_add_type(data: EventType): # это не работает
         await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
             f"""
             INSERT INTO {TYPES_TABLE_NAME} (type_id, server_id, type_name, channel, role_name) 
-            VALUES ({data.type_id}, '{data.type_name}', );
+            VALUES ({data.type_id}, {data.server_id}, '{data.type_name}', '{data.channel}', '{data.role_name}');
             """   
         )
         await db.commit()

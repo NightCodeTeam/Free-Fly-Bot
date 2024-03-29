@@ -19,7 +19,15 @@ async def db_add_server(data: DiscordServer):
         await db.commit()
         
 
-async def db_check_for_exist(server_id: int) -> bool:
-    async with aiosqlite.connect(SQL_BD_NAME) as db:
-        async with db.execute(f"""SELECT EXISTS (SELECT server_id FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id});""") as cursor:
+async def db_check_for_exist(server_id: int) -> bool: #True если такая запись уже есть!!11
+    async with aiosqlite.connect(SQL_BD_NAME) as db: #!!!!!эээ а почему у нас везде await db.execute а тут async with?!!?
+        async with db.execute(f"""SELECT EXISTS (SELECT server_id FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id});""") as cursor: 
             return True if list(await cursor.fetchall())[0][0] == 1 else False
+        
+
+async def db_delete_server(server_id: int):
+    async with aiosqlite.connect(SQL_BD_NAME) as db:
+        await db.execute(
+            f'''DELETE FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id};'''
+        )
+        await db.commit() 
