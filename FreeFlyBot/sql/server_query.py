@@ -21,4 +21,5 @@ async def db_add_server(data: DiscordServer):
 
 async def db_check_for_exist(server_id: int) -> bool:
     async with aiosqlite.connect(SQL_BD_NAME) as db:
-        return True if await db.execute(f"""SELECT EXISTS (SELECT server_id FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id});""") == 1 else False
+        async with db.execute(f"""SELECT EXISTS (SELECT server_id FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id});""") as cursor:
+            return True if list(await cursor.fetchall())[0][0] == 1 else False
