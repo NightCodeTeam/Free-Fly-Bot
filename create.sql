@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS types (
     type_id INTEGER PRIMARY KEY,
     server_id INTEGER NOT NULL,
     type_name VARCHAR(15) NOT NULL, 
-    channel VARCHAR(30) NOT NULL,
-    role_name VARCHAR(30) NOT NULL,
+    channel_id INTEGER NOT NULL,
+    role_id INTEGER NOT NULL,
     FOREIGN KEY(server_id) REFERENCES servers(server_id));
 
 CREATE TABLE IF NOT EXISTS servers (
