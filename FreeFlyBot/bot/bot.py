@@ -39,6 +39,11 @@ class Bot(discord.Client):
 
     async def on_message(self, message: discord.message.Message):
         if message.author != self.user and not message.author.bot:
+            if type(message.author) is discord.Member:
+                if message.author.guild_permissions.administrator:
+                    print(f'{message.author} is admin')
+                else:
+                    print(f'{message.author} is not admin')
             if message.content[0] == BOT_PREFIX:
                 args = message.content.split()
                 print(f'called parser {args[0]}')
@@ -63,6 +68,9 @@ class Bot(discord.Client):
                 print(f"{message.guild}\n{message.channel}\n{message.author}: {message.content}")
                 #print(message.author.roles)
                 #return await message.reply(message.content)
+
+    async def send_msg(self, guild, channel, msg: str):
+        pass
     
     async def help(self, message: discord.message.Message, *args):
         print(f"Help called with args: {args}")
