@@ -17,7 +17,7 @@ async def db_add_server(data: DiscordServer):
             """   
         )
         await db.commit()
-
+        
 
 async def db_check_for_exist(server_id: int) -> bool:
     async with aiosqlite.connect(SQL_BD_NAME) as db:

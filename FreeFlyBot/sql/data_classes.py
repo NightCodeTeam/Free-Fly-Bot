@@ -13,7 +13,7 @@ class Event:
 
 
 @dataclass
-class Type:
+class EventType:
     type_id: int
     server_id: int
     type_name: str

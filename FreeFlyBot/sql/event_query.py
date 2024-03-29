@@ -1,6 +1,6 @@
 import aiosqlite
 from random import randint
-from data_classes import *
+from .data_classes import Event
 
 from settings import (  # аыы не забудь воткнуть название таблицы!11
     EVENTS_TABLE_NAME,
@@ -34,7 +34,7 @@ async def db_get_events(*args):
         event_query += ';'
         cursor = await db.execute(event_query)
         # вот тут надо попилить курсор...
-
+        print(cursor)
         await db.commit()
 
   
