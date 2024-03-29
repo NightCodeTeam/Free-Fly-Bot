@@ -1,5 +1,5 @@
 from .data_classes import (
-    Type,
+    EventType,
     Event,
     DiscordServer,
     Pilot,
