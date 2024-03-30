@@ -9,26 +9,52 @@ from settings import (  # аыы не забудь воткнуть назван
 
 
 
-async def db_add_type(data: EventType): # это не работает
-    async with aiosqlite.connect(SQL_BD_NAME) as db:
-        await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
+async def db_add_type(data: EventType):               #это работает, к стати, фани факт, ему в принципе вообще поебать 
+    async with aiosqlite.connect(SQL_BD_NAME) as db:  #ссылаюсь я на реальный server_id или нет...
+        await db.execute(
             f"""
-            INSERT INTO {TYPES_TABLE_NAME} (type_id, server_id, type_name, channel, role_name) 
-            VALUES ({data.type_id}, '{data.type_name}', );
+            INSERT INTO {TYPES_TABLE_NAME} (type_id, server_id, type_name, channel_id, role_id) 
+            VALUES ({data.type_id}, {data.server_id}, '{data.type_name}', {data.channel_id}, {data.role_id});
             """   
         )
         await db.commit()
 
-async def db_delete_type(type_id :int): # это тоже не работает
-    async with aiosqlite.connect(SQL_BD_NAME)as db:
-        await db.execute(
-            f"""DELETE FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id};"""    
-        )
-        await db.commit()
+async def db_check_type_for_exist(type_id: int) -> bool: #True если такая запись уже есть!!11
+    async with aiosqlite.connect(SQL_BD_NAME) as db: 
+        async with db.execute(f"""SELECT EXISTS (SELECT type_id FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id});""") as cursor: 
+            return True if list(await cursor.fetchall())[0][0] == 1 else False
 
-async def db_get_types() -> list[EventType]: # это тоже не работает
-    async with aiosqlite.connect(SQL_BD_NAME)as db:
+
+async def db_delete_type(type_id: int):
+    async with aiosqlite.connect(SQL_BD_NAME) as db:
         await db.execute(
-            f"""DELETE FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id};"""    
+            f'''DELETE FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id};'''
         )
-        await db.commit()
+        await db.commit() 
+
+async def db_types_list() -> list[EventType]:
+    async with aiosqlite.connect(SQL_BD_NAME) as db:
+        async with db.execute(f'''SELECT * FROM {TYPES_TABLE_NAME}''') as cursor:
+            ret_list :list[EventType] = []
+            async for row in cursor:
+                ret_list.append(EventType(type_id= row[0], 
+                                          server_id= row[1], 
+                                          type_name= row[2], 
+                                          channel_id= row[3], 
+                                          role_id= row[4]
+                                         ))
+            return ret_list
+        
+async def db_get_type_by_id(type_id: int):
+    async with aiosqlite.connect(SQL_BD_NAME)as db:
+        event_query = f"""SELECT * FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id}"""
+        async with db.execute(event_query) as cursor:
+            ret_server :EventType 
+            async for row in cursor:
+                ret_type = (EventType(type_id= row[0], 
+                                        server_id= row[1], 
+                                        type_name= row[2], 
+                                        channel_id= row[3], 
+                                        role_id= row[4]
+                                         ))
+        return ret_type

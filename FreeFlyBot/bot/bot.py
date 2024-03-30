@@ -1,7 +1,7 @@
 from dis import disco
 import discord
 
-from sql import DiscordServer, db_check_for_exist, db_add_server
+from sql import DiscordServer, db_check_server_for_exist, db_add_server
 
 from settings import (
     BotCommands,
@@ -39,7 +39,7 @@ class Bot(discord.Client):
 
     async def on_ready(self):
         for ids, names in zip(self.__get_guilds_ids(), self.__get_guilds_names()):
-            if not await db_check_for_exist(ids):
+            if not await db_check_server_for_exist(ids):
                 await db_add_server(DiscordServer(ids, names))
 
         print(f'Guilds: {self.__get_guilds_names()}\nLogged on as {self.user}!')
