@@ -39,3 +39,14 @@ async def db_server_list() -> list[DiscordServer]:
             async for row in cursor:
                 ret_list.append(DiscordServer(server_id= row[0], server_name= row[1]))
             return ret_list
+        
+async def db_get_server_by_id(server_id: int):
+    async with aiosqlite.connect(SQL_BD_NAME)as db:
+        event_query = f"""SELECT * FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id}"""
+        async with db.execute(event_query) as cursor:
+            ret_server :DiscordServer 
+            async for row in cursor:
+                ret_server = (DiscordServer(server_id= row[0], 
+                                          server_name= row[1] 
+                                         ))
+        return ret_server

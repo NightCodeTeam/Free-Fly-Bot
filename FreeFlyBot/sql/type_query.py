@@ -44,3 +44,17 @@ async def db_types_list() -> list[EventType]:
                                           role_id= row[4]
                                          ))
             return ret_list
+        
+async def db_get_type_by_id(type_id: int):
+    async with aiosqlite.connect(SQL_BD_NAME)as db:
+        event_query = f"""SELECT * FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id}"""
+        async with db.execute(event_query) as cursor:
+            ret_server :EventType 
+            async for row in cursor:
+                ret_type = (EventType(type_id= row[0], 
+                                        server_id= row[1], 
+                                        type_name= row[2], 
+                                        channel_id= row[3], 
+                                        role_id= row[4]
+                                         ))
+        return ret_type
