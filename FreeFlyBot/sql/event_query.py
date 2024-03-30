@@ -73,15 +73,15 @@ async def db_get_event_by_id(event_id: int):
     async with aiosqlite.connect(SQL_BD_NAME)as db:
         event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} WHERE event_id = {event_id}"""
         async with db.execute(event_query) as cursor:
-            ret_list :Event 
+            ret_event :Event 
             async for row in cursor:
-                ret_list = (Event(event_id= row[0], 
+                ret_event = (Event(event_id= row[0], 
                                       server_id= row[1], 
                                       event_name= row[2], 
                                       type_id= row[3], 
                                       comment= row[4],
                                       event_time= row[5]))
-        return ret_list
+        return ret_event
 
   
 
