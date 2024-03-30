@@ -27,6 +27,7 @@ HELP_DELETE_EVENT: Final = '''Команда deleteevent\n'''
 
 ADD_TYPE_ERROR_MSG: Final = '''Мне не удалось создать тип, проверьте правильность и попробуйте снова'''
 
-HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте /help для выводы всех команд\n'''
+HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте !help для выводы всех команд\n'''
 
-TOO_MANY_ARGS: Final = 'Слишком много аргументов, используте /help для вызова помощи'
+TOO_MANY_ARGS: Final = 'Слишком много аргументов, используте !help для вызова помощи'
+TOO_FEW_ARGS: Final = 'Мало аргументов, используте !help для вызова помощи'

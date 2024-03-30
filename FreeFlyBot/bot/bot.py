@@ -2,6 +2,7 @@ from random import randint
 import discord
 from typing import Any
 from .exceptions import CallFuncBotNotInGuildException
+from core import create_log
 from sql import (
     Event,
     EventType,
@@ -31,6 +32,7 @@ from message_text import (
     HELP_DELETE_EVENT,
     HELP_COMMAND_NOT_FOUND,
     TOO_MANY_ARGS,
+    TOO_FEW_ARGS,
     ADD_TYPE_ERROR_MSG,
 )
 
@@ -40,6 +42,12 @@ class Bot(discord.Client):
         intents = discord.Intents.default()
         intents.message_content = True  
         super().__init__(intents=intents)
+
+    def __check_member_permisions(self, member, guild) -> bool:
+        if type(member) is discord.Member:
+            if member.guild_permissions.administrator or self.__check_member_has_reached_role(member, self.__get_server_types_roles_id(guild.id)):
+                return True
+        return False
 
     def __get_guilds_names(self) -> list[str]:
         return list(map(lambda x: x.name, list(self.guilds)))
@@ -54,10 +62,17 @@ class Bot(discord.Client):
         return discord.utils.get(guild.roles, id=int(role_id[3:-1]))
     
     def __get_server_types(self, server_id: int) -> list[EventType]:
-        return []
+        return [] # TODO: Доделать когда появится sql запрос
 
-    def __get_server_types_roles(self, server_id) -> list[int]:
+    def __get_server_types_roles_id(self, server_id) -> list[int]:
         return list(map(lambda x: x.role_id, self.__get_server_types(server_id)))
+    
+    def __check_member_has_reached_role(self, member, roles_id: list[int]) -> bool:
+        if type(member) is discord.member.Member:
+            for i in member.roles:
+                if i.id in roles_id:
+                    return True
+        return False
     
     def __get_role_or_channel(self, guild: discord.Guild, arg: str) -> Any:
         if arg.startswith('<#'):
@@ -70,19 +85,19 @@ class Bot(discord.Client):
             if not await db_check_server_for_exist(ids):
                 await db_add_server(DiscordServer(ids, names))
 
-        print(f'Guilds: {self.__get_guilds_names()}\nLogged on as {self.user}!')
+        create_log(f'Logged on as {self.user}!', 'info')
 
     async def on_message(self, message: discord.message.Message):
         if message.author != self.user and not message.author.bot:
-            if type(message.author) is discord.Member:
-                if message.author.guild_permissions.administrator:
-                    print(f'{message.author} is admin')
-                else:
-                    print(f'{message.author} is not admin')
+            if self.__check_member_permisions(message.author, message.guild):
+                pass
+            else:
+                create_log(f'Member {message.author} try to use bot but has no access', 'info')
+                return None
             if message.content[0] == BOT_PREFIX:
                 args = message.content.split()
-                print(f'called parser {args[0]}')
-                match args[0][1:]:
+                create_log(f'Called parser {args[0]}', 'debug')
+                match args[0][1:].lower():
                     case BotCommands.BOT_HELP_PREFIX:
                         await self.help(message, *args[1:])
                     case BotCommands.BOT_EVENTS_PREFIX:
@@ -108,7 +123,7 @@ class Bot(discord.Client):
         pass
     
     async def help(self, message: discord.message.Message, *args):
-        print(f"Help called with args: {args}")
+        create_log(f"Help called with args: {args}", 'debug')
         if len(args) == 0:
             return await message.reply(HELP)
         else:
@@ -146,10 +161,14 @@ class Bot(discord.Client):
         #    print(self.__get_role(message.guild, i))
     
     async def add_type(self, message: discord.message.Message, *args):
+        create_log(f"Add_type called with args: {args}", 'debug')
         if message.guild is None:
             raise CallFuncBotNotInGuildException('add_type')
-        if len(args) > 3:
-            return await message.reply(TOO_MANY_ARGS)
+        if len(args) != 3:
+            if len(args) > 3:
+                return await message.reply(TOO_MANY_ARGS)
+            elif len(args) < 3:
+                return await message.reply(TOO_FEW_ARGS)
         type_name = None
         type_server_id = message.guild.id
         type_channel_id = None
