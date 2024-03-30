@@ -13,6 +13,6 @@ from .server_query import (db_add_server,   # принимает объект к
 from .event_query import db_add_event, db_delete_event, db_get_events
 from .type_query import (db_add_type, # принимает объект класса EventType
                          db_delete_type,# принимает type_id (int)
-                         db_get_types,
+                         db_types_list, # возвоащает список объектов EventType
                          db_check_type_for_exist # принимает type_id возвращает True если запись есть в БД
                          )

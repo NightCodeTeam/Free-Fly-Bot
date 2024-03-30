@@ -34,7 +34,7 @@ async def db_delete_server(server_id: int):
 
 async def db_server_list() -> list[DiscordServer]:
     async with aiosqlite.connect(SQL_BD_NAME) as db:
-        async with db.execute(f'''SELECT * FROM servers {DS_SERVERS_TABLE_NAME}''') as cursor:
+        async with db.execute(f'''SELECT * FROM {DS_SERVERS_TABLE_NAME}''') as cursor:
             ret_list :list[DiscordServer] = []
             async for row in cursor:
                 ret_list.append(DiscordServer(server_id= row[0], server_name= row[1]))
