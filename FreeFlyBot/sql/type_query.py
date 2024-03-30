@@ -19,17 +19,11 @@ async def db_add_type(data: EventType):               #это работает, 
         )
         await db.commit()
 
-async def db_delete_type(type_id :int): # это тоже не работает
-    async with aiosqlite.connect(SQL_BD_NAME)as db:
-        await db.execute(
-            f"""DELETE FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id};"""    
-        )
-        await db.commit()
-
 async def db_check_type_for_exist(type_id: int) -> bool: #True если такая запись уже есть!!11
     async with aiosqlite.connect(SQL_BD_NAME) as db: 
         async with db.execute(f"""SELECT EXISTS (SELECT type_id FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id});""") as cursor: 
             return True if list(await cursor.fetchall())[0][0] == 1 else False
+
 
 async def db_get_types() -> list[EventType]: # это тоже не работает
     async with aiosqlite.connect(SQL_BD_NAME)as db:
@@ -37,3 +31,10 @@ async def db_get_types() -> list[EventType]: # это тоже не работа
             f"""DELETE FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id};"""    
         )
         await db.commit()
+
+async def db_delete_type(type_id: int):
+    async with aiosqlite.connect(SQL_BD_NAME) as db:
+        await db.execute(
+            f'''DELETE FROM {TYPES_TABLE_NAME} WHERE type_id = {type_id};'''
+        )
+        await db.commit() 
