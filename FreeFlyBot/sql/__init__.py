@@ -9,14 +9,16 @@ from .create_sql import create_bd
 from .server_query import (db_add_server,   # принимает объект класса DiscordServer
                            db_check_server_for_exist,# принимает server_id (int)     возвращает True если запись есть в БД
                            db_delete_server,  # принимает server_id (int)
-                           db_server_list
-                          ) # возвращает список объектов класса DiscordServer 
+                           db_server_list  # возвращает список объектов класса DiscordServer 
+                          ) 
  
 
 from .event_query import (db_add_event, # принимает об. класса Event
                           db_delete_event, # принимает event_id (int) 
-                          db_get_events_by_type, ####
-                          db_get_events_list ###
+                          db_get_events_by_type, #### принимает СПИСОК type_id возвращает список об. кл. Event
+                          db_get_events_list, ### возвращает список всех ивентов (Event)
+                          db_check_event_for_exist, ### принимает event_id возвращает Ture если такой id есть в БД
+                          db_get_event_by_id #принимает event_id  возвращает ОБЪЕКТ Event 
                          )
 
 
