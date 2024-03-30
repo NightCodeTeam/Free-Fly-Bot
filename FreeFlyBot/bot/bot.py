@@ -1,7 +1,21 @@
-from dis import disco
+from random import randint
 import discord
+from typing import Any
+from .exceptions import CallFuncBotNotInGuildException
+from sql import (
+    Event,
+    EventType,
+    DiscordServer,
 
-from sql import DiscordServer, db_check_server_for_exist, db_add_server
+    db_check_server_for_exist,
+    db_add_server,
+
+    db_add_type,
+    db_check_type_for_exist,
+    db_delete_type,
+    db_types_list,
+    db_get_type_by_id,
+)
 
 from settings import (
     BotCommands,
@@ -16,6 +30,8 @@ from message_text import (
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
     HELP_COMMAND_NOT_FOUND,
+    TOO_MANY_ARGS,
+    ADD_TYPE_ERROR_MSG,
 )
 
 
@@ -36,6 +52,18 @@ class Bot(discord.Client):
     
     def __get_role(self, guild: discord.Guild, role_id: str):
         return discord.utils.get(guild.roles, id=int(role_id[3:-1]))
+    
+    def __get_server_types(self, server_id: int) -> list[EventType]:
+        return []
+
+    def __get_server_types_roles(self, server_id) -> list[int]:
+        return list(map(lambda x: x.role_id, self.__get_server_types(server_id)))
+    
+    def __get_role_or_channel(self, guild: discord.Guild, arg: str) -> Any:
+        if arg.startswith('<#'):
+            return self.__get_channel(arg)
+        elif arg.startswith('<@&'):
+            return self.__get_role(guild, arg)
 
     async def on_ready(self):
         for ids, names in zip(self.__get_guilds_ids(), self.__get_guilds_names()):
@@ -113,11 +141,39 @@ class Bot(discord.Client):
         pass
     
     async def types(self, message: discord.message.Message, *args):
-        for i in args:
-            print(self.__get_role(message.guild, i))
+        pass
+        #for i in args:
+        #    print(self.__get_role(message.guild, i))
     
     async def add_type(self, message: discord.message.Message, *args):
-        pass
+        if message.guild is None:
+            raise CallFuncBotNotInGuildException('add_type')
+        if len(args) > 3:
+            return await message.reply(TOO_MANY_ARGS)
+        type_name = None
+        type_server_id = message.guild.id
+        type_channel_id = None
+        type_role_id = None
+        for i in args:
+            arg = self.__get_role_or_channel(message.guild, i)
+            if type(arg) is discord.channel.TextChannel:
+                type_channel_id = arg.id
+            elif type(arg) is discord.role.Role:
+                type_role_id = arg.id
+            else:
+                type_name = i
+
+        if type_name is None or type_channel_id is None or type_role_id is None:
+            return await message.reply(ADD_TYPE_ERROR_MSG)
+
+        new_type = EventType(
+            randint(0, 10),
+            type_server_id,
+            type_name,
+            type_channel_id,
+            type_role_id
+        )
+        print(new_type) # TODO: Дописать вызов в базу и проверку на такой же тип
     
     async def delete_type(self, message: discord.message.Message, *args):
         pass
