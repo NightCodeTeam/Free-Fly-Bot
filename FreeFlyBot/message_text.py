@@ -14,10 +14,19 @@ HELP: Final = '''Привет! Это бот для создания и отсл
 '''
 
 HELP_TYPES: Final = '''Команда types\n'''
-HELP_ADD_TYPE: Final = '''Команда addtype\n'''
-HELP_DELETE_TYPE: Final = '''Команда delettype\n'''
-HELP_EVENTS: Final = '''Команда events\n'''
+
+HELP_ADD_TYPE: Final = '''Команда addtype добавляет новые типы событий на сервере.\
+Чтобы это сделать вам нужно:
+- указать удобное вам название (например test)
+- роль которая может создавать события и которые будут пинговаться (например @test)
+- канал в котором будут пинговаться события (например #test)'''
+HELP_DELETE_TYPE: Final = '''Команда delettype удаляет тип для этого укажите её название (например test)'''
+HELP_EVENTS: Final = '''Команда events показывает все ожидаемые события на сервере'''
 HELP_ADD_EVENT: Final = '''Команда addevent\n'''
 HELP_DELETE_EVENT: Final = '''Команда deleteevent\n'''
 
+ADD_TYPE_ERROR_MSG: Final = '''Мне не удалось создать тип, проверьте правильность и попробуйте снова'''
+
 HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте /help для выводы всех команд\n'''
+
+TOO_MANY_ARGS: Final = 'Слишком много аргументов, используте /help для вызова помощи'

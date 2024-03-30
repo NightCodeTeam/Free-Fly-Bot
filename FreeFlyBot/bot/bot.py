@@ -30,6 +30,8 @@ from message_text import (
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
     HELP_COMMAND_NOT_FOUND,
+    TOO_MANY_ARGS,
+    ADD_TYPE_ERROR_MSG,
 )
 
 
@@ -57,10 +59,10 @@ class Bot(discord.Client):
     def __get_server_types_roles(self, server_id) -> list[int]:
         return list(map(lambda x: x.role_id, self.__get_server_types(server_id)))
     
-    async def __get_role_or_channel(self, guild: discord.Guild, arg: str) -> Any:
-        if self.__get_channel(arg) is not None:
+    def __get_role_or_channel(self, guild: discord.Guild, arg: str) -> Any:
+        if arg.startswith('<#'):
             return self.__get_channel(arg)
-        elif self.__get_role(guild, arg) is not None:
+        elif arg.startswith('<@&'):
             return self.__get_role(guild, arg)
 
     async def on_ready(self):
@@ -147,11 +149,11 @@ class Bot(discord.Client):
         if message.guild is None:
             raise CallFuncBotNotInGuildException('add_type')
         if len(args) > 3:
-            return await message.reply('Слишком много аргументов, используте /help для вызова помощи')
-        type_name = ''
+            return await message.reply(TOO_MANY_ARGS)
+        type_name = None
         type_server_id = message.guild.id
-        type_channel_id = 0
-        type_role_id = 0
+        type_channel_id = None
+        type_role_id = None
         for i in args:
             arg = self.__get_role_or_channel(message.guild, i)
             if type(arg) is discord.channel.TextChannel:
@@ -161,6 +163,9 @@ class Bot(discord.Client):
             else:
                 type_name = i
 
+        if type_name is None or type_channel_id is None or type_role_id is None:
+            return await message.reply(ADD_TYPE_ERROR_MSG)
+
         new_type = EventType(
             randint(0, 10),
             type_server_id,
@@ -168,7 +173,7 @@ class Bot(discord.Client):
             type_channel_id,
             type_role_id
         )
-        print(new_type)
+        print(new_type) # TODO: Дописать вызов в базу и проверку на такой же тип
     
     async def delete_type(self, message: discord.message.Message, *args):
         pass
