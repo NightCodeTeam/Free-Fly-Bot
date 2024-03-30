@@ -9,7 +9,7 @@ class Event:
     event_name: str
     type_id: int
     comment: str
-    event_time: datetime
+    event_time: datetime.timestamp # вот объявил в базе UNIXTIME?! вот и приводи его к читаемому виду......
 
 
 @dataclass
