@@ -14,8 +14,9 @@ from .server_query import (db_add_server,   # принимает объект к
  
 
 from .event_query import (db_add_event, # принимает об. класса Event
-                          db_delete_event, 
-                          db_get_events
+                          db_delete_event, # принимает event_id (int) 
+                          db_get_events_by_type, ####
+                          db_get_events_list ###
                          )
 
 

@@ -37,5 +37,10 @@ async def db_types_list() -> list[EventType]:
         async with db.execute(f'''SELECT * FROM {TYPES_TABLE_NAME}''') as cursor:
             ret_list :list[EventType] = []
             async for row in cursor:
-                ret_list.append(EventType(type_id= row[0], server_id= row[1], type_name= row[2], channel_id= row[3], role_id= row[4]))
+                ret_list.append(EventType(type_id= row[0], 
+                                          server_id= row[1], 
+                                          type_name= row[2], 
+                                          channel_id= row[3], 
+                                          role_id= row[4]
+                                         ))
             return ret_list
