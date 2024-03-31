@@ -244,5 +244,7 @@ class Bot(discord.Client):
                     msg += DELETE_TYPE_ALL_GOOD.format(i)
                 else:
                     create_log(f"CANT delete type {i}", 'info')
-                    msg += DELETE_TYPE_NOT_FOUND
+                    msg += DELETE_TYPE_NOT_FOUND.format(i)
+            else:
+                msg += DELETE_TYPE_NOT_FOUND.format(i)
         return await message.reply(msg)
