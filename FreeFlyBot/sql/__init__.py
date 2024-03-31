@@ -27,5 +27,7 @@ from .type_query import (db_add_type, # принимает объект клас
                          db_delete_type,# принимает type_id (int)
                          db_types_list, # возвоащает список объектов EventType
                          db_check_type_for_exist, # принимает type_id возвращает True если запись есть в БД
-                         db_get_type_by_id
+                         db_get_type_by_id,
+                         db_types_list_by_server_id, ###
+                         db_get_type_by_name_and_server_id ### принмает server_id (int) & type_name (str)
                         )
