@@ -1,4 +1,5 @@
 from random import randint
+from re import T
 import discord
 from typing import Any
 from .exceptions import CallFuncBotNotInGuildException
@@ -174,6 +175,10 @@ class Bot(discord.Client):
                     case _:
                         msg += HELP_COMMAND_NOT_FOUND.format(i)
             return await message.reply(msg)
+    
+    # ! СОБЫТИЯ
+    def __events_access_check(self, member) -> bool:
+        return False
 
     async def events(self, message: discord.message.Message, *args):
         pass
@@ -184,19 +189,23 @@ class Bot(discord.Client):
     async def delete_event(self, message: discord.message.Message, *args):
         pass
     
+    # ! Типы события
+    def __types_access_check(self, member, func_name: str) -> bool:
+        if not self.__check_member_is_admin(member):
+            create_log(f"CANCEL {func_name}: member {member} is not admin")
+            return False
+        return True
+
     async def types(self, message: discord.message.Message, *args):
         create_log(f"types called with args: {args}", 'debug')
-        if not self.__check_member_is_admin(message.author):
-            create_log(f"CANCEL types: member {message.author} is not admin")
+        if not self.__types_access_check(message.author, 'types'):
             return None
+        pass # TODO: Доделать когда будет sql запрос
 
     async def add_type(self, message: discord.message.Message, *args):
-        create_log(f"Add_type called with args: {args}", 'debug')
-        if not self.__check_member_is_admin(message.author):
-            create_log(f"CANCEL add_type: member {message.author} is not admin")
+        create_log(f"add_type called with args: {args}", 'debug')
+        if not self.__types_access_check(message.author, 'add_type'):
             return None
-        if message.guild is None:
-            raise CallFuncBotNotInGuildException('add_type')
         if len(args) != 3:
             if len(args) > 3:
                 return await message.reply(TOO_MANY_ARGS)
@@ -228,9 +237,8 @@ class Bot(discord.Client):
         print(new_type) # TODO: Дописать вызов в базу и проверку на такой же тип
     
     async def delete_type(self, message: discord.message.Message, *args):
-        create_log(f"Add_type called with args: {args}", 'debug')
-        if not self.__check_member_is_admin(message.author):
-            create_log(f"CANCEL delete_type: member {message.author} is not admin")
+        create_log(f"delete_type called with args: {args}", 'debug')
+        if not self.__types_access_check(message.author, 'delete_type'):
             return None
         if len(args) == 0:
             return await message.reply(TOO_FEW_ARGS)
