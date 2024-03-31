@@ -74,6 +74,7 @@ async def db_get_event_by_id(event_id: int):
         event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} WHERE event_id = {event_id}"""
         async with db.execute(event_query) as cursor:
             ret_event :Event 
+            ret_event = None
             async for row in cursor:
                 ret_event = (Event(event_id= row[0], 
                                       server_id= row[1], 
