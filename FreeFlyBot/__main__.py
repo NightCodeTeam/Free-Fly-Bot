@@ -13,7 +13,6 @@ def main(args):
         create_bd()
     bot = Bot()
     bot.run(get_env("BOT_TOKEN"))
-    #bot.run(get_env("BOT_TOKEN"))
 
 
 if __name__ == "__main__":

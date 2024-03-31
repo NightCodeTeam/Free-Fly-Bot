@@ -33,6 +33,8 @@ HELP_ADD_EVENT: Final = '''Команда addevent создает событие
 - комментарии'''
 HELP_DELETE_EVENT: Final = '''Команда deleteevent\n'''
 
+TYPE_MSG: Final = '''Тип: {name} Канал: {channel} Роль: {role}'''
+NO_TYPES_ON_SERVER: Final = '''Еще небыли созданы типы событий, используйте команду !addtype'''
 ADD_TYPE_ERROR_MSG: Final = '''Мне не удалось создать тип, проверьте правильность и попробуйте снова'''
 ADD_TYPE_ALREADY_EXISTS: Final = '''Вы пытаетесь добавить тип с названием {}, но он уже существует'''
 DELETE_TYPE_NOT_FOUND: Final = '''Не удалось найти указанный тип: {}\n'''

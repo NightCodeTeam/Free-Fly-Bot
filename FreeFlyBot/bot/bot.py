@@ -1,5 +1,4 @@
 from random import randint
-from re import T
 import discord
 from typing import Any
 from .exceptions import CallFuncBotNotInGuildException
@@ -17,6 +16,10 @@ from sql import (
     db_delete_type,
     db_types_list,
     db_get_type_by_id,
+
+    db_get_type_by_id,
+    db_types_list_by_server_id,
+    db_get_type_by_name_and_server_id
 )
 
 from settings import (
@@ -34,6 +37,8 @@ from message_text import (
     HELP_COMMAND_NOT_FOUND,
     TOO_MANY_ARGS,
     TOO_FEW_ARGS,
+    TYPE_MSG,
+    NO_TYPES_ON_SERVER,
     ADD_TYPE_ERROR_MSG,
     ADD_TYPE_ALREADY_EXISTS,
     DELETE_TYPE_NOT_FOUND,
@@ -53,12 +58,12 @@ class Bot(discord.Client):
     def __check_member_is_admin(self, member) -> bool:
         return True if member.guild_permissions.administrator else False
 
-    def __check_member_permisions(self, member, guild) -> bool:
+    async def __check_member_permisions(self, member, guild) -> bool:
         if self.__check_author_is_member(member):
             if (
                 self.__check_member_is_admin(member) 
                 or self.__check_member_has_reached_role(
-                    member, self.__get_server_types_roles_id(guild.id)
+                    member, await self.__get_server_types_roles_id(guild.id)
                 )
             ):
                 return True
@@ -76,17 +81,17 @@ class Bot(discord.Client):
     def __get_role(self, guild: discord.Guild, role_id: str):
         return discord.utils.get(guild.roles, id=int(role_id[3:-1]))
     
-    def __get_server_types(self, server_id: int) -> list[EventType]:
-        return [] # TODO: Доделать когда появится sql запрос
+    async def __get_server_types(self, server_id: int) -> list[EventType]:
+        return await db_types_list_by_server_id(server_id)
     
-    def __get_server_event_type_by_name(self, server_id: int, type_name: str) -> EventType | None:
-        return None # TODO: Доделать когда будет SQL запрос
+    async def __get_server_event_type_by_name(self, server_id: int, type_name: str) -> EventType | None:
+        return await db_get_type_by_name_and_server_id(server_id, type_name)
 
-    def __get_server_types_roles_id(self, server_id) -> list[int]:
-        return list(map(lambda x: x.role_id, self.__get_server_types(server_id)))
+    async def __get_server_types_roles_id(self, server_id) -> list[int]:
+        return list(map(lambda x: x.role_id, await self.__get_server_types(server_id)))
     
-    def __get_server_types_names(self, server_id) -> list[str]:
-        return list(map(lambda x: x.type_name, self.__get_server_types(server_id)))
+    async def __get_server_types_names(self, server_id) -> list[str]:
+        return list(map(lambda x: x.type_name, await self.__get_server_types(server_id)))
     
     def __check_member_has_reached_role(self, member, roles_id: list[int]) -> bool:
         if type(member) is discord.member.Member:
@@ -113,18 +118,20 @@ class Bot(discord.Client):
         create_log(f'Logged on as {self.user}!', 'info')
 
     async def on_message(self, message: discord.message.Message):
-        if message.guild is not None:
-            return
+        #print(message.author, '>', message.content)
+        if message.guild is None:
+            print('Guild is None')
+            return None
         if message.author != self.user and not message.author.bot:
-            if self.__check_member_permisions(message.author, message.guild):
-                pass
-            else:
-                create_log(
-                    f'Member {message.author} try to use bot but has no access',
-                    'info'
-                )
-                return None
             if message.content[0] == BOT_PREFIX:
+                if await self.__check_member_permisions(message.author, message.guild):
+                    pass
+                else:
+                    create_log(
+                        f'Member {message.author} try to use bot but has no access',
+                        'info'
+                    )
+                    return None
                 args = message.content.split()
                 create_log(f'Called parser {args[0]}', 'debug')
                 match args[0][1:].lower():
@@ -200,7 +207,16 @@ class Bot(discord.Client):
         create_log(f"types called with args: {args}", 'debug')
         if not self.__types_access_check(message.author, 'types'):
             return None
-        pass # TODO: Доделать когда будет sql запрос
+        msg = ''
+        for i in await self.__get_server_types(message.guild.id):
+            msg += TYPE_MSG.format(
+                name=i.type_name,
+                channel=self.get_channel(i.channel_id),
+                role=self.__get_role(message.guild, str(i.role_id))
+            )
+        if msg == '':
+            msg = NO_TYPES_ON_SERVER
+        return await message.reply(msg)
 
     async def add_type(self, message: discord.message.Message, *args):
         create_log(f"add_type called with args: {args}", 'debug')
@@ -224,7 +240,12 @@ class Bot(discord.Client):
             else:
                 type_name = i
 
-        if type_name is None or type_channel_id is None or type_role_id is None:
+        if (
+            type_name is None
+            or type_channel_id is None
+            or type_role_id is None
+            or await db_get_type_by_name_and_server_id(message.guild.id, type_name) is not None
+        ):
             return await message.reply(ADD_TYPE_ERROR_MSG)
 
         new_type = EventType(
@@ -234,7 +255,7 @@ class Bot(discord.Client):
             type_channel_id,
             type_role_id
         )
-        print(new_type) # TODO: Дописать вызов в базу и проверку на такой же тип
+        await db_add_type(new_type)
     
     async def delete_type(self, message: discord.message.Message, *args):
         create_log(f"delete_type called with args: {args}", 'debug')
@@ -242,12 +263,14 @@ class Bot(discord.Client):
             return None
         if len(args) == 0:
             return await message.reply(TOO_FEW_ARGS)
-        server_types_names = self.__get_server_types_names(message.guild.id)
+        server_types_names = await self.__get_server_types_names(message.guild.id)
         msg = ''
         for i in args:
             if i in server_types_names:
                 print(f'Запрос на удаление типа {i}') # TODO: Добавить удаление в базе
-                if self.__get_server_event_type_by_name(message.guild.id, i):
+                eventtype = await self.__get_server_event_type_by_name(message.guild.id, i)
+                if eventtype is not None:
+                    await db_delete_type(eventtype.type_id)
                     create_log(f"Delete type {i}", 'debug')
                     msg += DELETE_TYPE_ALL_GOOD.format(i)
                 else:
