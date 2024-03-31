@@ -1,4 +1,5 @@
 from random import randint
+import datetime
 import discord
 from typing import Any
 from .exceptions import CallFuncBotNotInGuildException
@@ -7,6 +8,8 @@ from sql import (
     Event,
     EventType,
     DiscordServer,
+
+    db_add_event,
 
     db_check_server_for_exist,
     db_add_server,
@@ -43,6 +46,7 @@ from message_text import (
     ADD_TYPE_ALREADY_EXISTS,
     DELETE_TYPE_NOT_FOUND,
     DELETE_TYPE_ALL_GOOD,
+    EVENT_CANT_CREATE,
 )
 
 
@@ -185,14 +189,38 @@ class Bot(discord.Client):
     
     # ! СОБЫТИЯ
     def __events_access_check(self, member) -> bool:
-        return False
+        return True
 
     async def events(self, message: discord.message.Message, *args):
-        pass
-    
+        create_log(f"events called with args: {args}", 'debug')
+        if not self.__events_access_check(message.author, 'types'):
+            return None
+
     async def add_event(self, message: discord.message.Message, *args):
-        pass
-    
+        message_str_list = message.content.split('\n')
+        event_id = randint(0, 100)
+        server_id = message.guild.id
+        event_name = message_str_list[0].removeprefix('!addevent') # даем название
+        type_id = await self.__get_server_event_type_by_name(message.guild.id, message_str_list[1])
+        event_time = datetime.datetime.strptime(message_str_list[2], '%Y-%m-%d %H:%M')
+        comment = ''
+        if len(message_str_list) > 2:
+            comment = '\n'.join(message_str_list[3:])
+        
+        if type_id is None or type(event_time) is not datetime.datetime:
+            return await message.reply(EVENT_CANT_CREATE)
+
+        event = Event(
+            event_id,
+            server_id,
+            event_name,
+            type_id.type_id,
+            comment,
+            event_time
+        )
+
+        await db_add_event(event)
+
     async def delete_event(self, message: discord.message.Message, *args):
         pass
     
@@ -267,7 +295,6 @@ class Bot(discord.Client):
         msg = ''
         for i in args:
             if i in server_types_names:
-                print(f'Запрос на удаление типа {i}') # TODO: Добавить удаление в базе
                 eventtype = await self.__get_server_event_type_by_name(message.guild.id, i)
                 if eventtype is not None:
                     await db_delete_type(eventtype.type_id)
