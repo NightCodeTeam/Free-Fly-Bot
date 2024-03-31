@@ -185,12 +185,16 @@ class Bot(discord.Client):
         pass
     
     async def types(self, message: discord.message.Message, *args):
-        pass
-        #for i in args:
-        #    print(self.__get_role(message.guild, i))
-    
+        create_log(f"types called with args: {args}", 'debug')
+        if not self.__check_member_is_admin(message.author):
+            create_log(f"CANCEL types: member {message.author} is not admin")
+            return None
+
     async def add_type(self, message: discord.message.Message, *args):
         create_log(f"Add_type called with args: {args}", 'debug')
+        if not self.__check_member_is_admin(message.author):
+            create_log(f"CANCEL add_type: member {message.author} is not admin")
+            return None
         if message.guild is None:
             raise CallFuncBotNotInGuildException('add_type')
         if len(args) != 3:
@@ -225,6 +229,9 @@ class Bot(discord.Client):
     
     async def delete_type(self, message: discord.message.Message, *args):
         create_log(f"Add_type called with args: {args}", 'debug')
+        if not self.__check_member_is_admin(message.author):
+            create_log(f"CANCEL delete_type: member {message.author} is not admin")
+            return None
         if len(args) == 0:
             return await message.reply(TOO_FEW_ARGS)
         server_types_names = self.__get_server_types_names(message.guild.id)
