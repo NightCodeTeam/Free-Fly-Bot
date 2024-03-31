@@ -1,4 +1,5 @@
 from random import randint
+from re import T
 import discord
 from typing import Any
 from .exceptions import CallFuncBotNotInGuildException
@@ -34,6 +35,9 @@ from message_text import (
     TOO_MANY_ARGS,
     TOO_FEW_ARGS,
     ADD_TYPE_ERROR_MSG,
+    ADD_TYPE_ALREADY_EXISTS,
+    DELETE_TYPE_NOT_FOUND,
+    DELETE_TYPE_ALL_GOOD,
 )
 
 
@@ -43,9 +47,20 @@ class Bot(discord.Client):
         intents.message_content = True  
         super().__init__(intents=intents)
 
+    def __check_author_is_member(self, member) -> bool:
+        return True if type(member) is discord.Member else False
+
+    def __check_member_is_admin(self, member) -> bool:
+        return True if member.guild_permissions.administrator else False
+
     def __check_member_permisions(self, member, guild) -> bool:
-        if type(member) is discord.Member:
-            if member.guild_permissions.administrator or self.__check_member_has_reached_role(member, self.__get_server_types_roles_id(guild.id)):
+        if self.__check_author_is_member(member):
+            if (
+                self.__check_member_is_admin(member) 
+                or self.__check_member_has_reached_role(
+                    member, self.__get_server_types_roles_id(guild.id)
+                )
+            ):
                 return True
         return False
 
@@ -63,9 +78,15 @@ class Bot(discord.Client):
     
     def __get_server_types(self, server_id: int) -> list[EventType]:
         return [] # TODO: Доделать когда появится sql запрос
+    
+    def __get_server_event_type_by_name(self, server_id: int, type_name: str) -> EventType | None:
+        return None # TODO: Доделать когда будет SQL запрос
 
     def __get_server_types_roles_id(self, server_id) -> list[int]:
         return list(map(lambda x: x.role_id, self.__get_server_types(server_id)))
+    
+    def __get_server_types_names(self, server_id) -> list[str]:
+        return list(map(lambda x: x.type_name, self.__get_server_types(server_id)))
     
     def __check_member_has_reached_role(self, member, roles_id: list[int]) -> bool:
         if type(member) is discord.member.Member:
@@ -75,6 +96,10 @@ class Bot(discord.Client):
         return False
     
     def __get_role_or_channel(self, guild: discord.Guild, arg: str) -> Any:
+        """Возвращает 1 из 3:
+        - Дискорд канал
+        - Роль на сервере
+        - None"""
         if arg.startswith('<#'):
             return self.__get_channel(arg)
         elif arg.startswith('<@&'):
@@ -88,11 +113,16 @@ class Bot(discord.Client):
         create_log(f'Logged on as {self.user}!', 'info')
 
     async def on_message(self, message: discord.message.Message):
+        if message.guild is not None:
+            return
         if message.author != self.user and not message.author.bot:
             if self.__check_member_permisions(message.author, message.guild):
                 pass
             else:
-                create_log(f'Member {message.author} try to use bot but has no access', 'info')
+                create_log(
+                    f'Member {message.author} try to use bot but has no access',
+                    'info'
+                )
                 return None
             if message.content[0] == BOT_PREFIX:
                 args = message.content.split()
@@ -145,6 +175,10 @@ class Bot(discord.Client):
                     case _:
                         msg += HELP_COMMAND_NOT_FOUND.format(i)
             return await message.reply(msg)
+    
+    # ! СОБЫТИЯ
+    def __events_access_check(self, member) -> bool:
+        return False
 
     async def events(self, message: discord.message.Message, *args):
         pass
@@ -155,15 +189,23 @@ class Bot(discord.Client):
     async def delete_event(self, message: discord.message.Message, *args):
         pass
     
+    # ! Типы события
+    def __types_access_check(self, member, func_name: str) -> bool:
+        if not self.__check_member_is_admin(member):
+            create_log(f"CANCEL {func_name}: member {member} is not admin")
+            return False
+        return True
+
     async def types(self, message: discord.message.Message, *args):
-        pass
-        #for i in args:
-        #    print(self.__get_role(message.guild, i))
-    
+        create_log(f"types called with args: {args}", 'debug')
+        if not self.__types_access_check(message.author, 'types'):
+            return None
+        pass # TODO: Доделать когда будет sql запрос
+
     async def add_type(self, message: discord.message.Message, *args):
-        create_log(f"Add_type called with args: {args}", 'debug')
-        if message.guild is None:
-            raise CallFuncBotNotInGuildException('add_type')
+        create_log(f"add_type called with args: {args}", 'debug')
+        if not self.__types_access_check(message.author, 'add_type'):
+            return None
         if len(args) != 3:
             if len(args) > 3:
                 return await message.reply(TOO_MANY_ARGS)
@@ -195,4 +237,22 @@ class Bot(discord.Client):
         print(new_type) # TODO: Дописать вызов в базу и проверку на такой же тип
     
     async def delete_type(self, message: discord.message.Message, *args):
-        pass
+        create_log(f"delete_type called with args: {args}", 'debug')
+        if not self.__types_access_check(message.author, 'delete_type'):
+            return None
+        if len(args) == 0:
+            return await message.reply(TOO_FEW_ARGS)
+        server_types_names = self.__get_server_types_names(message.guild.id)
+        msg = ''
+        for i in args:
+            if i in server_types_names:
+                print(f'Запрос на удаление типа {i}') # TODO: Добавить удаление в базе
+                if self.__get_server_event_type_by_name(message.guild.id, i):
+                    create_log(f"Delete type {i}", 'debug')
+                    msg += DELETE_TYPE_ALL_GOOD.format(i)
+                else:
+                    create_log(f"CANT delete type {i}", 'info')
+                    msg += DELETE_TYPE_NOT_FOUND.format(i)
+            else:
+                msg += DELETE_TYPE_NOT_FOUND.format(i)
+        return await message.reply(msg)
