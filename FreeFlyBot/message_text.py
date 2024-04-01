@@ -1,7 +1,7 @@
 from typing import Final
 
 
-HELP: Final = '''Привет! Это бот для создания и отслеживания событий.\
+HELP_MSG: Final = '''Привет! Это бот для создания и отслеживания событий.\
  Для начала работы мне нужно настроить тип события:
 - /types - все типы на сервере
 - /addtype - добавить тип
@@ -33,21 +33,21 @@ HELP_ADD_EVENT: Final = '''Команда addevent создает событие
 - комментарии'''
 HELP_DELETE_EVENT: Final = '''Команда deleteevent\n'''
 
-TYPE_MSG: Final = '''Тип: {name} Канал: {channel} Роль: {role}'''
+TYPE_MSG: Final = '''Тип: {name} Канал: {channel} Роль: {role}\n'''
 NO_TYPES_ON_SERVER: Final = '''Еще небыли созданы типы событий, используйте команду !addtype'''
 ADD_TYPE_ERROR_MSG: Final = '''Мне не удалось создать тип, проверьте правильность и попробуйте снова'''
 ADD_TYPE_ALREADY_EXISTS: Final = '''Вы пытаетесь добавить тип с названием {}, но он уже существует'''
 DELETE_TYPE_NOT_FOUND: Final = '''Не удалось найти указанный тип: {}\n'''
 DELETE_TYPE_ALL_GOOD: Final = '''Тип {} удален\n'''
 
-EVENT_MSG: Final = '''Событие: {id} Название: {name} Время: {date}\n'''
+EVENT_MSG: Final = '''Событие: {event_id} Название: {name} Время: {date}\n'''
 EVENT_NO_EVENTS_FOUND: Final = '''Не найдено событий на сервере'''
 
 EVENT_CANT_CREATE: Final = '''Неудалось создать событие. Проверьте данные и попробуйте снова'''
 
 DELETE_EVENT_ARGS_NULL: Final = '''Вы не указали id события которое нужно удалить'''
 DELETE_EVENT_CANT_FIND: Final = '''Не удалось найти события с данным id '''
-DELETE_EVENT_MSG: Final = '''Событие: {id} удалено.'''
+DELETE_EVENT_MSG: Final = '''Событие: {event_id} удалено.'''
 
 HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте !help для выводы всех команд\n'''
 
