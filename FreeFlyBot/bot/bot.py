@@ -1,7 +1,5 @@
-import datetime
 import discord
-
-from random import randint
+import datetime
 
 from .bot_base import BotBase
 from core import create_log
@@ -9,6 +7,9 @@ from sql import (
     Event,
     EventType,
     DiscordServer,
+
+    db_create_event_id,
+    db_create_type_id,
 
     db_add_event,
     db_get_events_by_type,
@@ -30,13 +31,15 @@ from message_text import (
     TOO_FEW_ARGS,
     TYPE_MSG,
     NO_TYPES_ON_SERVER,
+    ADD_TYPE_MSG,
     ADD_TYPE_ERROR_MSG,
     ADD_TYPE_ALREADY_EXISTS,
     DELETE_TYPE_NOT_FOUND,
-    DELETE_TYPE_ALL_GOOD,
+    DELETE_TYPE_MSG,
     EVENT_MSG,
     EVENT_NO_EVENTS_FOUND,
-    EVENT_CANT_CREATE,
+    ADD_EVENT_MSG,
+    ADD_EVENT_CANT_CREATE,
     DELETE_EVENT_ARGS_NULL,
     DELETE_EVENT_CANT_FIND,
     DELETE_EVENT_MSG,
@@ -89,7 +92,6 @@ class Bot(BotBase):
         # ! Костыль
         # Разбираем сообщение на строки
         message_str_list = message.content.split('\n')
-        event_id = randint(0, 100)
         server_id = message.guild.id
         event_name = message_str_list[0].removeprefix('!addevent ') # даем название
         type_id = await self.get_server_event_type_by_name(
@@ -109,14 +111,23 @@ class Bot(BotBase):
             return await message.reply(EVENT_CANT_CREATE)
 
         # Отправляем в базу
-        await db_add_event(Event(
-            event_id,
-            server_id,
-            event_name,
-            type_id.type_id,
-            comment,
-            event_time
-        ))
+        if await db_add_event(
+            Event(
+                await db_create_event_id(),
+                server_id,
+                event_name,
+                type_id.type_id,
+                comment,
+                event_time
+            )
+        ):
+            return await message.reply(ADD_EVENT_MSG.format(
+                name=event_name,
+                type=type_id.type_name,
+                date=event_time
+            ))
+        else:
+            return await message.reply(ADD_EVENT_CANT_CREATE)
 
     # ! Удаление события
     async def delete_event(self, message: discord.message.Message, *args):
@@ -214,13 +225,16 @@ class Bot(BotBase):
         ):
             return await message.reply(ADD_TYPE_ERROR_MSG)
 
-        await db_add_type(EventType(
-            randint(0, 10),
+        if await db_add_type(EventType(
+            await db_create_type_id(),
             type_server_id,
             type_name,
             type_channel_id,
             type_role_id
-        ))
+        )):
+            return message.reply(ADD_TYPE_MSG.format(type_name))
+        else:
+            return message.reply(ADD_TYPE_ERROR_MSG)
     
     # ! Удаление типа
     async def delete_type(self, message: discord.message.Message, *args):

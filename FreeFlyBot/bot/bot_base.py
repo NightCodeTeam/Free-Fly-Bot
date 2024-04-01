@@ -125,6 +125,7 @@ class BotBase(discord.Client):
                 await db_add_server(DiscordServer(ids, names))
 
         create_log(f'Logged on as {self.user}', 'info')
+        await self.send_msg()
 
     async def on_message(self, message: discord.message.Message):
         # Проверяем что все происходит на сервере а не в личке.
@@ -168,8 +169,13 @@ class BotBase(discord.Client):
                 case _:
                     await message.reply(HELP_COMMAND_NOT_FOUND.format(args[0]))
 
-    async def send_msg(self, guild, channel, msg: str):
+    async def send_msg(self):
         pass
+        # guild = self.get_guild(856825461685878797)
+        # channel = self.get_channel(886326762856927243)
+        # await channel.send(
+        #     'Я проснулся! Пизда Тарку'
+        # )
     
     async def help(self, message: discord.message.Message, *args):
         create_log(f"Help called with args: {args}", 'debug')
