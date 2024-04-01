@@ -42,6 +42,10 @@ DELETE_TYPE_ALL_GOOD: Final = '''Тип {} удален\n'''
 
 EVENT_CANT_CREATE: Final = '''Неудалось создать событие. Проверьте данные и попробуйте снова'''
 
+DELETE_EVENT_ARGS_NULL: Final = '''Вы не указали id события которое нужно удалить'''
+DELETE_EVENT_CANT_FIND: Final = '''Не удалось найти события с данным id '''
+DELETE_EVENT_MSG: Final = '''Событие: {id} удалено.'''
+
 HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте !help для выводы всех команд\n'''
 
 TOO_MANY_ARGS: Final = 'Слишком много аргументов, используте !help для вызова помощи'

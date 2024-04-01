@@ -10,6 +10,8 @@ from sql import (
     DiscordServer,
 
     db_add_event,
+    db_get_events_by_type,
+    db_delete_event,
 
     db_check_server_for_exist,
     db_add_server,
@@ -47,6 +49,9 @@ from message_text import (
     DELETE_TYPE_NOT_FOUND,
     DELETE_TYPE_ALL_GOOD,
     EVENT_CANT_CREATE,
+    DELETE_EVENT_ARGS_NULL,
+    DELETE_EVENT_CANT_FIND,
+    DELETE_EVENT_MSG,
 )
 
 
@@ -188,15 +193,18 @@ class Bot(discord.Client):
             return await message.reply(msg)
     
     # ! СОБЫТИЯ
-    def __events_access_check(self, member) -> bool:
+    def __events_access_check(self, member, func_name: str) -> bool:
         return True
 
     async def events(self, message: discord.message.Message, *args):
         create_log(f"events called with args: {args}", 'debug')
-        if not self.__events_access_check(message.author, 'types'):
+        if not self.__events_access_check(message.author, 'events'):
             return None
 
     async def add_event(self, message: discord.message.Message, *args):
+        if not self.__events_access_check(message.author, 'add_event'):
+            return None
+
         message_str_list = message.content.split('\n')
         event_id = randint(0, 100)
         server_id = message.guild.id
@@ -222,7 +230,36 @@ class Bot(discord.Client):
         await db_add_event(event)
 
     async def delete_event(self, message: discord.message.Message, *args):
-        pass
+        if not self.__events_access_check(message.author, 'add_event'):
+            return None
+
+        if len(args) == 0:
+            return message.reply(DELETE_EVENT_ARGS_NULL)
+        
+        msg = ''
+        # Находим id типов для этого сервера
+        types_id = list(
+            map(
+                lambda x: x.type_id,
+                await self.__get_server_types(message.guild.id)
+            )
+        )
+        server_events = list(
+            map(
+                lambda x: x.event_id,
+                await db_get_events_by_type(*types_id)
+            )
+        )
+
+        for i in args:
+            if i in server_events:
+                await db_delete_event(int(i))
+                msg += DELETE_EVENT_MSG.format(i)
+
+        if msg == '':
+            msg += DELETE_EVENT_CANT_FIND
+        return await message.reply(msg)
+
     
     # ! Типы события
     def __types_access_check(self, member, func_name: str) -> bool:

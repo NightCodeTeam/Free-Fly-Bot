@@ -8,7 +8,7 @@ class BotCommands:
     BOT_DELETE_EVENT_PREFIX = "delevent"
     BOT_TYPES_PREFIX = "types"
     BOT_ADD_TYPE_PREFIX = "addtype"
-    BOT_DELETE_TYPE_PREFIX = "removetype"
+    BOT_DELETE_TYPE_PREFIX = "deltype"
 
 
 ENV_FILE: Final = ".env"
