@@ -1,37 +1,41 @@
 from typing import Final
+from settings import (
+    BOT_PREFIX,
+    BotCommands,
+)
 
 
-HELP_MSG: Final = '''Привет! Это бот для создания и отслеживания событий.\
+HELP_MSG: Final = f'''Привет! Это бот для создания и отслеживания событий.\
  Для начала работы мне нужно настроить тип события:
-- /types - все типы на сервере
-- /addtype - добавить тип
-- /delettype - удалить тип
+- {BOT_PREFIX}{BotCommands.BOT_TYPES_PREFIX} - все типы на сервере
+- {BOT_PREFIX}{BotCommands.BOT_ADD_TYPE_PREFIX} - добавить тип
+- {BOT_PREFIX}{BotCommands.BOT_DELETE_TYPE_PREFIX} - удалить тип
 
 Вот мои команды:
-- /events - список всех событий
-- /addevent - добавить событие
-- /deleteevent - удалить событие
+- {BOT_PREFIX}{BotCommands.BOT_EVENTS_PREFIX} - список всех событий
+- {BOT_PREFIX}{BotCommands.BOT_ADD_EVENT_PREFIX} - добавить событие
+- {BOT_PREFIX}{BotCommands.BOT_DELETE_EVENT_PREFIX} - удалить событие
 '''
 
-HELP_TYPES: Final = '''Команда types\n'''
+HELP_TYPES: Final = f'''Команда {BotCommands.BOT_TYPES_PREFIX}\n'''
 
-HELP_ADD_TYPE: Final = '''Команда addtype добавляет новые типы событий на сервере.\
+HELP_ADD_TYPE: Final = f'''Команда {BotCommands.BOT_ADD_TYPE_PREFIX} добавляет новые типы событий на сервере.\
 Чтобы это сделать вам нужно:
 - указать удобное вам название (например test)
 - роль которая может создавать события и которые будут пинговаться (например @test)
 - канал в котором будут пинговаться события (например #test)'''
-HELP_DELETE_TYPE: Final = '''Команда delettype удаляет тип события для этого \
+HELP_DELETE_TYPE: Final = f'''Команда {BotCommands.BOT_DELETE_TYPE_PREFIX} удаляет тип события для этого \
 укажите её название (например test). \
 Можно так же указывать несколько через пробел(test1 test2 test3)'''
-HELP_EVENTS: Final = '''Команда events показывает все ожидаемые с ролью участника \
+HELP_EVENTS: Final = f'''Команда {BotCommands.BOT_EVENTS_PREFIX} показывает все ожидаемые с ролью участника \
 события. Дополнительно в аргументах можно указать тип события, а так же \
 администраторам можно воспользоваться типом all - покажет все события на сервере.'''
-HELP_ADD_EVENT: Final = '''Команда addevent создает событие. Для этого нужно указать:
+HELP_ADD_EVENT: Final = f'''Команда {BotCommands.BOT_ADD_EVENT_PREFIX} создает событие. Для этого нужно указать:
 - Название
 - Тип события
 - дату
 - комментарии'''
-HELP_DELETE_EVENT: Final = '''Команда deleteevent\n'''
+HELP_DELETE_EVENT: Final = f'''Команда {BotCommands.BOT_DELETE_EVENT_PREFIX} - удаляет событые. В качестве аргумента укажите номер события.'''
 
 TYPE_MSG: Final = '''Тип: {name} Канал: {channel} Роль: {role}\n'''
 NO_TYPES_ON_SERVER: Final = '''Еще небыли созданы типы событий, используйте команду !addtype'''
@@ -49,7 +53,7 @@ DELETE_EVENT_ARGS_NULL: Final = '''Вы не указали id события к
 DELETE_EVENT_CANT_FIND: Final = '''Не удалось найти события с данным id '''
 DELETE_EVENT_MSG: Final = '''Событие: {event_id} удалено.'''
 
-HELP_COMMAND_NOT_FOUND: Final = '''Команд {} не найдена. Используейте !help для выводы всех команд\n'''
+HELP_COMMAND_NOT_FOUND: Final = '''Команда {} не найдена. Используейте !help для выводы всех команд\n'''
 
 TOO_MANY_ARGS: Final = 'Слишком много аргументов, используте !help для вызова помощи'
 TOO_FEW_ARGS: Final = 'Мало аргументов, используте !help для вызова помощи'
