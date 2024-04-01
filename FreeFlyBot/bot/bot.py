@@ -214,7 +214,7 @@ class Bot(discord.Client):
         
         msg = ''
         for i in server_events:
-            msg += EVENT_MSG.format(id=i.event_id, name=i.event_name, date=i.event_time)
+            msg += EVENT_MSG.format(event_id=i.event_id, name=i.event_name, date=i.event_time)
         
         if msg == '':
             msg += EVENT_NO_EVENTS_FOUND
@@ -229,13 +229,13 @@ class Bot(discord.Client):
         message_str_list = message.content.split('\n')
         event_id = randint(0, 100)
         server_id = message.guild.id
-        event_name = message_str_list[0].removeprefix('!addevent') # даем название
+        event_name = message_str_list[0].removeprefix('!addevent ') # даем название
         type_id = await self.__get_server_event_type_by_name(message.guild.id, message_str_list[1])
         event_time = datetime.datetime.strptime(message_str_list[2], '%Y-%m-%d %H:%M')
         comment = ''
         if len(message_str_list) > 2:
             comment = '\n'.join(message_str_list[3:])
-        
+        print(comment)
         if type_id is None or type(event_time) is not datetime.datetime:
             return await message.reply(EVENT_CANT_CREATE)
 
@@ -247,6 +247,7 @@ class Bot(discord.Client):
             comment,
             event_time
         )
+        print(event)
 
         await db_add_event(event)
 
@@ -272,11 +273,10 @@ class Bot(discord.Client):
                 await db_get_events_by_type(*types_id)
             )
         )
-
         for i in args:
-            if i in server_events:
+            if int(i) in server_events:
                 await db_delete_event(int(i))
-                msg += DELETE_EVENT_MSG.format(i)
+                msg += DELETE_EVENT_MSG.format(event_id=i)
 
         if msg == '':
             msg += DELETE_EVENT_CANT_FIND
