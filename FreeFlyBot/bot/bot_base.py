@@ -166,6 +166,8 @@ class BotBase(discord.Client):
                     await self.add_type(message, *args[1:])
                 case BotCommands.BOT_DELETE_TYPE_PREFIX:
                     await self.delete_type(message, *args[1:])
+                case 'test':
+                    await self.test(message)
                 case _:
                     await message.reply(HELP_COMMAND_NOT_FOUND.format(args[0]))
 
@@ -217,4 +219,7 @@ class BotBase(discord.Client):
         pass
     
     async def delete_type(self, message: discord.message.Message, *args):
+        pass
+
+    async def test(self, message: discord.message.Message):
         pass
