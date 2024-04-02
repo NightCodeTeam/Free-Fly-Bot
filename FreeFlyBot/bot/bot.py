@@ -67,8 +67,13 @@ class Bot(BotBase):
                 await self.get_server_types(message.guild.id)
             )
         )
+        role_list  = list(map(lambda x: x.id, message.author.roles))
+
+        ###message.author.get_role
         server_events = await db_get_events_by_type(*server_types_id)
-        
+        for i in server_events:
+            if i.type_id not in role_list:
+                server_events.remove(i)
         msg = ''
         for i in server_events:
             msg += EVENT_MSG.format(
