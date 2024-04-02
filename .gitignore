@@ -8,3 +8,4 @@ __pycache__
 logger.log
 settings.toml
 *.db
+test.*

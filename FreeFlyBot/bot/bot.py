@@ -2,6 +2,7 @@ import discord
 import datetime
 
 from .bot_base import BotBase
+from .bot_selectors import EventTypeSelector
 from core import create_log
 from sql import (
     Event,
@@ -256,10 +257,17 @@ class Bot(BotBase):
                 if eventtype is not None:
                     await db_delete_type(eventtype.type_id)
                     create_log(f"Delete type {i}", 'debug')
-                    msg += DELETE_TYPE_ALL_GOOD.format(i)
+                    msg += DELETE_TYPE_MSG.format(i)
                 else:
                     create_log(f"CANT delete type {i}", 'info')
                     msg += DELETE_TYPE_NOT_FOUND.format(i)
             else:
                 msg += DELETE_TYPE_NOT_FOUND.format(i)
         return await message.reply(msg)
+    
+    async def test(self, message: discord.message.Message, *args):
+        selector = EventTypeSelector(await self.get_server_types(message.guild.id))
+        view = discord.ui.View()
+        view.add_item(selector)
+
+        await message.reply('Выберете роль:', view=view)

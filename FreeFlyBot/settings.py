@@ -1,6 +1,9 @@
 from typing import Final
 
 
+EVENT_TYPE_SELECTOR_PLACEHOLDER: Final = 'Выберите тип события:'
+
+
 class BotCommands:
     BOT_HELP_PREFIX = "help"
     BOT_EVENTS_PREFIX = "events"
