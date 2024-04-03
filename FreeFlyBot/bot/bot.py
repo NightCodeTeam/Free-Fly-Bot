@@ -3,6 +3,7 @@ import datetime
 
 from .bot_base import BotBase
 from .bot_selectors import EventTypeSelector
+from .bot_views import AddEventView
 from core import create_log
 from sql import (
     Event,
@@ -266,8 +267,22 @@ class Bot(BotBase):
         return await message.reply(msg)
     
     async def test(self, message: discord.message.Message, *args):
-        selector = EventTypeSelector(await self.get_server_types(message.guild.id))
-        view = discord.ui.View()
-        view.add_item(selector)
+        view = AddEventView(await self.get_server_types(message.guild.id))
 
-        await message.reply('Выберете роль:', view=view)
+        await message.reply('Создайте событие:', view=view)
+
+        values = []
+        try:
+            await view.wait()
+            if view.create:
+                values.append(view.name_inp.value[0])
+                values.append(view.event_type_sel.values[0])
+                values.append(view.date_inp.value[0])
+                values.append(view.time_inp.value[0])
+                values.append(view.one_ping_b_inp.value[0])
+                values.append(view.comment_inp.value[0])
+        except IndexError:
+            print('хз')
+        
+        if len(values) < 6:
+            print('слишком мало аргументов')
