@@ -14,6 +14,7 @@ from sql import (
     db_add_event,
     db_get_events_by_type,
     db_delete_event,
+    db_get_event_by_id,
 
     db_add_type,
     db_check_type_for_exist,
@@ -167,9 +168,9 @@ class Bot(BotBase):
         if len(args) > 0:
             for i in args:
                 if int(i) in server_events:
-                    if self.__events_access_check()
-                    await db_delete_event(int(i))
-                    msg += DELETE_EVENT_MSG.format(event_id=i)
+                    if self.__events_access_check(message.author, 'delete_event', await db_get_event_by_id(int(i))):
+                        await db_delete_event(int(i))
+                        msg += DELETE_EVENT_MSG.format(event_id=i)
         else:
             msg += DELETE_EVENT_CANT_FIND
         return await message.reply(msg)
