@@ -1,4 +1,5 @@
 import discord
+from typing import Any
 from discord.utils import MISSING
 
 from sql import EventType, Event
@@ -86,3 +87,6 @@ class AddEventMobal(discord.ui.Modal):
         self.add_item(self.comment_inp)
         #self.add_item(self.confirm_b)
         #self.add_item(self.cancel_b)
+
+    async def callback(self, interaction: discord.MessageInteraction) -> Any:
+        return interaction

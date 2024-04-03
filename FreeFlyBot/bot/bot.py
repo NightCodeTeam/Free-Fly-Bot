@@ -268,32 +268,10 @@ class Bot(BotBase):
     
     async def test(self, message: discord.message.Message, *args):
         types = await self.get_server_types(message.guild.id)
-        #select_type = EventTypeSelector(types)
-
-        #view = discord.ui.View()
         view = AddEventView(types)
-        #view.add_item(select_type)
 
         await message.reply('Создайте событие:', view=view)
-
-        try:
-            await view.wait()
-            print(view.type_index)
-        except Exception as err:
-            print('хз')
-            print(err)
-        #values = []
-        #try:
-        #    await view.wait()
-        #    if view.create:
-        #        values.append(view.name_inp.value[0])
-        #        values.append(view.event_type_sel.values[0])
-        #        values.append(view.date_inp.value[0])
-        #        values.append(view.time_inp.value[0])
-        #        values.append(view.one_ping_b_inp.value[0])
-        #        values.append(view.comment_inp.value[0])
-        #except IndexError:
-        #    print('хз')
-        #
-        #if len(values) < 6:
-        #    print('слишком мало аргументов')
+        
+        if not await view.modal_ui.wait():
+            await message.reply(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.type_index} {view.event_time}\nКомментарий: {view.event_comment}")
+        # TODO: Из вывода забрать то что написано и сделать класс Event и в бд

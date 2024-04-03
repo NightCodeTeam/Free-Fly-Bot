@@ -25,19 +25,37 @@ from settings import (
 class AddEventView(discord.ui.View):
     def __init__(self, types: list[EventType]):
         super().__init__(timeout=180)
+        self.modal_ui = AddEventMobal()
+        self.modal_ui.on_submit = self.event_conferm
         self.type_index = 0
+
+        self.event_name = ''
+        self.event_date = ''
+        self.event_time = ''
+        self.event_comment = ''
 
         # Тип
         self.event_type_sel = EventTypeSelector(types)
         
 
         self.add_item(self.event_type_sel)
-        self.event_type_sel.callback = self.create_event
+        self.event_type_sel.callback = self.prefer_event_type
     
     #async def interaction_check(self, interaction: discord.Interaction) -> bool:
     #    return interaction.user == interaction.message.author
 
-    async def create_event(self, interaction):
+    async def prefer_event_type(self, interaction):
         self.type_index = int(self.event_type_sel.values[0])
-        await interaction.response.send_modal(AddEventMobal())
+        await interaction.response.send_modal(self.modal_ui)
         self.stop()
+    
+    async def event_conferm(self, interaction):
+        print('wtf')
+        self.event_name = self.modal_ui.name_inp.value
+        self.event_date = self.modal_ui.date_inp.value
+        self.event_time = self.modal_ui.time_inp.value
+        self.event_comment = self.modal_ui.comment_inp.value
+        
+        self.modal_ui.stop()
+
+        #await interaction.response.send_message('sss')
