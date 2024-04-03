@@ -167,6 +167,7 @@ class Bot(BotBase):
         if len(args) > 0:
             for i in args:
                 if int(i) in server_events:
+                    if self.__events_access_check()
                     await db_delete_event(int(i))
                     msg += DELETE_EVENT_MSG.format(event_id=i)
         else:
