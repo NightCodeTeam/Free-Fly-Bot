@@ -267,22 +267,33 @@ class Bot(BotBase):
         return await message.reply(msg)
     
     async def test(self, message: discord.message.Message, *args):
-        view = AddEventView(await self.get_server_types(message.guild.id))
+        types = await self.get_server_types(message.guild.id)
+        #select_type = EventTypeSelector(types)
+
+        #view = discord.ui.View()
+        view = AddEventView(types)
+        #view.add_item(select_type)
 
         await message.reply('Создайте событие:', view=view)
 
-        values = []
         try:
             await view.wait()
-            if view.create:
-                values.append(view.name_inp.value[0])
-                values.append(view.event_type_sel.values[0])
-                values.append(view.date_inp.value[0])
-                values.append(view.time_inp.value[0])
-                values.append(view.one_ping_b_inp.value[0])
-                values.append(view.comment_inp.value[0])
-        except IndexError:
+            print(view.type_index)
+        except Exception as err:
             print('хз')
-        
-        if len(values) < 6:
-            print('слишком мало аргументов')
+            print(err)
+        #values = []
+        #try:
+        #    await view.wait()
+        #    if view.create:
+        #        values.append(view.name_inp.value[0])
+        #        values.append(view.event_type_sel.values[0])
+        #        values.append(view.date_inp.value[0])
+        #        values.append(view.time_inp.value[0])
+        #        values.append(view.one_ping_b_inp.value[0])
+        #        values.append(view.comment_inp.value[0])
+        #except IndexError:
+        #    print('хз')
+        #
+        #if len(values) < 6:
+        #    print('слишком мало аргументов')

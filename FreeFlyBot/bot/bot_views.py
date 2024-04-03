@@ -1,6 +1,7 @@
 import discord
 
 from .bot_selectors import EventTypeSelector
+from .bot_mobal import AddEventMobal
 from sql import EventType, Event
 
 from settings import (
@@ -24,73 +25,19 @@ from settings import (
 class AddEventView(discord.ui.View):
     def __init__(self, types: list[EventType]):
         super().__init__(timeout=180)
-        self.create = False
-
-        # Название
-        self.name_inp = discord.ui.TextInput(
-            label=ADD_EVENT_VIEW_NAME,
-            placeholder=ADD_EVENT_VIEW_NAME_PLACEHOLDER,
-            row=0
-        )
+        self.type_index = 0
 
         # Тип
-        self.event_type_sel = EventTypeSelector(types, 1)
+        self.event_type_sel = EventTypeSelector(types)
+        
 
-        # Дата
-        self.date_inp = discord.ui.TextInput(
-            label=ADD_EVENT_DATE_NAME,
-            placeholder=ADD_EVENT_DATE_PLACEHOLDER,
-            row=2
-        )
-
-        # Время
-        self.time_inp = discord.ui.TextInput(
-            label=ADD_EVENT_TIME_NAME,
-            placeholder=ADD_EVENT_TIME_PLACEHOLDER,
-            row=2
-        )
-
-        # За 1 пинг до
-        self.one_ping_b_inp = discord.ui.TextInput(
-            label=ADD_EVENT_ONE_PING_BEFORE_NAME,
-            placeholder=ADD_EVENT_ONE_PING_BEFORE_PLACEHOLDER,
-            row=3
-        )
-
-        # Коммент
-        self.comment_inp = discord.ui.TextInput(
-            label=ADD_EVENT_DATE_NAME,
-            placeholder=ADD_EVENT_DATE_PLACEHOLDER,
-            row=4
-        )
-
-        # Подтвердить
-        self.confirm_b = discord.ui.Button(
-            label=CONFIRM_BUTTON,
-            style=discord.ButtonStyle.green,
-            row=5
-        )
-        self.confirm_b.callback = self.create_event
-
-        # Отмена
-        self.cancel_b = discord.ui.Button(
-            label=CANCEL_BUTTON,
-            style=discord.ButtonStyle.red,
-            row=5
-        )
-
-        self.add_item(self.name_inp)
         self.add_item(self.event_type_sel)
-        self.add_item(self.date_inp)
-        self.add_item(self.time_inp)
-        self.add_item(self.one_ping_b_inp)
-        self.add_item(self.comment_inp)
-        self.add_item(self.confirm_b)
-        self.add_item(self.cancel_b)
+        self.event_type_sel.callback = self.create_event
     
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return interaction.user == interaction.message.author
+    #async def interaction_check(self, interaction: discord.Interaction) -> bool:
+    #    return interaction.user == interaction.message.author
 
-    def create_event(self, *args):
-        self.create = True
+    async def create_event(self, interaction):
+        self.type_index = int(self.event_type_sel.values[0])
+        await interaction.response.send_modal(AddEventMobal())
         self.stop()
