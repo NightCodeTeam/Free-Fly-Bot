@@ -51,14 +51,18 @@ class Bot(BotBase):
         super().__init__()
 
     # ! СОБЫТИЯ
-    def __events_access_check(self, member, func_name: str) -> bool:
-        return True
+    def __events_access_check(self, member, func_name: str, event: Event) -> bool:
+        role_list  = list(map(lambda x: x.id, member.roles))
+        if event.type_id in role_list:
+            return True
+        else:
+            return False
 
     async def events(self, message: discord.message.Message, *args):
         create_log(f"events called with args: {args}", 'debug')
         # ? Проверяем допуск автора
-        if not self.__events_access_check(message.author, 'events'):
-            return None
+        #if not self.__events_access_check(message.author, 'events'):
+         #   return None
 
         # Находим события сервера
         server_types_id = list(
@@ -91,8 +95,8 @@ class Bot(BotBase):
     async def add_event(self, message: discord.message.Message):
         create_log(f"add_event called", 'debug')
         # ? Проверяем допуск автора
-        if not self.__events_access_check(message.author, 'add_event'):
-            return None
+        #if not self.__events_access_check(message.author, 'add_event'):
+         #   return None
 
         # ! Костыль
         # Разбираем сообщение на строки
@@ -138,8 +142,8 @@ class Bot(BotBase):
     async def delete_event(self, message: discord.message.Message, *args):
         create_log(f"delete_event called with args: {args}", 'debug')
         # ? Проверяем допуск автора
-        if not self.__events_access_check(message.author, 'delete_event'):
-            return None
+        #if not self.__events_access_check(message.author, 'delete_event'):
+        #    return None
 
         # ? Проверка наличия аргументов
         if len(args) == 0:
