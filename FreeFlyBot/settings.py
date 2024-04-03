@@ -1,7 +1,21 @@
 from typing import Final
 
 
+DISCORD_MSH_TIMEOUT: Final = 180
+ADD_EVENT_VIEW_NAME: Final = 'Название:'
+ADD_EVENT_VIEW_NAME_PLACEHOLDER: Final = 'Название события'
 EVENT_TYPE_SELECTOR_PLACEHOLDER: Final = 'Выберите тип события:'
+ADD_EVENT_DATE_NAME: Final = 'Дата:'
+ADD_EVENT_DATE_PLACEHOLDER: Final = '2024.12.31'
+ADD_EVENT_TIME_NAME: Final = 'Время:'
+ADD_EVENT_TIME_PLACEHOLDER: Final = '24:00'
+ADD_EVENT_ONE_PING_BEFORE_NAME: Final = 'Засколько часов пингануть?'
+ADD_EVENT_ONE_PING_BEFORE_PLACEHOLDER: Final = '0'
+ADD_EVENT_COMMENT_NAME: Final = 'Комментарий:'
+ADD_EVENT_COMMENT_PLACEHOLDER: Final = ''
+
+CONFIRM_BUTTON: Final = 'Подтвердить'
+CANCEL_BUTTON: Final = 'Отмена'
 
 
 class BotCommands:

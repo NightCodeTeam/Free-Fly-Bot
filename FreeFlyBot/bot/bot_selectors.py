@@ -9,8 +9,16 @@ from settings import (
 
 class EventTypeSelector(discord.ui.Select):
     def __init__(self, types: list[EventType]):
-        options = [discord.SelectOption(label=str(x), value=str(x)) for x in range(0,25)] 
-
+        self.type_name = ''
+        options = []
+        for ind, t in enumerate(types):
+            options.append(
+                discord.SelectOption(
+                    label=t.type_name,
+                    value=str(ind),
+                    description=f'роль - {t.role_id} канал - {t.channel_id}'
+                )
+            )
         #options = list(
         #    map(
         #        lambda x: discord.SelectOption(
@@ -29,8 +37,9 @@ class EventTypeSelector(discord.ui.Select):
             max_values=1,
             options=options,
             #disabled=disabled,
+            #row=row
         )
     
     async def callback(self, interaction: discord.MessageInteraction) -> Any:
-        print('YES!!!!')
-        print(interaction.type.value)
+        return interaction
+

@@ -3,6 +3,7 @@ import datetime
 
 from .bot_base import BotBase
 from .bot_selectors import EventTypeSelector
+from .bot_views import AddEventView
 from core import create_log
 from sql import (
     Event,
@@ -271,8 +272,11 @@ class Bot(BotBase):
         return await message.reply(msg)
     
     async def test(self, message: discord.message.Message, *args):
-        selector = EventTypeSelector(await self.get_server_types(message.guild.id))
-        view = discord.ui.View()
-        view.add_item(selector)
+        types = await self.get_server_types(message.guild.id)
+        view = AddEventView(types)
 
-        await message.reply('Выберете роль:', view=view)
+        await message.reply('Создайте событие:', view=view)
+        
+        if not await view.modal_ui.wait():
+            await message.reply(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.type_index} {view.event_time}\nКомментарий: {view.event_comment}")
+        # TODO: Из вывода забрать то что написано и сделать класс Event и в бд
