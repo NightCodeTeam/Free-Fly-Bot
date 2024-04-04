@@ -284,5 +284,5 @@ class Bot(BotBase):
         await message.reply('Создайте событие:', view=view)
         
         if not await view.modal_ui.wait():
-            print(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.type_index} {view.event_time}\nКомментарий: {view.event_comment}")
+            print(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.event_date} {view.event_time}\nКомментарий: {view.event_comment}")
         # TODO: Из вывода забрать то что написано и сделать класс Event и в бд
