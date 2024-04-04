@@ -1,5 +1,5 @@
 from sys import argv
-from core import create_log, get_env, update_env
+from core import create_log, get_env, update_env, Timer
 from sql import create_bd
 from bot import Bot
 
@@ -12,6 +12,8 @@ def main(args):
     if not exists(SQL_BD_NAME):
         create_bd()
     bot = Bot()
+
+    
     bot.run(get_env("BOT_TOKEN"))
 
 
