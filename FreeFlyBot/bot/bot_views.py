@@ -2,7 +2,8 @@ import discord
 
 from .bot_selectors import EventTypeSelector
 from .bot_mobal import AddEventMobal
-from sql import EventType, Event
+from sql import EventType, Event, db_create_event_id
+from core import make_datetime
 
 from settings import (
     DISCORD_MSH_TIMEOUT,
@@ -52,14 +53,25 @@ class AddEventView(discord.ui.View):
         self.stop()
     
     async def event_conferm(self, interaction):
-        self.event_name = self.modal_ui.name_inp.value
-        self.event_date = self.modal_ui.date_inp.value
-        self.event_time = self.modal_ui.time_inp.value
-        self.event_comment = self.modal_ui.comment_inp.value
+        #self.event_name = self.modal_ui.name_inp.value
+        #self.event_date = self.modal_ui.date_inp.value
+        #self.event_time = self.modal_ui.time_inp.value
+        #self.event_comment = self.modal_ui.comment_inp.value
 
-        await interaction.response.send_message(
-            f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
-        )
-        
         self.modal_ui.stop()
         self.modal_ui.clear_items()
+
+        self.event = Event(
+            await db_create_event_id(),
+            interaction.message.guild.id,
+            self.modal_ui.name_inp.value,
+            self.type_index,
+            self.modal_ui.comment_inp.value,
+            make_datetime(self.modal_ui.date_inp.value, self.modal_ui.time_inp.value)[0]
+        )
+
+        await interaction.response.send_message(
+            self.event # TODO: Написать красивый ответ на создание события
+            #f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
+        )
+        

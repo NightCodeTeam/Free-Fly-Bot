@@ -1,6 +1,14 @@
 from typing import Final
 
 
+# ! Главное
+ENV_FILE: Final = ".env"
+POSSIBLE_DATE_FORMATS: Final = ('\\', '/', '.', ',', ':', '-', '_')
+POSSIBLE_TIME_FORMATS: Final = ('\\', '/', '.', ',', ':', '-', '_', '*')
+POSSIBLE_HOUR_FORMATS: Final = ('h', 'ч')
+POSSIBLE_MINUT_FORMATS: Final = ('m', 'м')
+
+# ! Дискорд модальные окна
 DISCORD_MSH_TIMEOUT: Final = 180
 ADD_EVENT_VIEW_NAME: Final = 'Название:'
 ADD_EVENT_VIEW_NAME_PLACEHOLDER: Final = 'Название события'
@@ -13,11 +21,10 @@ ADD_EVENT_ONE_PING_BEFORE_NAME: Final = 'Засколько часов пинг�
 ADD_EVENT_ONE_PING_BEFORE_PLACEHOLDER: Final = '0'
 ADD_EVENT_COMMENT_NAME: Final = 'Комментарий:'
 ADD_EVENT_COMMENT_PLACEHOLDER: Final = ''
-
 CONFIRM_BUTTON: Final = 'Подтвердить'
 CANCEL_BUTTON: Final = 'Отмена'
 
-
+# ! Команды бота
 class BotCommands:
     BOT_HELP_PREFIX = "help"
     BOT_EVENTS_PREFIX = "events"
@@ -28,9 +35,9 @@ class BotCommands:
     BOT_DELETE_TYPE_PREFIX = "deltype"
 
 
-ENV_FILE: Final = ".env"
-
 BOT_PREFIX: Final = "!"
+
+# ! SQL
 EVENTS_TABLE_NAME: Final = "events"
 TYPES_TABLE_NAME: Final = "types"
 DS_SERVERS_TABLE_NAME: Final = "servers"
