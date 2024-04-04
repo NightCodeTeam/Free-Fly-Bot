@@ -108,3 +108,25 @@ async def db_get_event_by_id(event_id: int) -> Event | None:
             return ret_event
     except aiosqlite.Error as err:
         create_log(err, 'error')
+
+
+async def db_get_nearest_event() -> Event | None:
+    try:
+        async with aiosqlite.connect(SQL_BD_NAME)as db:
+            event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} ORDER BY event_time"""
+            ret_event: Event | None = None
+            async with db.execute(event_query) as cursor:
+                async for row in cursor:
+                    ret_event = (
+                        Event(
+                            event_id= row[0],
+                            server_id= row[1],
+                            event_name= row[2],
+                            type_id= row[3],
+                            comment= row[4],
+                            event_time= row[5]
+                        )
+                    )
+            return ret_event
+    except aiosqlite.Error as err:
+        create_log(err, 'error')

@@ -27,7 +27,9 @@ from .event_query import (
     db_get_events_by_type, #### принимает СПИСОК type_id возвращает список об. кл. Event
     db_get_events_list, ### возвращает список всех ивентов (Event)
     db_check_event_for_exist, ### принимает event_id возвращает Ture если такой id есть в БД
-    db_get_event_by_id #принимает event_id  возвращает ОБЪЕКТ Event 
+    db_get_event_by_id,
+    db_get_nearest_event, #принимает event_id  возвращает ОБЪЕКТ Event
+    db_get_nearest_event,
 )
 
 

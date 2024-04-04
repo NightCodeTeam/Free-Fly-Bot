@@ -1,11 +1,15 @@
 import discord
+import asyncio
 from typing import Any
-
+from datetime import datetime
 from core import create_log
 from sql import (
     Event,
     EventType,
     DiscordServer,
+
+    db_get_nearest_event,
+    db_get_type_by_id,
 
     db_check_server_for_exist,
     db_add_server,
@@ -125,7 +129,6 @@ class BotBase(discord.Client):
                 await db_add_server(DiscordServer(ids, names))
 
         create_log(f'Logged on as {self.user}', 'info')
-        await self.send_msg()
 
     async def on_message(self, message: discord.message.Message):
         # Проверяем что все происходит на сервере а не в личке.
@@ -171,13 +174,25 @@ class BotBase(discord.Client):
                 case _:
                     await message.reply(HELP_COMMAND_NOT_FOUND.format(args[0]))
 
-    async def send_msg(self):
-        pass
+    async def timer(self):
+        while True:
+            nearest_event = await db_get_nearest_event()
+            if nearest_event is not None:
+                #seconds = datetime.now() - nearest_event.event_time
+                if (datetime.now() - nearest_event.event_time).total_seconds() <= 1:
+                    #channel = db_get_type_by_id(nearest_event.type_id).ch
+                    await self.send_msg(
+                        await db_get_type_by_id(nearest_event.type_id).channel_id,
+                        'test'
+                    )
+
+    async def send_msg(self, channel_id: int, msg):
         # guild = self.get_guild(856825461685878797)
-        # channel = self.get_channel(886326762856927243)
-        # await channel.send(
-        #     'Я проснулся! Пизда Тарку'
-        # )
+        channel = self.get_channel(channel_id)
+        if type(channel) is discord.guild.GuildChannel:
+            await channel.send(
+                msg
+            )
     
     async def help(self, message: discord.message.Message, *args):
         create_log(f"Help called with args: {args}", 'debug')
