@@ -185,6 +185,8 @@ class BotBase(discord.Client):
                         await db_get_type_by_id(nearest_event.type_id).channel_id,
                         'test'
                     )
+                else:
+                    await asyncio.sleep(1)
 
     async def send_msg(self, channel_id: int, msg):
         # guild = self.get_guild(856825461685878797)
