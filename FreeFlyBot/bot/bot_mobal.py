@@ -2,6 +2,7 @@ import discord
 from typing import Any
 from discord.utils import MISSING
 
+from core import create_log
 from sql import EventType, Event
 
 from settings import (
@@ -19,6 +20,11 @@ from settings import (
     ADD_EVENT_COMMENT_PLACEHOLDER,
     CONFIRM_BUTTON,
     CANCEL_BUTTON,
+
+    EVENT_NAME_MAX_CHAR,
+    EVENT_DATE_MAX_CHAR,
+    EVENT_TIME_MAX_CHAR,
+    EVENT_COMMENT_MAX_CHAR,
 )
 
 
@@ -26,7 +32,7 @@ class AddEventMobal(discord.ui.Modal):
     def __init__(self) -> None:
         super().__init__(
             title='Создание события!',
-            timeout=180,
+            timeout=DISCORD_MSH_TIMEOUT,
             custom_id='addeventmobal'
         )
 
@@ -34,6 +40,7 @@ class AddEventMobal(discord.ui.Modal):
         self.name_inp = discord.ui.TextInput(
             label=ADD_EVENT_VIEW_NAME,
             placeholder=ADD_EVENT_VIEW_NAME_PLACEHOLDER,
+            max_length=EVENT_NAME_MAX_CHAR,
             #row=1
         )
 
@@ -41,6 +48,7 @@ class AddEventMobal(discord.ui.Modal):
         self.date_inp = discord.ui.TextInput(
             label=ADD_EVENT_DATE_NAME,
             placeholder=ADD_EVENT_DATE_PLACEHOLDER,
+            max_length=EVENT_DATE_MAX_CHAR,
             #row=1
         )
 
@@ -48,6 +56,7 @@ class AddEventMobal(discord.ui.Modal):
         self.time_inp = discord.ui.TextInput(
             label=ADD_EVENT_TIME_NAME,
             placeholder=ADD_EVENT_TIME_PLACEHOLDER,
+            max_length=EVENT_TIME_MAX_CHAR,
             #row=1
         )
 
@@ -62,6 +71,8 @@ class AddEventMobal(discord.ui.Modal):
         self.comment_inp = discord.ui.TextInput(
             label=ADD_EVENT_COMMENT_NAME,
             placeholder=ADD_EVENT_COMMENT_PLACEHOLDER,
+            max_length=EVENT_COMMENT_MAX_CHAR,
+            required=False
             #row=1
         )
 
@@ -90,3 +101,11 @@ class AddEventMobal(discord.ui.Modal):
 
     async def callback(self, interaction: discord.MessageInteraction) -> Any:
         return interaction
+
+    async def on_error(self, interaction: discord.Interaction, error: Exception) -> None:
+        create_log(error, 'error')
+        return await super().on_error(interaction, error)
+    
+    async def on_timeout(self) -> None:
+        create_log('Modal interaction timeout', 'info')
+        return await super().on_timeout()

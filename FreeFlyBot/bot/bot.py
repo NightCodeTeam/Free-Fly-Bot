@@ -279,10 +279,10 @@ class Bot(BotBase):
     
     async def test(self, message: discord.message.Message, *args):
         types = await self.get_server_types(message.guild.id)
-        view = AddEventView(types)
+        view = AddEventView(types, message.author)
 
         await message.reply('Создайте событие:', view=view)
         
         if not await view.modal_ui.wait():
-            await message.reply(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.type_index} {view.event_time}\nКомментарий: {view.event_comment}")
+            print(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.type_index} {view.event_time}\nКомментарий: {view.event_comment}")
         # TODO: Из вывода забрать то что написано и сделать класс Event и в бд
