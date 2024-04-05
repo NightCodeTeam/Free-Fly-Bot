@@ -108,19 +108,21 @@ class Bot(BotBase):
         await message.reply('Создайте событие:', view=view)
         
         if not await view.modal_ui.wait():
-           # print(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.event_date} {view.event_time}\nКомментарий: {view.event_comment}")
-        # TODO: Перенести это в add_event забрать из view.event событие и поместить в бд
-        # а вот тут мы его проверяем
-            if len(self.__events_access_check(message.author, [view.event])) == 0:
-                return await message.reply(ADD_EVENT_CANT_CREATE) # на свой вкус алерт воткни))
-        # Отправляем в базу
-            if await db_add_event(view.event):
-                return await message.reply(ADD_EVENT_MSG.format(
-                    name=view.event.event_name,
-                    date=view.event.event_time
-                ))
-            else:
-                return await message.reply(ADD_EVENT_CANT_CREATE)
+            # а вот тут мы его проверяем
+            # if len(self.__events_access_check(message.author, [view.event])) == 0:
+            #     return await message.reply(ADD_EVENT_CANT_CREATE) # на свой вкус алерт воткни))
+            
+            # Отправляем в базу
+            if view.event is not None:
+                print('event good')
+                if await db_add_event(view.event):
+                    return await message.reply(ADD_EVENT_MSG.format(
+                        name=view.event.event_name,
+                        type=view.type_index,
+                        date=view.event.event_time
+                    ))
+                else:
+                    return await message.reply(ADD_EVENT_CANT_CREATE)
         return await message.reply(ADD_EVENT_CANT_CREATE)
 
     # ! Удаление события

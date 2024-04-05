@@ -34,14 +34,10 @@ class AddEventView(discord.ui.View):
         self.modal_ui.on_submit = self.event_conferm
         self.type_index = 0
 
-        self.event_name = ''
-        self.event_date = ''
-        self.event_time = ''
-        self.event_comment = ''
+        self.event: Event | None = None
 
         # Тип
         self.event_type_sel = EventTypeSelector(types)
-        
 
         self.add_item(self.event_type_sel)
         self.event_type_sel.callback = self.prefer_event_type
@@ -60,9 +56,6 @@ class AddEventView(discord.ui.View):
         #self.event_time = self.modal_ui.time_inp.value
         #self.event_comment = self.modal_ui.comment_inp.value
 
-        self.modal_ui.stop()
-        self.modal_ui.clear_items()
-
         self.event = Event(
             await db_create_event_id(),
             interaction.message.guild.id,
@@ -76,6 +69,9 @@ class AddEventView(discord.ui.View):
             self.event # TODO: Написать красивый ответ на создание события
             #f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
         )
+        
+        self.modal_ui.stop()
+        #self.modal_ui.clear_items()
 
 
 class OnJoinButton(discord.ui.Button):

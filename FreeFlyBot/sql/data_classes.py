@@ -5,7 +5,10 @@ from settings import SQL_BLACK_LIST
 
 
 def sql_val_good(val) -> bool:
-    return False if str(val) in SQL_BLACK_LIST else True
+    for i in str(val).split(' '):
+        if i in SQL_BLACK_LIST:
+            return False
+    return True
 
 
 class Event:
@@ -24,6 +27,9 @@ class Event:
             self.type_id = type_id
             self.comment = comment
             self.event_time = event_time
+
+    def __str__(self) -> str:
+        return f'ID: {self.event_id}\nServer ID: {self.server_id}\nName: {self.event_name}\nTYPE ID: {self.type_id}\nCOMMENT: {self.comment}\nDate: {self.event_time}'
 
     @property
     def event_id(self) -> int:
@@ -87,7 +93,10 @@ class Event:
     @event_time.setter
     def event_time(self, val: datetime):
         if sql_val_good(val):
-            self.__event_time = val
+            if type(val) is datetime:
+                self.__event_time = val
+            if type(val) is str:
+                self.__event_time = datetime.strptime(val, '%Y-%m-%d %H:%M:%S')
         else:
             raise SQLBadDataclassException(val)
 

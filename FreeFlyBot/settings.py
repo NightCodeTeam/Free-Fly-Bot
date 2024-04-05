@@ -25,7 +25,6 @@ ADD_EVENT_COMMENT_NAME: Final = 'Комментарий:'
 ADD_EVENT_COMMENT_PLACEHOLDER: Final = ''
 CONFIRM_BUTTON: Final = 'Подтвердить'
 CANCEL_BUTTON: Final = 'Отмена'
-SQL_BLACK_LIST: Final = ["'","SELECT","--",'"',"DELETE",";" ]
 
 #? OnJoin
 ON_JOIN_MODAL_NAME: Final = 'Заполните форму:'
@@ -47,6 +46,7 @@ class BotCommands:
 BOT_PREFIX: Final = "!"
 
 # ! SQL
+SQL_BLACK_LIST: Final = ["'","SELECT","--",'"',"DELETE",";" ]
 EVENTS_TABLE_NAME: Final = "events"
 TYPES_TABLE_NAME: Final = "types"
 DS_SERVERS_TABLE_NAME: Final = "servers"
