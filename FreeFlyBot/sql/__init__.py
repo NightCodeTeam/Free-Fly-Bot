@@ -7,6 +7,8 @@ from .create_sql import create_bd
 from .adt_query import (
     db_create_event_id,
     db_create_type_id,
+    db_create_onjoin_id,
+    db_create_onjoin_action_id,
 )
 
 

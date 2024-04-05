@@ -13,7 +13,7 @@ from settings import (
 class OnJoin:
     onjoin_id: int
     server_id: int
-    message: int
+    message: str
     channel_listen_id: int
     channel_admin_id: int
 

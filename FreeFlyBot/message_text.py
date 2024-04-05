@@ -24,6 +24,12 @@ ON_JOIN_MSG: Final = 'При добавлении на сервер участн
 ON_JOIN_NOT_FOUND: Final = 'У вас нет событий при добавлении на сервер новых участников'
 ON_JOIN_CANT_CREATE: Final = 'Не удалось создать, проверьте ввод и попробуйте снова'
 
+ON_JOIN_ADD_MSG: Final = ''
+ON_JOIN_ADD_CANT_CREATE: Final = ''
+
+ON_JOIN_DEL_MSG: Final = 'Действие при присоединении удалено'
+ON_JOIN_DEL_CANT_CREATE: Final = 'Не удалось создать'
+
 ON_JOIN_ACTIONS_MSG: Final = 'Кнопка: {name} Цвет: {color}\n'
 ON_JOIN_ACTIONS_NOT_FOUND: Final = 'У вас нет предложенных вариантов'
 ON_JOIN_ACTION_CANT_CREATE: Final = 'Не удалось создать действие, повторите ввод и попробуйте снова'

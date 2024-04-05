@@ -3,6 +3,7 @@ import discord
 import asyncio
 from typing import Any
 from datetime import datetime
+from FreeFlyBot.sql.onjoin_query import db_delete_onjoin
 from core import create_log
 from .bot_views import OnJoinView
 from sql import (
@@ -12,6 +13,7 @@ from sql import (
     OnJoin,
     OnJoinAction,
 
+    db_create_onjoin_id,
     db_get_onjoin,
     db_get_onjoin_actions,
 
@@ -50,7 +52,13 @@ from message_text import (
 
     ON_JOIN_ACTIONS_MSG,
     ON_JOIN_ACTION_CANT_CREATE,
-    ON_JOIN_ACTIONS_NOT_FOUND
+    ON_JOIN_ACTIONS_NOT_FOUND,
+
+    ON_JOIN_ADD_MSG,
+    ON_JOIN_ADD_CANT_CREATE,
+
+    ON_JOIN_DEL_MSG,
+    ON_JOIN_DEL_CANT_CREATE,
 )
 
 
@@ -298,6 +306,7 @@ class BotBase(discord.Client):
                     )
                 )
 
+    # ! При присоединении
     async def on_join(self, msg: discord.message.Message):
         onjoin = await db_get_onjoin(msg.guild.id)
         if onjoin is not None:
@@ -309,6 +318,26 @@ class BotBase(discord.Client):
         else:
             await msg.reply(ON_JOIN_NOT_FOUND)
 
+    async def add_on_join(self, msg: discord.message.Message):
+        msg_list = msg.content.split('\n')
+        onjoin = OnJoin(
+            await db_create_onjoin_id(),
+            msg.guild.id,
+            msg_list[2],
+            self.try_get_channel(msg_list[0]).id,
+            self.try_get_channel(msg_list[1]).id
+        )
+        print(onjoin)
+
+    async def del_on_join(self, msg: discord.message.Message):
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            await db_delete_onjoin(onjoin.onjoin_id)
+            await msg.reply(ON_JOIN_DEL_MSG)
+        else:
+            await msg.reply(ON_JOIN_DEL_CANT_CREATE)
+
+    # ! Активности при присоединении
     async def on_join_actions(self, msg: discord.message.Message):
         onjoin = await db_get_onjoin(msg.guild.id)
         if onjoin is not None:
@@ -323,3 +352,9 @@ class BotBase(discord.Client):
                 await msg.reply(answer)
             else:
                 await msg.reply(ON_JOIN_ACTIONS_NOT_FOUND)
+
+    async def add_on_join_action(self, msg: discord.message.Message, *args):
+        pass
+
+    async def del_on_join_action(self, msg: discord.message.Message, *args):
+        pass

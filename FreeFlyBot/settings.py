@@ -42,7 +42,11 @@ class BotCommands:
     BOT_ADD_TYPE_PREFIX = "addtype"
     BOT_DELETE_TYPE_PREFIX = "deltype"
     ON_JOIN = "onjoin"
+    ADD_ON_JOIN = 'addjoin'
+    DEL_ON_JOIN = 'deljoin'
     ON_JOIN_ACTIONS = "actions"
+    ADD_ON_JOIN_ACTIONS = 'addaction'
+    DEL_ON_JOIN_ACTIONS = 'delaction'
 
 
 BOT_PREFIX: Final = "!"
