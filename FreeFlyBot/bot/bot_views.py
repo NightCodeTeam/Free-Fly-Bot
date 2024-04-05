@@ -135,6 +135,7 @@ class OnJoinView(discord.ui.View):
             if i.pressed:
                 self.action_name = i.label
         await interaction.response.send_modal(self.modal)
+        self.clear_items()
         self.stop()
 
     async def conferm(self, interaction: discord.Interaction):
