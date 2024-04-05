@@ -104,6 +104,9 @@ class Bot(BotBase):
         # ! Костыль
         # Разбираем сообщение на строки
         types = await self.get_server_types(message.guild.id)
+        for i in types:
+            if i.role_id not in list(map(lambda x: x.id, message.author.roles)):
+                types.remove(i)
         view = AddEventView(types, message.author)
 
         await message.reply('Создайте событие:', view=view)
@@ -147,7 +150,7 @@ class Bot(BotBase):
         server_events = list(
             map(
                 lambda x: x.event_id,
-                self.__events_access_check(message.author, await db_get_events_by_type(*types_id))
+                await self.__events_access_check(message.author, await db_get_events_by_type(*types_id))
             )
         )
 
