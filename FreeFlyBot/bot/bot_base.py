@@ -40,7 +40,8 @@ from message_text import (
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
 
-    ON_JOIN_ACTION_MSG
+    ON_JOIN_ACTION_MSG,
+    EVENT_TIMER_MSG,
 )
 
 
@@ -193,7 +194,8 @@ class BotBase(discord.Client):
             #print(nearest_event)
             if nearest_event is not None:
                 #seconds = datetime.now() - nearest_event.event_time
-                if (datetime.now() - nearest_event.event_time).total_seconds() >= -6:
+                if (datetime.now() - nearest_event.event_time).total_seconds() >= -10:
+                    create_log(f'Event run {nearest_event.event_id}', 'info')
                     #channel = db_get_type_by_id(nearest_event.type_id).ch
                     #print(nearest_event.type_id)
                     typee = await db_get_type_by_id(nearest_event.type_id)
@@ -201,12 +203,15 @@ class BotBase(discord.Client):
                     if typee is not None:
                         await self.send_msg(
                             typee.channel_id,
-                            'test'
+                            EVENT_TIMER_MSG.format(
+                                name=nearest_event.event_name,
+                                comment=nearest_event.comment
+                            )
                         )
                         await db_delete_event(nearest_event.event_id)
                 else:
-                    print(f'sleep: {(datetime.now() - nearest_event.event_time).total_seconds()}')
-                    await asyncio.sleep(5)
+                    #print(f'sleep: {(datetime.now() - nearest_event.event_time).total_seconds()}')
+                    await asyncio.sleep(10)
 
     async def send_msg(self, channel_id: int, msg):
         # guild = self.get_guild(856825461685878797)
