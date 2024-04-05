@@ -5,6 +5,8 @@ from settings import (
     CREATE_TABLE_EVENTS,
     CREATE_TABLE_SERVERS,
     CREATE_TABLE_TYPES,
+    CREATE_TABLE_ON_JOIN,
+    CREATE_TABLE_ON_JOIN_ACTIONS,
 )
 
 
@@ -17,6 +19,10 @@ def create_bd():
             cursor.execute(CREATE_TABLE_SERVERS)
             db.commit()
             cursor.execute(CREATE_TABLE_TYPES)
+            db.commit()
+            cursor.execute(CREATE_TABLE_ON_JOIN)
+            db.commit()
+            cursor.execute(CREATE_TABLE_ON_JOIN_ACTIONS)
             db.commit()
             cursor.close()
     except sqlite3.Error as error:
