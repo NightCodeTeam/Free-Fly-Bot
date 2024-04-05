@@ -9,12 +9,20 @@ from settings import (
 
     EVENTS_TABLE_NAME,
     TYPES_TABLE_NAME,
+    ON_JOIN_TABLE_NAME,
+    ON_JOIN_ACTIONS_TABLE_NAME,
 
     EVENTS_MIN_INDEX,
     EVENTS_MAX_INDEX,
 
     TYPES_MIN_INDEX,
     TYPES_MAX_INDEX,
+
+    ON_JOIN_MIN_INDEX,
+    ON_JOIN_MAX_INDEX,
+
+    ON_JOIN_ACTIONS_MIN_INDEX,
+    ON_JOIN_ACTIONS_MAX_INDEX,
 )
 
 
@@ -61,4 +69,20 @@ async def db_create_type_id() -> int:
         TYPES_TABLE_NAME,
         TYPES_MIN_INDEX,
         TYPES_MAX_INDEX
+    )
+
+
+async def db_create_onjoin_id() -> int:
+    return await generate_id(
+        ON_JOIN_TABLE_NAME,
+        ON_JOIN_MIN_INDEX,
+        ON_JOIN_MAX_INDEX
+    )
+
+
+async def db_create_onjoin_action_id() -> int:
+    return await generate_id(
+        ON_JOIN_ACTIONS_TABLE_NAME,
+        ON_JOIN_ACTIONS_MIN_INDEX,
+        ON_JOIN_ACTIONS_MAX_INDEX
     )

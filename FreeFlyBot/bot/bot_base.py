@@ -3,10 +3,16 @@ import asyncio
 from typing import Any
 from datetime import datetime
 from core import create_log
+from .bot_views import OnJoinView
 from sql import (
     Event,
     EventType,
     DiscordServer,
+    OnJoin,
+    OnJoinAction,
+
+    db_get_onjoin,
+    db_get_onjoin_actions,
 
     db_get_nearest_event,
     db_get_type_by_id,
@@ -32,6 +38,8 @@ from message_text import (
     HELP_EVENTS,
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
+
+    ON_JOIN_ACTION_MSG
 )
 
 
@@ -130,6 +138,7 @@ class BotBase(discord.Client):
                 await db_add_server(DiscordServer(ids, names))
 
         create_log(f'Logged on as {self.user}', 'info')
+        await self.timer()
 
     async def on_message(self, message: discord.message.Message):
         # Проверяем что все происходит на сервере а не в личке.
@@ -182,14 +191,15 @@ class BotBase(discord.Client):
             nearest_event = await db_get_nearest_event()
             if nearest_event is not None:
                 #seconds = datetime.now() - nearest_event.event_time
-                if (datetime.now() - nearest_event.event_time).total_seconds() <= 1:
+                if (datetime.now() - nearest_event.event_time).total_seconds() <= 5:
                     #channel = db_get_type_by_id(nearest_event.type_id).ch
                     await self.send_msg(
                         await db_get_type_by_id(nearest_event.type_id).channel_id,
                         'test'
                     )
                 else:
-                    await asyncio.sleep(1)
+                    print('sleep')
+                    await asyncio.sleep(5)
 
     async def send_msg(self, channel_id: int, msg):
         # guild = self.get_guild(856825461685878797)
@@ -244,5 +254,20 @@ class BotBase(discord.Client):
     async def test(self, message: discord.message.Message):
         pass
 
-    async def on_member_join(self, *arg):
-        print(f'ON MEMBER JOIN\n{arg}')
+    async def on_member_join(self, member: discord.member.Member):
+        onjoin = await db_get_onjoin(member.guild.id)
+        if onjoin is not None:
+            actions = await db_get_onjoin_actions(onjoin.onjoin_id)
+            channel_listen = self.get_channel(onjoin.channel_listen_id)
+            view = OnJoinView(actions, member)
+            await channel_listen.send(f'{member.mention} {onjoin.message}', view=view)
+            if not await view.modal.wait():
+                channel_admin = self.get_channel(onjoin.channel_admin_id)
+                await channel_admin.send(
+                    ON_JOIN_ACTION_MSG.format(
+                        nick=member.mention,
+                        name=view.user_name,
+                        role=view.action_name,
+                        msg=view.user_comment
+                    )
+                )

@@ -17,6 +17,9 @@ HELP_MSG: Final = f'''Привет! Это бот для создания и о�
 - {BOT_PREFIX}{BotCommands.BOT_DELETE_EVENT_PREFIX} - удалить событие
 '''
 
+# ! Сообщения
+ON_JOIN_ACTION_MSG: Final = 'Ник: {nick}\nХочет получить роль **{role}**\nОбращаться: {name}\nДоп сообщение: {msg}'
+
 HELP_TYPES: Final = f'''Команда {BotCommands.BOT_TYPES_PREFIX}\n'''
 
 HELP_ADD_TYPE: Final = f'''Команда {BotCommands.BOT_ADD_TYPE_PREFIX} добавляет новые типы событий на сервере.\

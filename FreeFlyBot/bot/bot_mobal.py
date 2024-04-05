@@ -1,12 +1,12 @@
 import discord
 from typing import Any
-from discord.utils import MISSING
 
 from core import create_log
 from sql import EventType, Event
 
 from settings import (
     DISCORD_MSH_TIMEOUT,
+    ADD_EVENT_MODAL_NAME,
     ADD_EVENT_VIEW_NAME,
     ADD_EVENT_VIEW_NAME_PLACEHOLDER,
     EVENT_TYPE_SELECTOR_PLACEHOLDER,
@@ -25,13 +25,18 @@ from settings import (
     EVENT_DATE_MAX_CHAR,
     EVENT_TIME_MAX_CHAR,
     EVENT_COMMENT_MAX_CHAR,
+
+    ON_JOIN_MODAL_NAME,
+    ON_JOIN_NAME,
+    ON_JOIN_COMMENT,
+    ON_JOIN_ALL_GOOD,
 )
 
 
 class AddEventMobal(discord.ui.Modal):
     def __init__(self) -> None:
         super().__init__(
-            title='Создание события!',
+            title=ADD_EVENT_MODAL_NAME,
             timeout=DISCORD_MSH_TIMEOUT,
             custom_id='addeventmobal'
         )
@@ -108,4 +113,43 @@ class AddEventMobal(discord.ui.Modal):
     
     async def on_timeout(self) -> None:
         create_log('Modal interaction timeout', 'info')
+        return await super().on_timeout()
+
+
+class OnJoinMobal(discord.ui.Modal):
+    def __init__(self) -> None:
+        super().__init__(
+            title=ON_JOIN_MODAL_NAME,
+            timeout=DISCORD_MSH_TIMEOUT,
+            custom_id='onjoinmobal'
+        )
+
+        self.name = discord.ui.TextInput(
+            label=ON_JOIN_NAME,
+            #placeholder=ADD_EVENT_VIEW_NAME_PLACEHOLDER,
+            #max_length=EVENT_NAME_MAX_CHAR,
+            #row=1
+            required=True
+        )
+
+        self.comment = discord.ui.TextInput(
+            label=ON_JOIN_COMMENT,
+            #placeholder=ADD_EVENT_VIEW_NAME_PLACEHOLDER,
+            #max_length=EVENT_NAME_MAX_CHAR,
+            #row=1,
+            required=False
+        )
+
+        self.add_item(self.name)
+        self.add_item(self.comment)
+
+    async def callback(self, interaction: discord.MessageInteraction) -> Any:
+        return interaction
+
+    async def on_error(self, interaction: discord.Interaction, error: Exception) -> None:
+        create_log(error, 'error')
+        return await super().on_error(interaction, error)
+    
+    async def on_timeout(self) -> None:
+        create_log('Modal JOIN interaction timeout', 'info')
         return await super().on_timeout()

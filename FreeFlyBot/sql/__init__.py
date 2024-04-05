@@ -42,3 +42,17 @@ from .type_query import (
     db_types_list_by_server_id, ###
     db_get_type_by_name_and_server_id ### принмает server_id (int) & type_name (str)
 )
+
+
+from .onjoin_query import (
+    OnJoin,
+    OnJoinAction,
+
+    db_add_onjoin,
+    db_delete_onjoin,
+    db_get_onjoin,
+
+    db_add_onjoin_action,
+    db_delete_onjoin_action,
+    db_get_onjoin_actions
+)
