@@ -54,11 +54,12 @@ class Bot(BotBase):
         super().__init__()
 
     # ! СОБЫТИЯ
-    def __events_access_check(self, member, events: list[Event]) -> list[Event]:
+    async def __events_access_check(self, member, events: list[Event]) -> list[Event]:
         ret_events: list[Event] = []
-        role_list  = list(map(lambda x: x.id, member.roles))
+        role_list  = list(map(lambda x: x.id, member.roles))# сптсок роль айда у пользователя
         for i in events:
-            if i.type_id in role_list:
+            event_type = await db_get_type_by_id(i.type_id)
+            if event_type.role_id in role_list:
                 ret_events.append(i)
         return ret_events
 
