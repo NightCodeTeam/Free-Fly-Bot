@@ -261,11 +261,4 @@ class Bot(BotBase):
         return await message.reply(msg)
     
     async def test(self, message: discord.message.Message, *args):
-        types = await self.get_server_types(message.guild.id)
-        view = AddEventView(types, message.author)
-
-        await message.reply('Создайте событие:', view=view)
-        
-        if not await view.modal_ui.wait():
-            print(f"Индекс события: {view.type_index}\nНазвание: {view.event_name}\nДата и время: {view.event_date} {view.event_time}\nКомментарий: {view.event_comment}")
-        # TODO: Перенести это в add_event забрать из view.event событие и поместить в бд
+        pass
