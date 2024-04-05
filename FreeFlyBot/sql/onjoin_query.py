@@ -77,3 +77,52 @@ async def db_get_onjoin(server_id: int) -> OnJoin | None:
         create_log(err, 'error')
 
 
+async def db_add_onjoin_action(data: OnJoinAction) -> bool:
+    try:
+        async with aiosqlite.connect(SQL_BD_NAME) as db:
+            await db.execute(
+                f"""
+                INSERT INTO {ON_JOIN_ACTIONS_TABLE_NAME} (action_id, onjoin_id, button_name, button_color) 
+                VALUES ({data.action_id}, {data.onjoin_id},
+                '{data.button_name}', '{data.button_color}');   
+                """   
+            )
+            await db.commit()
+            return True
+    except aiosqlite.Error as err:
+        create_log(err, 'error')
+        return False
+
+
+async def db_delete_onjoin_action(onjoin_action_id: int) -> bool:
+    try:
+        async with aiosqlite.connect(SQL_BD_NAME) as db:
+            await db.execute(
+                f"""DELETE FROM {ON_JOIN_ACTIONS_TABLE_NAME} WHERE action_id = {onjoin_action_id};"""   
+            )
+            await db.commit()
+            return True
+    except aiosqlite.Error as err:
+        create_log(err, 'error')
+        return False
+
+
+async def db_get_onjoin_actions(on_join_id: int) -> list[OnJoinAction]:
+    try:
+        async with aiosqlite.connect(SQL_BD_NAME) as db:
+            async with db.execute(
+                f"SELECT * FROM {ON_JOIN_ACTIONS_TABLE_NAME} WHERE onjoin_id = {on_join_id}"
+            ) as cursor:
+                ret_on_join: list[OnJoinAction] = []
+                async for row in cursor:
+                    ret_on_join.append(OnJoinAction(
+                        action_id=row[0],
+                        onjoin_id=row[1],
+                        button_name=row[2],
+                        button_color=row[3]
+                    ))
+                return ret_on_join
+    except aiosqlite.Error as err:
+        create_log(err, 'error')
+        return []
+
