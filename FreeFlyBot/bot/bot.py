@@ -80,7 +80,7 @@ class Bot(BotBase):
 
         ###message.author.get_role
         server_events = await db_get_events_by_type(*server_types_id)
-        access_server_events = self.__events_access_check(message.author, server_events)
+        access_server_events = await self.__events_access_check(message.author, server_events)
         #for i in server_events:
         #    if i.type_id not in role_list:
         #        server_events.remove(i)
