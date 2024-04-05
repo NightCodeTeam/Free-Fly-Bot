@@ -22,9 +22,11 @@ EVENT_TIMER_MSG: Final = '{role}\n**{name}**\nВремя: **СЕЙЧАС**\n{com
 
 ON_JOIN_MSG: Final = 'При добавлении на сервер участника:\n{message}\nОтправить в канал: {channel_listen}\nОтвет в канал: {channel_admin}'
 ON_JOIN_NOT_FOUND: Final = 'У вас нет событий при добавлении на сервер новых участников'
+ON_JOIN_CANT_CREATE: Final = 'Не удалось создать, проверьте ввод и попробуйте снова'
 
-ON_JOIN_ACTIONS_MSG: Final = 'Кнопка: {name}\nЦвет: {color}'
+ON_JOIN_ACTIONS_MSG: Final = 'Кнопка: {name} Цвет: {color}\n'
 ON_JOIN_ACTIONS_NOT_FOUND: Final = 'У вас нет предложенных вариантов'
+ON_JOIN_ACTION_CANT_CREATE: Final = 'Не удалось создать действие, повторите ввод и попробуйте снова'
 
 ON_JOIN_ACTION_MSG: Final = 'Ник: {nick}\nХочет получить роль **{role}**\nОбращаться: {name}\nДоп сообщение: {msg}'
 
