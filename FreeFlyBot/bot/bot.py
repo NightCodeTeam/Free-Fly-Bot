@@ -99,9 +99,9 @@ class Bot(BotBase):
     # ! Добавление события
     async def add_event(self, message: discord.message.Message):
         create_log(f"add_event called", 'debug')
-                     # ? Проверяем допуск автора
-                     # ! Костыль
-                     # Разбираем сообщение на строки
+        # ? Проверяем допуск автора
+        # ! Костыль
+        # Разбираем сообщение на строки
         types = await self.get_server_types(message.guild.id)
         view = AddEventView(types, message.author)
 
@@ -114,7 +114,7 @@ class Bot(BotBase):
             
             # Отправляем в базу
             if view.event is not None:
-                print('event good')
+                #print('event good')
                 if await db_add_event(view.event):
                     return await message.reply(ADD_EVENT_MSG.format(
                         name=view.event.event_name,

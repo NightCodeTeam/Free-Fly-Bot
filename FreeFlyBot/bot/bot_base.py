@@ -196,14 +196,15 @@ class BotBase(discord.Client):
                 #seconds = datetime.now() - nearest_event.event_time
                 if (datetime.now() - nearest_event.event_time).total_seconds() >= -10:
                     create_log(f'Event run {nearest_event.event_id}', 'info')
-                    #channel = db_get_type_by_id(nearest_event.type_id).ch
                     #print(nearest_event.type_id)
                     typee = await db_get_type_by_id(nearest_event.type_id)
+                    channel = self.get_channel(typee.channel_id)
                     #print(typee)
                     if typee is not None:
                         await self.send_msg(
                             typee.channel_id,
                             EVENT_TIMER_MSG.format(
+                                role=discord.utils.get(channel.guild.roles, id=typee.role_id).mention,
                                 name=nearest_event.event_name,
                                 comment=nearest_event.comment
                             )
