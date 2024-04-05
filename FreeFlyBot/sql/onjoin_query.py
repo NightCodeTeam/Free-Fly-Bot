@@ -125,4 +125,3 @@ async def db_get_onjoin_actions(on_join_id: int) -> list[OnJoinAction]:
     except aiosqlite.Error as err:
         create_log(err, 'error')
         return []
-
