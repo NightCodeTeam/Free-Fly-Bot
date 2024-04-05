@@ -23,6 +23,7 @@ ADD_EVENT_COMMENT_NAME: Final = 'Комментарий:'
 ADD_EVENT_COMMENT_PLACEHOLDER: Final = ''
 CONFIRM_BUTTON: Final = 'Подтвердить'
 CANCEL_BUTTON: Final = 'Отмена'
+SQL_BLACK_LIST: Final = ["'","SELECT","--",'"',"DELETE",";" ]
 
 # ! Команды бота
 class BotCommands:
