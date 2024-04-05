@@ -160,6 +160,8 @@ class Bot(BotBase):
                 if int(i) in server_events:
                     await db_delete_event(int(i))
                     msg += DELETE_EVENT_MSG.format(event_id=i)
+                else:
+                    msg += DELETE_EVENT_CANT_FIND
         else:
             msg += DELETE_EVENT_CANT_FIND
         return await message.reply(msg)
