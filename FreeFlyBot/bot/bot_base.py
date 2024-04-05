@@ -284,3 +284,9 @@ class BotBase(discord.Client):
                         msg=view.user_comment
                     )
                 )
+
+
+    async def on_join(self, msg: discord.message.Message):
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            pass
