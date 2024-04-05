@@ -32,6 +32,7 @@ class AddEventView(discord.ui.View):
         self.author = author
         self.modal_ui = AddEventMobal()
         self.modal_ui.on_submit = self.event_conferm
+        self.types = types
         self.type_index = 0
 
         self.event: Event | None = None
@@ -46,7 +47,7 @@ class AddEventView(discord.ui.View):
         return interaction.user == self.author
 
     async def prefer_event_type(self, interaction):
-        self.type_index = int(self.event_type_sel.values[0])
+        self.type_index = self.types[int(self.event_type_sel.values[0])].type_id
         await interaction.response.send_modal(self.modal_ui)
         self.stop()
     

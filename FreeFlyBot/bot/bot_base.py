@@ -15,6 +15,7 @@ from sql import (
     db_get_onjoin_actions,
 
     db_get_nearest_event,
+    db_delete_event,
     db_get_type_by_id,
 
     db_check_server_for_exist,
@@ -189,10 +190,10 @@ class BotBase(discord.Client):
     async def timer(self):
         while True:
             nearest_event = await db_get_nearest_event()
-            print(nearest_event)
+            #print(nearest_event)
             if nearest_event is not None:
                 #seconds = datetime.now() - nearest_event.event_time
-                if (datetime.now() - nearest_event.event_time).total_seconds() <= 5:
+                if (datetime.now() - nearest_event.event_time).total_seconds() >= -6:
                     #channel = db_get_type_by_id(nearest_event.type_id).ch
                     #print(nearest_event.type_id)
                     typee = await db_get_type_by_id(nearest_event.type_id)
@@ -202,14 +203,15 @@ class BotBase(discord.Client):
                             typee.channel_id,
                             'test'
                         )
+                        await db_delete_event(nearest_event.event_id)
                 else:
-                    print(f'sleep: {datetime.now() - nearest_event.event_time}')
+                    print(f'sleep: {(datetime.now() - nearest_event.event_time).total_seconds()}')
                     await asyncio.sleep(5)
 
     async def send_msg(self, channel_id: int, msg):
         # guild = self.get_guild(856825461685878797)
         channel = self.get_channel(channel_id)
-        if type(channel) is discord.guild.GuildChannel:
+        if channel is not None:
             await channel.send(
                 msg
             )
