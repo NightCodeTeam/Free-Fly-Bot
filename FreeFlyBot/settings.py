@@ -9,7 +9,9 @@ POSSIBLE_HOUR_FORMATS: Final = ('h', 'ч')
 POSSIBLE_MINUT_FORMATS: Final = ('m', 'м')
 
 # ! Дискорд модальные окна
+# ? AddEvent
 DISCORD_MSH_TIMEOUT: Final = 180
+ADD_EVENT_MODAL_NAME: Final = 'Создание события!'
 ADD_EVENT_VIEW_NAME: Final = 'Название:'
 ADD_EVENT_VIEW_NAME_PLACEHOLDER: Final = 'Название события'
 EVENT_TYPE_SELECTOR_PLACEHOLDER: Final = 'Выберите тип события:'
@@ -23,6 +25,12 @@ ADD_EVENT_COMMENT_NAME: Final = 'Комментарий:'
 ADD_EVENT_COMMENT_PLACEHOLDER: Final = ''
 CONFIRM_BUTTON: Final = 'Подтвердить'
 CANCEL_BUTTON: Final = 'Отмена'
+
+#? OnJoin
+ON_JOIN_MODAL_NAME: Final = 'Заполните форму:'
+ON_JOIN_NAME: Final = 'Как к вам обращаться? (можно ник в игре)'
+ON_JOIN_COMMENT: Final = 'Расскажите о себе:'
+ON_JOIN_ALL_GOOD: Final = 'Заполненая форма отправлена администрации! Ожидайте получения роли'
 
 # ! Команды бота
 class BotCommands:

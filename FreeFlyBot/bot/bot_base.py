@@ -3,6 +3,7 @@ import asyncio
 from typing import Any
 from datetime import datetime
 from core import create_log
+from .bot_views import OnJoinView
 from sql import (
     Event,
     EventType,
@@ -37,6 +38,8 @@ from message_text import (
     HELP_EVENTS,
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
+
+    ON_JOIN_ACTION_MSG
 )
 
 
@@ -249,5 +252,20 @@ class BotBase(discord.Client):
     async def test(self, message: discord.message.Message):
         pass
 
-    async def on_member_join(self, *arg):
-        print(f'ON MEMBER JOIN\n{arg}')
+    async def on_member_join(self, member: discord.member.Member):
+        onjoin = await db_get_onjoin(member.guild.id)
+        if onjoin is not None:
+            actions = await db_get_onjoin_actions(onjoin.onjoin_id)
+            channel_listen = self.get_channel(onjoin.channel_listen_id)
+            view = OnJoinView(actions, member)
+            await channel_listen.send(f'@{member.name} {onjoin.message}', view=view)
+            if not await view.modal.wait():
+                channel_admin = self.get_channel(onjoin.channel_admin_id)
+                await channel_admin.send(
+                    ON_JOIN_ACTION_MSG.format(
+                        nick=member.nick,
+                        name=view.user_name,
+                        role=view.action_name,
+                        msg=view.user_comment
+                    )
+                )

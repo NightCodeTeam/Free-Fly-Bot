@@ -1,8 +1,8 @@
 import discord
 
 from .bot_selectors import EventTypeSelector
-from .bot_mobal import AddEventMobal
-from sql import EventType, Event, db_create_event_id
+from .bot_mobal import AddEventMobal, OnJoinMobal
+from sql import EventType, Event, OnJoinAction, db_create_event_id
 from core import make_datetime
 
 from settings import (
@@ -21,6 +21,8 @@ from settings import (
     ADD_EVENT_COMMENT_PLACEHOLDER,
     CONFIRM_BUTTON,
     CANCEL_BUTTON,
+
+    ON_JOIN_ALL_GOOD,
 )
 
 
@@ -74,4 +76,72 @@ class AddEventView(discord.ui.View):
             self.event # TODO: Написать красивый ответ на создание события
             #f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
         )
-        
+
+
+class OnJoinButton(discord.ui.Button):
+    def __init__(self, button_name: str, button_color: str):
+        super().__init__(
+            label=button_name,
+            style=self.get_style(button_color)
+        )
+        self.pressed = False
+
+    async def callback(self, interaction):
+        self.pressed = True
+        await self.call(interaction)
+        return interaction
+    
+    async def call(self, interaction):
+        pass
+
+    @staticmethod
+    def get_style(color: str):
+        match color:
+            case 'blue':
+                return discord.ButtonStyle.blurple
+            case 'green':
+                return discord.ButtonStyle.green
+            case 'red':
+                return discord.ButtonStyle.red
+            case _:
+                return discord.ButtonStyle.danger
+
+
+class OnJoinView(discord.ui.View):
+    def __init__(self, actions: list[OnJoinAction], member: discord.member.Member):
+        super().__init__(timeout=DISCORD_MSH_TIMEOUT)
+        self.author = member
+        self.modal = OnJoinMobal()
+        self.modal.on_submit = self.conferm
+        self.buttons = []
+        self.user_name = ''
+        self.user_comment = ''
+        self.action_name = ''
+
+        for i in actions:
+            button = OnJoinButton(
+                i.button_name,
+                i.button_color
+            )
+            button.call = self.on_click
+            self.buttons.append(button)
+            self.add_item(button)
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return interaction.user == self.author
+
+    async def on_click(self, interaction: discord.Interaction):
+        for i in self.buttons:
+            if i.pressed:
+                self.action_name = i.label
+        await interaction.response.send_modal(self.modal)
+        self.stop()
+
+    async def conferm(self, interaction: discord.Interaction):
+        self.modal.stop()
+        self.modal.clear_items()
+
+        self.user_name = self.modal.name.value
+        self.user_comment = self.modal.comment.value
+
+        await interaction.response.send_message(ON_JOIN_ALL_GOOD)
