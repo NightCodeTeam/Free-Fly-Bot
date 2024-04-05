@@ -10,6 +10,7 @@ from settings import (  # аыы не забудь воткнуть назван
 
 async def db_add_event(data: Event) -> bool:
     try:
+        print(data)
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
                 f"""
@@ -113,7 +114,7 @@ async def db_get_event_by_id(event_id: int) -> Event | None:
 async def db_get_nearest_event() -> Event | None:
     try:
         async with aiosqlite.connect(SQL_BD_NAME)as db:
-            event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} ORDER BY event_time"""
+            event_query = f"""SELECT * FROM {EVENTS_TABLE_NAME} ORDER BY event_time LIMIT 1"""
             ret_event: Event | None = None
             async with db.execute(event_query) as cursor:
                 async for row in cursor:

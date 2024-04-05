@@ -15,6 +15,7 @@ from sql import (
     db_get_onjoin_actions,
 
     db_get_nearest_event,
+    db_delete_event,
     db_get_type_by_id,
 
     db_check_server_for_exist,
@@ -39,7 +40,8 @@ from message_text import (
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
 
-    ON_JOIN_ACTION_MSG
+    ON_JOIN_ACTION_MSG,
+    EVENT_TIMER_MSG,
 )
 
 
@@ -189,22 +191,32 @@ class BotBase(discord.Client):
     async def timer(self):
         while True:
             nearest_event = await db_get_nearest_event()
+            #print(nearest_event)
             if nearest_event is not None:
                 #seconds = datetime.now() - nearest_event.event_time
-                if (datetime.now() - nearest_event.event_time).total_seconds() <= 5:
+                if (datetime.now() - nearest_event.event_time).total_seconds() >= -10:
+                    create_log(f'Event run {nearest_event.event_id}', 'info')
                     #channel = db_get_type_by_id(nearest_event.type_id).ch
-                    await self.send_msg(
-                        await db_get_type_by_id(nearest_event.type_id).channel_id,
-                        'test'
-                    )
+                    #print(nearest_event.type_id)
+                    typee = await db_get_type_by_id(nearest_event.type_id)
+                    #print(typee)
+                    if typee is not None:
+                        await self.send_msg(
+                            typee.channel_id,
+                            EVENT_TIMER_MSG.format(
+                                name=nearest_event.event_name,
+                                comment=nearest_event.comment
+                            )
+                        )
+                        await db_delete_event(nearest_event.event_id)
                 else:
-                    print('sleep')
-                    await asyncio.sleep(5)
+                    #print(f'sleep: {(datetime.now() - nearest_event.event_time).total_seconds()}')
+                    await asyncio.sleep(10)
 
     async def send_msg(self, channel_id: int, msg):
         # guild = self.get_guild(856825461685878797)
         channel = self.get_channel(channel_id)
-        if type(channel) is discord.guild.GuildChannel:
+        if channel is not None:
             await channel.send(
                 msg
             )

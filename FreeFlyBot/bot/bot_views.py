@@ -1,5 +1,5 @@
 import discord
-
+from datetime import datetime
 from .bot_selectors import EventTypeSelector
 from .bot_mobal import AddEventMobal, OnJoinMobal
 from sql import EventType, Event, OnJoinAction, db_create_event_id
@@ -32,16 +32,13 @@ class AddEventView(discord.ui.View):
         self.author = author
         self.modal_ui = AddEventMobal()
         self.modal_ui.on_submit = self.event_conferm
+        self.types = types
         self.type_index = 0
 
-        self.event_name = ''
-        self.event_date = ''
-        self.event_time = ''
-        self.event_comment = ''
+        self.event: Event | None = None
 
         # Тип
         self.event_type_sel = EventTypeSelector(types)
-        
 
         self.add_item(self.event_type_sel)
         self.event_type_sel.callback = self.prefer_event_type
@@ -50,18 +47,15 @@ class AddEventView(discord.ui.View):
         return interaction.user == self.author
 
     async def prefer_event_type(self, interaction):
-        self.type_index = int(self.event_type_sel.values[0])
+        self.type_index = self.types[int(self.event_type_sel.values[0])].type_id
         await interaction.response.send_modal(self.modal_ui)
+        self.clear_items()
         self.stop()
     
-    async def event_conferm(self, interaction):
-        #self.event_name = self.modal_ui.name_inp.value
-        #self.event_date = self.modal_ui.date_inp.value
-        #self.event_time = self.modal_ui.time_inp.value
-        #self.event_comment = self.modal_ui.comment_inp.value
-
-        self.modal_ui.stop()
-        self.modal_ui.clear_items()
+    async def event_conferm(self, interaction: discord.Interaction):
+        date1, date2 = make_datetime(self.modal_ui.date_inp.value, self.modal_ui.time_inp.value)
+        if (datetime.now() - date1).total_seconds() > 0:
+            self.modal_ui.stop()
 
         self.event = Event(
             await db_create_event_id(),
@@ -69,13 +63,17 @@ class AddEventView(discord.ui.View):
             self.modal_ui.name_inp.value,
             self.type_index,
             self.modal_ui.comment_inp.value,
-            make_datetime(self.modal_ui.date_inp.value, self.modal_ui.time_inp.value)[0]
+            date1
         )
 
-        await interaction.response.send_message(
-            self.event # TODO: Написать красивый ответ на создание события
-            #f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
-        )
+        await interaction.response.defer()
+        #await interaction.response.send_message(
+        #    self.event # TODO: Написать красивый ответ на создание события
+        #    #f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
+        #)
+        
+        self.modal_ui.stop()
+        #self.modal_ui.clear_items()
 
 
 class OnJoinButton(discord.ui.Button):
@@ -139,10 +137,10 @@ class OnJoinView(discord.ui.View):
         self.stop()
 
     async def conferm(self, interaction: discord.Interaction):
-        self.modal.stop()
-        self.modal.clear_items()
-
         self.user_name = self.modal.name.value
         self.user_comment = self.modal.comment.value
 
         await interaction.response.send_message(ON_JOIN_ALL_GOOD)
+
+        self.modal.clear_items()
+        self.modal.stop()

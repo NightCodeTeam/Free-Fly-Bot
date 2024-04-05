@@ -2,8 +2,6 @@ from .data_classes import (
     EventType,
     Event,
     DiscordServer,
-    Pilot,
-    PilotRole
 )
 from .create_sql import create_bd
 from .adt_query import (

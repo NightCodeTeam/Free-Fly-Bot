@@ -1,6 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
+from .exceptions import SQLBadDataclassException
 from settings import SQL_BLACK_LIST
+
+
+def sql_val_good(val) -> bool:
+    for i in str(val).split(' '):
+        if i in SQL_BLACK_LIST:
+            return False
+    return True
+
 
 class Event:
     def __init__(
@@ -19,53 +28,77 @@ class Event:
             self.comment = comment
             self.event_time = event_time
 
+    def __str__(self) -> str:
+        return f'ID: {self.event_id}\nServer ID: {self.server_id}\nName: {self.event_name}\nTYPE ID: {self.type_id}\nCOMMENT: {self.comment}\nDate: {self.event_time}'
+
     @property
-    def event_id(self):
+    def event_id(self) -> int:
         return self.__event_id
+
     @event_id.setter
-    def event_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def event_id(self, val: int):
+        if sql_val_good(val):
             self.__event_id = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def server_id(self):
+    def server_id(self) -> int:
         return self.__server_id
+
     @server_id.setter
-    def server_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def server_id(self, val: int):
+        if sql_val_good(val):
             self.__server_id = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def event_name(self):
+    def event_name(self) -> str:
         return self.__event_name
+
     @event_name.setter
-    def event_name(self, val):
-        if val in SQL_BLACK_LIST:
+    def event_name(self, val: str):
+        if sql_val_good(val):
             self.__event_name = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def type_id(self):
+    def type_id(self) -> int:
         return self.__type_id
+
     @type_id.setter
-    def type_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def type_id(self, val: int):
+        if sql_val_good(val):
             self.__type_id = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def comment(self):
+    def comment(self) -> str:
         return self.__comment
+
     @comment.setter
-    def comment(self, val):
-        if val in SQL_BLACK_LIST:
+    def comment(self, val: str):
+        if sql_val_good(val):
             self.__comment = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def event_time(self):
+    def event_time(self) -> datetime:
         return self.__event_time
+
     @event_time.setter
-    def event_time(self, val):
-        if val in SQL_BLACK_LIST:
-            self.__event_time = val # вот объявил в базе UNIXTIME?! вот и приводи его к читаемому виду......
+    def event_time(self, val: datetime):
+        if sql_val_good(val):
+            if type(val) is datetime:
+                self.__event_time = val
+            if type(val) is str:
+                self.__event_time = datetime.strptime(val, '%Y-%m-%d %H:%M:%S')
+        else:
+            raise SQLBadDataclassException(val)
 
 
 class EventType:
@@ -82,47 +115,62 @@ class EventType:
             self.type_name = type_name
             self.channel_id = channel_id
             self.role_id = role_id
+
     @property
-    def type_id(self):
+    def type_id(self) -> int:
         return self.__type_id
+
     @type_id.setter
-    def type_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def type_id(self, val: int):
+        if sql_val_good(val):
             self.__type_id = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def server_id(self):
+    def server_id(self) -> int:
         return self.__server_id
+
     @server_id.setter
-    def server_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def server_id(self, val: int):
+        if sql_val_good(val):
             self.__server_id = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def channel_id(self):
+    def channel_id(self) -> int:
         return self.__channel_id
+
     @channel_id.setter
-    def channel_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def channel_id(self, val: int):
+        if sql_val_good(val):
             self.__channel_id = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def type_name(self):
+    def type_name(self) -> str:
         return self.__type_name
+
     @type_name.setter
-    def type_name(self, val):
-        if val in SQL_BLACK_LIST:
+    def type_name(self, val: str):
+        if sql_val_good(val):
             self.__type_name = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def role_id(self):
+    def role_id(self) -> int:
         return self.__role_id
-    @role_id.setter
-    def role_id(self, val):
-        if val in SQL_BLACK_LIST:
-            self.__role_id = val
 
-    
+    @role_id.setter
+    def role_id(self, val: int):
+        if sql_val_good(val):
+            self.__role_id = val
+        else:
+            raise SQLBadDataclassException(val)
+
 
 class DiscordServer:
     def __init__(
@@ -132,39 +180,25 @@ class DiscordServer:
         ) -> None:
             self.server_name = server_name
             self.server_id = server_id
+
     @property
-    def server_name(self):
+    def server_name(self) -> str:
         return self.__server_name
+
     @server_name.setter
-    def server_name(self, val):
-        if val in SQL_BLACK_LIST:
+    def server_name(self, val: str):
+        if sql_val_good(val):
             self.__server_name = val
+        else:
+            raise SQLBadDataclassException(val)
 
     @property
-    def server_id(self):
+    def server_id(self) -> int:
         return self.__server_id
+
     @server_id.setter
-    def server_id(self, val):
-        if val in SQL_BLACK_LIST:
+    def server_id(self, val: int):
+        if sql_val_good(val):
             self.__server_id = val
-#@dataclass    
-#class DiscordServer:
-#    server_id: int
-#    server_name: str
-    
-
-
-
-#@dataclass   
-#class Pilot:
-#    pilot_id: int
-#    name: str
-#    discord_nick: str
-#    
-#@dataclass    
-#class PilotRole:
-#    pilot_id: int
-#    type_id: int
-#    
-    
-
+        else:
+            raise SQLBadDataclassException(val)
