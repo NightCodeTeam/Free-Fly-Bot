@@ -39,6 +39,7 @@ class BotBase(discord.Client):
     def __init__(self) -> None:
         intents = discord.Intents.default()
         intents.message_content = True  
+        intents.members = True
         super().__init__(intents=intents)
 
     def check_author_is_member(self, member) -> bool:
@@ -134,6 +135,8 @@ class BotBase(discord.Client):
         # Проверяем что все происходит на сервере а не в личке.
         if message.guild is None:
             create_log(f'Guild is None: {message.author}', 'info')
+            return None
+        if len(message.content) == 0:
             return None
         
         if (
@@ -240,3 +243,9 @@ class BotBase(discord.Client):
 
     async def test(self, message: discord.message.Message):
         pass
+
+    async def on_member_join(self, *arg):
+        print(f'ON MEMBER JOIN\n{arg}')
+
+    async def on_guild_join(self, *arg):
+        print(f'ON GUILD JOIN\n{arg}')
