@@ -1,3 +1,4 @@
+from email import message
 import discord
 import asyncio
 from typing import Any
@@ -42,6 +43,14 @@ from message_text import (
 
     ON_JOIN_ACTION_MSG,
     EVENT_TIMER_MSG,
+
+    ON_JOIN_MSG,
+    ON_JOIN_CANT_CREATE,
+    ON_JOIN_NOT_FOUND,
+
+    ON_JOIN_ACTIONS_MSG,
+    ON_JOIN_ACTION_CANT_CREATE,
+    ON_JOIN_ACTIONS_NOT_FOUND
 )
 
 
@@ -183,6 +192,10 @@ class BotBase(discord.Client):
                     await self.add_type(message, *args[1:])
                 case BotCommands.BOT_DELETE_TYPE_PREFIX:
                     await self.delete_type(message, *args[1:])
+                case BotCommands.ON_JOIN:
+                    await self.on_join(message, *args[1:])
+                case BotCommands.ON_JOIN_ACTIONS:
+                    await self.on_join_actions(message, *args[1:])
                 case 'test':
                     await self.test(message)
                 case _:
@@ -285,8 +298,28 @@ class BotBase(discord.Client):
                     )
                 )
 
-
     async def on_join(self, msg: discord.message.Message):
         onjoin = await db_get_onjoin(msg.guild.id)
         if onjoin is not None:
-            pass
+            await msg.reply(ON_JOIN_MSG.format(
+                message=onjoin.message,
+                channel_listen=self.get_channel(onjoin.channel_listen_id).mention,
+                channel_admin=self.get_channel(onjoin.channel_admin_id).mention
+            ))
+        else:
+            await msg.reply(ON_JOIN_NOT_FOUND)
+
+    async def on_join_actions(self, msg: discord.message.Message):
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            actions = await db_get_onjoin_actions(onjoin.onjoin_id)
+            answer = ''
+            if len(actions) != 0:
+                for i in actions:
+                    answer += ON_JOIN_ACTIONS_MSG.format(
+                        name=i.button_name,
+                        color=i.button_color
+                    )
+                await msg.reply(answer)
+            else:
+                await msg.reply(ON_JOIN_ACTIONS_NOT_FOUND)
