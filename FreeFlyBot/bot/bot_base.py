@@ -7,6 +7,11 @@ from sql import (
     Event,
     EventType,
     DiscordServer,
+    OnJoin,
+    OnJoinAction,
+
+    db_get_onjoin,
+    db_get_onjoin_actions,
 
     db_get_nearest_event,
     db_get_type_by_id,
