@@ -54,12 +54,13 @@ class Bot(BotBase):
         super().__init__()
 
     # ! СОБЫТИЯ
-    def __events_access_check(self, member, func_name: str, event: Event) -> bool:
+    def __events_access_check(self, member, events: list[Event]) -> list[Event]:
+        ret_events: list[Event] = []
         role_list  = list(map(lambda x: x.id, member.roles))
-        if event.type_id in role_list:
-            return True
-        else:
-            return False
+        for i in events:
+            if i.type_id in role_list:
+                ret_events.append(i)
+        return ret_events
 
     async def events(self, message: discord.message.Message, *args):
         create_log(f"events called with args: {args}", 'debug')
@@ -78,11 +79,12 @@ class Bot(BotBase):
 
         ###message.author.get_role
         server_events = await db_get_events_by_type(*server_types_id)
-        for i in server_events:
-            if i.type_id not in role_list:
-                server_events.remove(i)
+        access_server_events = self.__events_access_check(message.author, server_events)
+        #for i in server_events:
+        #    if i.type_id not in role_list:
+        #        server_events.remove(i)
         msg = ''
-        for i in server_events:
+        for i in access_server_events:
             msg += EVENT_MSG.format(
                 event_id=i.event_id,
                 name=i.event_name,
@@ -121,10 +123,8 @@ class Bot(BotBase):
         # Проверки и создание типа
         if type_id is None or type(event_time) is not datetime.datetime:
             return await message.reply(EVENT_CANT_CREATE)
-
-        # Отправляем в базу
-        if await db_add_event(
-            Event(
+        #создаем ивент
+        untested_event =  Event(
                 await db_create_event_id(),
                 server_id,
                 event_name,
@@ -132,7 +132,11 @@ class Bot(BotBase):
                 comment,
                 event_time
             )
-        ):
+        # а вот тут мы его проверяем
+        if len(self.__events_access_check(message.author, [untested_event])) == 0:
+            return await message.reply(ADD_EVENT_CANT_CREATE) # на свой вкус алерт воткни))
+        # Отправляем в базу
+        if await db_add_event(untested_event):
             return await message.reply(ADD_EVENT_MSG.format(
                 name=event_name,
                 type=type_id.type_name,
@@ -162,7 +166,7 @@ class Bot(BotBase):
         server_events = list(
             map(
                 lambda x: x.event_id,
-                await db_get_events_by_type(*types_id)
+                self.__events_access_check(message.author, await db_get_events_by_type(*types_id))
             )
         )
 
@@ -170,9 +174,8 @@ class Bot(BotBase):
         if len(args) > 0:
             for i in args:
                 if int(i) in server_events:
-                    if self.__events_access_check(message.author, 'delete_event', await db_get_event_by_id(int(i))):
-                        await db_delete_event(int(i))
-                        msg += DELETE_EVENT_MSG.format(event_id=i)
+                    await db_delete_event(int(i))
+                    msg += DELETE_EVENT_MSG.format(event_id=i)
         else:
             msg += DELETE_EVENT_CANT_FIND
         return await message.reply(msg)
