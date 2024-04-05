@@ -105,7 +105,7 @@ class Bot(BotBase):
         # Разбираем сообщение на строки
         types = await self.get_server_types(message.guild.id)
         for i in types:
-            if i not in message.author.roles:
+            if i.role_id not in list(map(lambda x: x.id, message.author.roles)):
                 types.remove(i)
         view = AddEventView(types, message.author)
 
