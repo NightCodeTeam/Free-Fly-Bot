@@ -246,6 +246,3 @@ class BotBase(discord.Client):
 
     async def on_member_join(self, *arg):
         print(f'ON MEMBER JOIN\n{arg}')
-
-    async def on_guild_join(self, *arg):
-        print(f'ON GUILD JOIN\n{arg}')
