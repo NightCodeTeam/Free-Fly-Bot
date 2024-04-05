@@ -67,11 +67,7 @@ class AddEventView(discord.ui.View):
         )
 
         await interaction.response.defer()
-        #await interaction.response.send_message(
-        #    self.event # TODO: Написать красивый ответ на создание события
-        #    #f"Индекс события: {self.type_index}\nНазвание: {self.event_name}\nДата и время: {self.event_date} {self.event_time}\nКомментарий: {self.event_comment}"
-        #)
-        
+
         self.modal_ui.stop()
         #self.modal_ui.clear_items()
 
