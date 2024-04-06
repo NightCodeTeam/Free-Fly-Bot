@@ -41,14 +41,18 @@ def make_datetime(date_str: str, time_str: str) -> tuple[datetime, datetime]:
     raw_date = str_to_date(date_str)
     raw_time, time_before = str_to_time(time_str)
 
-    date = datetime.strptime(
-        f"{raw_date[0]} {raw_date[1]} {raw_date[2]} {raw_time[0]} {raw_time[1]}",
-        f'%Y %m %d %H %M'
-    )
-    date_adt = None
-    if time_before != 0:
-        date_adt = date - timedelta(time_before)
-    else:
-        date_adt = date
-    
-    return date, date_adt
+    try:
+        date = datetime.strptime(
+            f"{raw_date[0]} {raw_date[1]} {raw_date[2]} {raw_time[0]} {raw_time[1]}",
+            f'%Y %m %d %H %M'
+        )
+        date_adt = None
+        if time_before != 0:
+            date_adt = date - timedelta(time_before)
+        else:
+            date_adt = date
+
+        return date, date_adt
+    except Exception as err:
+        print(err)
+        return datetime(2024, 1, 1, 1, 1, 1), datetime(2024, 1, 1, 1, 1, 1) 
