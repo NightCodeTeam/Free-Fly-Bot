@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, Literal
 
 
 # ! Главное
@@ -31,6 +31,7 @@ ON_JOIN_MODAL_NAME: Final = 'Заполните форму:'
 ON_JOIN_NAME: Final = 'Как к вам обращаться? (можно ник в игре)'
 ON_JOIN_COMMENT: Final = 'Расскажите о себе:'
 ON_JOIN_ALL_GOOD: Final = 'Заполненая форма отправлена администрации! Ожидайте получения роли'
+ACTIONS_COLORS: Final = ('blue', 'green', 'red')
 
 # ! Команды бота
 class BotCommands:
