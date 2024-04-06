@@ -3,7 +3,6 @@ import discord
 import asyncio
 from typing import Any
 from datetime import datetime
-from FreeFlyBot.sql.onjoin_query import db_delete_onjoin
 from core import create_log
 from .bot_views import OnJoinView
 from sql import (
@@ -43,22 +42,8 @@ from message_text import (
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
 
-    ON_JOIN_ACTION_MSG,
     EVENT_TIMER_MSG,
-
-    ON_JOIN_MSG,
-    ON_JOIN_CANT_CREATE,
-    ON_JOIN_NOT_FOUND,
-
-    ON_JOIN_ACTIONS_MSG,
-    ON_JOIN_ACTION_CANT_CREATE,
-    ON_JOIN_ACTIONS_NOT_FOUND,
-
-    ON_JOIN_ADD_MSG,
-    ON_JOIN_ADD_CANT_CREATE,
-
-    ON_JOIN_DEL_MSG,
-    ON_JOIN_DEL_CANT_CREATE,
+    ON_JOIN_ACTION_MSG,
 )
 
 
@@ -204,6 +189,14 @@ class BotBase(discord.Client):
                     await self.on_join(message, *args[1:])
                 case BotCommands.ON_JOIN_ACTIONS:
                     await self.on_join_actions(message, *args[1:])
+                case BotCommands.ADD_ON_JOIN:
+                    await self.add_on_join(message)
+                case BotCommands.ADD_ON_JOIN_ACTIONS:
+                    await self.add_on_join_action(message, *args[1:])
+                case BotCommands.DEL_ON_JOIN:
+                    await self.del_on_join(message, *args[1:])
+                case BotCommands.DEL_ON_JOIN_ACTIONS:
+                    await self.del_on_join_action(message, *args[1:])
                 case 'test':
                     await self.test(message)
                 case _:
@@ -308,50 +301,17 @@ class BotBase(discord.Client):
 
     # ! При присоединении
     async def on_join(self, msg: discord.message.Message):
-        onjoin = await db_get_onjoin(msg.guild.id)
-        if onjoin is not None:
-            await msg.reply(ON_JOIN_MSG.format(
-                message=onjoin.message,
-                channel_listen=self.get_channel(onjoin.channel_listen_id).mention,
-                channel_admin=self.get_channel(onjoin.channel_admin_id).mention
-            ))
-        else:
-            await msg.reply(ON_JOIN_NOT_FOUND)
+        pass
 
     async def add_on_join(self, msg: discord.message.Message):
-        msg_list = msg.content.split('\n')
-        onjoin = OnJoin(
-            await db_create_onjoin_id(),
-            msg.guild.id,
-            msg_list[2],
-            self.try_get_channel(msg_list[0]).id,
-            self.try_get_channel(msg_list[1]).id
-        )
-        print(onjoin)
+        pass
 
     async def del_on_join(self, msg: discord.message.Message):
-        onjoin = await db_get_onjoin(msg.guild.id)
-        if onjoin is not None:
-            await db_delete_onjoin(onjoin.onjoin_id)
-            await msg.reply(ON_JOIN_DEL_MSG)
-        else:
-            await msg.reply(ON_JOIN_DEL_CANT_CREATE)
+        pass
 
     # ! Активности при присоединении
     async def on_join_actions(self, msg: discord.message.Message):
-        onjoin = await db_get_onjoin(msg.guild.id)
-        if onjoin is not None:
-            actions = await db_get_onjoin_actions(onjoin.onjoin_id)
-            answer = ''
-            if len(actions) != 0:
-                for i in actions:
-                    answer += ON_JOIN_ACTIONS_MSG.format(
-                        name=i.button_name,
-                        color=i.button_color
-                    )
-                await msg.reply(answer)
-            else:
-                await msg.reply(ON_JOIN_ACTIONS_NOT_FOUND)
+        pass
 
     async def add_on_join_action(self, msg: discord.message.Message, *args):
         pass
