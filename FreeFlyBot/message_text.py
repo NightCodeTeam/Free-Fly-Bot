@@ -4,7 +4,7 @@ from settings import (
     BotCommands,
 )
 
-
+TAX_PATING: Final = """Плоти Нологи!111"""
 HELP_MSG: Final = f'''Привет! Это бот для создания и отслеживания событий.\
  Для начала работы мне нужно настроить тип события:
 - {BOT_PREFIX}{BotCommands.BOT_TYPES_PREFIX} - все типы на сервере
