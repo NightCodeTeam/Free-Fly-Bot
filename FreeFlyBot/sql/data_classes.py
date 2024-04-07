@@ -176,10 +176,12 @@ class DiscordServer:
     def __init__(
             self,
             server_id: int,
-            server_name: str
+            server_name: str,
+            server_sub : bool = False
         ) -> None:
             self.server_name = server_name
             self.server_id = server_id
+            self.server_sub = server_sub
 
     @property
     def server_name(self) -> str:
@@ -200,5 +202,18 @@ class DiscordServer:
     def server_id(self, val: int):
         if sql_val_good(val):
             self.__server_id = val
+        else:
+            raise SQLBadDataclassException(val)
+        
+    @property
+    def server_sub(self) -> bool:
+        return self.__server_sub
+
+    @server_sub.setter
+    def server_sub(self, val: int):
+        if type(val) is bool:
+            self.__server_sub = val
+        elif type(val) is int:
+            self.__server_sub = True if val == 1 else False
         else:
             raise SQLBadDataclassException(val)
