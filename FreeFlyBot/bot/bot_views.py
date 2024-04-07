@@ -6,6 +6,7 @@ from sql import EventType, Event, OnJoinAction, db_create_event_id
 from core import make_datetime
 
 from settings import (
+    ACTIONS_COLORS,
     DISCORD_MSH_TIMEOUT,
     DISCORD_MSH_TIMEOUT,
     ADD_EVENT_VIEW_NAME,

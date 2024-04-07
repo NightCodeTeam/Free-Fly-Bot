@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, Literal
 
 
 # ! Главное
@@ -31,6 +31,7 @@ ON_JOIN_MODAL_NAME: Final = 'Заполните форму:'
 ON_JOIN_NAME: Final = 'Как к вам обращаться? (можно ник в игре)'
 ON_JOIN_COMMENT: Final = 'Расскажите о себе:'
 ON_JOIN_ALL_GOOD: Final = 'Заполненая форма отправлена администрации! Ожидайте получения роли'
+ACTIONS_COLORS: Final = ('blue', 'green', 'red')
 
 # ! Команды бота
 class BotCommands:
@@ -42,7 +43,11 @@ class BotCommands:
     BOT_ADD_TYPE_PREFIX = "addtype"
     BOT_DELETE_TYPE_PREFIX = "deltype"
     ON_JOIN = "onjoin"
+    ADD_ON_JOIN = 'addjoin'
+    DEL_ON_JOIN = 'deljoin'
     ON_JOIN_ACTIONS = "actions"
+    ADD_ON_JOIN_ACTIONS = 'addaction'
+    DEL_ON_JOIN_ACTIONS = 'delaction'
 
 
 BOT_PREFIX: Final = "!"

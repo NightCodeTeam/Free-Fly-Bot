@@ -26,8 +26,21 @@ from sql import (
 
     db_get_type_by_id,
     db_types_list_by_server_id,
-    db_get_type_by_name_and_server_id
+    db_get_type_by_name_and_server_id,
+
+    OnJoin,
+    OnJoinAction,
+    db_create_onjoin_id,
+    db_create_onjoin_action_id,
+    db_get_onjoin,
+    db_get_onjoin_actions,
+    db_add_onjoin,
+    db_add_onjoin_action,
+    db_delete_onjoin,
+    db_delete_onjoin_action,
 )
+
+from settings import ACTIONS_COLORS
 
 from message_text import (
     TOO_MANY_ARGS,
@@ -46,6 +59,24 @@ from message_text import (
     DELETE_EVENT_ARGS_NULL,
     DELETE_EVENT_CANT_FIND,
     DELETE_EVENT_MSG,
+
+    ON_JOIN_ACTION_MSG,
+
+    ON_JOIN_MSG,
+    ON_JOIN_CANT_CREATE,
+    ON_JOIN_NOT_FOUND,
+
+    ON_JOIN_ACTIONS_MSG,
+    ON_JOIN_ACTION_CANT_CREATE,
+    ON_JOIN_ACTIONS_NOT_FOUND,
+
+    ON_JOIN_ADD_MSG,
+    ON_JOIN_ADD_CANT_CREATE,
+
+    ON_JOIN_DEL_MSG,
+    ON_JOIN_DEL_CANT_CREATE,
+
+    ON_JOIN_ACTION_DEL,
 )
 
 
@@ -268,3 +299,109 @@ class Bot(BotBase):
     
     async def test(self, message: discord.message.Message, *args):
         pass
+
+    # ! События присоединения учасника
+    async def on_join(self, msg: discord.message.Message):
+        if not self.__types_access_check(msg.author, 'on_join'):
+            return None
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            await msg.reply(ON_JOIN_MSG.format(
+                message=onjoin.message,
+                channel_listen=self.get_channel(onjoin.channel_listen_id).mention,
+                channel_admin=self.get_channel(onjoin.channel_admin_id).mention
+            ))
+        else:
+            await msg.reply(ON_JOIN_NOT_FOUND)
+
+    async def add_on_join(self, msg: discord.message.Message):
+        if not self.__types_access_check(msg.author, 'add_on_join'):
+            return None
+        if await db_get_onjoin(msg.guild.id) is not None:
+            return None
+        try:
+            msg_list = msg.content.split('\n')
+            onjoin = OnJoin(
+                await db_create_onjoin_id(),
+                msg.guild.id,
+                msg_list[3],
+                self.try_get_channel(msg_list[1].split()[0]).id,
+                self.try_get_channel(msg_list[2].split()[0]).id
+            )
+            if await db_add_onjoin(onjoin):
+                await msg.reply(ON_JOIN_ADD_MSG)
+        except Exception as err:
+            print(err)
+            await msg.reply(ON_JOIN_ADD_CANT_CREATE)
+
+    async def del_on_join(self, msg: discord.message.Message):
+        if not self.__types_access_check(msg.author, 'del_on_join'):
+            return None
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            await db_delete_onjoin(onjoin.onjoin_id)
+            await msg.reply(ON_JOIN_DEL_MSG)
+        else:
+            await msg.reply(ON_JOIN_DEL_CANT_CREATE)
+
+    # ! Активности при присоединении
+    async def on_join_actions(self, msg: discord.message.Message):
+        if not self.__types_access_check(msg.author, 'on_join_actions'):
+            return None
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            actions = await db_get_onjoin_actions(onjoin.onjoin_id)
+            answer = ''
+            if len(actions) != 0:
+                for i in actions:
+                    answer += ON_JOIN_ACTIONS_MSG.format(
+                        aid=i.action_id,
+                        name=i.button_name,
+                        color=i.button_color
+                    )
+                await msg.reply(answer)
+            else:
+                await msg.reply(ON_JOIN_ACTIONS_NOT_FOUND)
+
+    async def add_on_join_action(self, msg: discord.message.Message, *args):
+        if not self.__types_access_check(msg.author, 'add_on_join_action'):
+            return None
+        if args[1] not in ACTIONS_COLORS:
+            return None
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            try:
+                action = OnJoinAction(
+                    await db_create_onjoin_action_id(),
+                    onjoin.onjoin_id,
+                    args[0],
+                    args[1]
+                )
+                await db_add_onjoin_action(action)
+                return await msg.reply(ON_JOIN_ACTIONS_MSG.format(
+                    name=action.button_name,
+                    color=action.button_color
+                ))
+            except Exception as err:
+                print(err)
+                return await msg.reply(ON_JOIN_ACTION_CANT_CREATE)
+
+    async def del_on_join_action(self, msg: discord.message.Message, *args):
+        if not self.__types_access_check(msg.author, 'del_on_join_action'):
+            return None
+        onjoin = await db_get_onjoin(msg.guild.id)
+        if onjoin is not None:
+            answer = ''
+            actions_id = list(
+                map(
+                    lambda x: x.action_id,
+                    await db_get_onjoin_actions(onjoin.onjoin_id)
+                )
+            )
+            for i in args:
+                if int(i) in actions_id:
+                    await db_delete_onjoin_action(int(i))
+                    answer += ON_JOIN_ACTION_DEL.format(id=i)
+            if answer == '':
+                answer = 'Не удалось'
+            await msg.reply(answer)
