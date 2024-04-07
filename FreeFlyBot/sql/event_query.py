@@ -17,7 +17,7 @@ async def db_add_event(data: Event) -> bool:
                 INSERT INTO {EVENTS_TABLE_NAME} (event_id, server_id, event_name, type_id, comment, event_time) 
                 VALUES ({data.event_id}, {data.server_id},
                 '{data.event_name}', {data.type_id}, 
-                '{data.comment}', '{data.event_time}');   
+                '{data.comment}', '{data.event_time}', '{data.event_extra_time}');   
                 """   
             )
             await db.commit()
@@ -52,12 +52,17 @@ async def db_get_events_by_type(*args) -> list[Event]:
                 #print(cursor)
                 ret_list :list[Event] = []
                 async for row in cursor:
-                    ret_list.append(Event(event_id= row[0], 
-                                          server_id= row[1], 
-                                          event_name= row[2], 
-                                          type_id= row[3], 
-                                          comment= row[4],
-                                          event_time= row[5]))
+                    ret_list.append(
+                        Event(
+                            event_id= row[0], 
+                            server_id= row[1], 
+                            event_name= row[2], 
+                            type_id= row[3], 
+                            comment= row[4],
+                            event_time= row[5],
+                            event_extra_time= row[6]
+                        )
+                    )
             return ret_list
     except aiosqlite.Error as err:
         create_log(err, 'error')
@@ -71,12 +76,17 @@ async def db_get_events_list() -> list[Event]:
             async with db.execute(event_query) as cursor:
                 ret_list :list[Event] = []
                 async for row in cursor:
-                    ret_list.append(Event(event_id= row[0], 
-                                          server_id= row[1], 
-                                          event_name= row[2], 
-                                          type_id= row[3], 
-                                          comment= row[4],
-                                          event_time= row[5]))
+                    ret_list.append(
+                        Event(
+                            event_id= row[0], 
+                            server_id= row[1], 
+                            event_name= row[2], 
+                            type_id= row[3], 
+                            comment= row[4],
+                            event_time= row[5],
+                            event_extra_time= row[6]
+                        )
+                    )
             return ret_list
     except aiosqlite.Error as err:
         create_log(err, 'error')
@@ -100,12 +110,17 @@ async def db_get_event_by_id(event_id: int) -> Event | None:
             ret_event: Event | None = None
             async with db.execute(event_query) as cursor:
                 async for row in cursor:
-                    ret_event = (Event(event_id= row[0], 
-                                          server_id= row[1], 
-                                          event_name= row[2], 
-                                          type_id= row[3], 
-                                          comment= row[4],
-                                          event_time= row[5]))
+                    ret_event = (
+                        Event(
+                            event_id= row[0], 
+                            server_id= row[1], 
+                            event_name= row[2], 
+                            type_id= row[3], 
+                            comment= row[4],
+                            event_time= row[5],
+                            event_extra_time= row[6]
+                        )
+                    )
             return ret_event
     except aiosqlite.Error as err:
         create_log(err, 'error')
@@ -120,12 +135,13 @@ async def db_get_nearest_event() -> Event | None:
                 async for row in cursor:
                     ret_event = (
                         Event(
-                            event_id= row[0],
-                            server_id= row[1],
-                            event_name= row[2],
-                            type_id= row[3],
+                            event_id= row[0], 
+                            server_id= row[1], 
+                            event_name= row[2], 
+                            type_id= row[3], 
                             comment= row[4],
-                            event_time= row[5]
+                            event_time= row[5],
+                            event_extra_time= row[6]
                         )
                     )
             return ret_event
