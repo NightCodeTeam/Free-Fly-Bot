@@ -21,6 +21,7 @@ from sql import (
 
     db_check_server_for_exist,
     db_add_server,
+    db_get_server_by_id,
 
     db_types_list_by_server_id,
     db_get_type_by_name_and_server_id,
@@ -31,6 +32,7 @@ from settings import (
     BOT_PREFIX,
 )
 from message_text import (
+    TAX_PATING,
     HELP_MSG,
     HELP_COMMAND_NOT_FOUND,
 
@@ -158,6 +160,9 @@ class BotBase(discord.Client):
             return None
         if len(message.content) == 0:
             return None
+        
+        if not await db_get_server_by_id(message.guild.id).server_sub:
+            await message.reply(TAX_PATING)
         
         if (
             not message.author.bot

@@ -13,8 +13,8 @@ async def db_add_server(data: DiscordServer) -> bool:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
                 f"""
-                INSERT INTO {DS_SERVERS_TABLE_NAME} (server_id, server_name) 
-                VALUES ({data.server_id}, '{data.server_name}');
+                INSERT INTO {DS_SERVERS_TABLE_NAME} (server_id, server_name, server_sub) 
+                VALUES ({data.server_id}, '{data.server_name}', {data.server_sub});
                 """   
             )
             await db.commit()
@@ -53,7 +53,7 @@ async def db_server_list() -> list[DiscordServer]:
             async with db.execute(f'''SELECT * FROM {DS_SERVERS_TABLE_NAME}''') as cursor:
                 ret_list: list[DiscordServer] = []
                 async for row in cursor:
-                    ret_list.append(DiscordServer(server_id= row[0], server_name= row[1]))
+                    ret_list.append(DiscordServer(server_id= row[0], server_name= row[1], server_sub= row[2]))
                 return ret_list
     except aiosqlite.Error as err:
         create_log(err, 'error')
@@ -69,7 +69,8 @@ async def db_get_server_by_id(server_id: int) -> DiscordServer | None:
 
                 async for row in cursor:
                     ret_server = (DiscordServer(server_id= row[0], 
-                                              server_name= row[1] 
+                                              server_name= row[1],
+                                              server_sub= row[2] 
                                              ))
             return ret_server
     except aiosqlite.Error as err:
