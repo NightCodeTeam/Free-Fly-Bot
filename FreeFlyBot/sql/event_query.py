@@ -10,7 +10,6 @@ from settings import (  # аыы не забудь воткнуть назван
 
 async def db_add_event(data: Event) -> bool:
     try:
-        print(data)
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
                 f"""

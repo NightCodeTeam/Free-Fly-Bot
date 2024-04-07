@@ -152,15 +152,15 @@ class Bot(BotBase):
             
             # Отправляем в базу
             if view.event is not None:
-                #print('event good')
                 if await db_add_event(view.event):
+                    typee = await db_get_type_by_id(view.type_index)
+                    if typee is None:
+                        return await message.reply(ADD_EVENT_CANT_CREATE)
                     return await message.reply(ADD_EVENT_MSG.format(
                         name=view.event.event_name,
-                        type=view.type_index,
+                        type=typee.type_name,
                         date=view.event.event_time
                     ))
-                else:
-                    return await message.reply(ADD_EVENT_CANT_CREATE)
         return await message.reply(ADD_EVENT_CANT_CREATE)
 
     # ! Удаление события
@@ -336,7 +336,7 @@ class Bot(BotBase):
             if await db_add_onjoin(onjoin):
                 await msg.reply(ON_JOIN_ADD_MSG)
         except Exception as err:
-            print(err)
+            create_log(err, 'error')
             await msg.reply(ON_JOIN_ADD_CANT_CREATE)
 
     async def del_on_join(self, msg: discord.message.Message):
@@ -388,7 +388,7 @@ class Bot(BotBase):
                     color=action.button_color
                 ))
             except Exception as err:
-                print(err)
+                create_log(err, 'error')
                 return await msg.reply(ON_JOIN_ACTION_CANT_CREATE)
 
     async def del_on_join_action(self, msg: discord.message.Message, *args):
