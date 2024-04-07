@@ -58,14 +58,18 @@ class AddEventView(discord.ui.View):
         if (datetime.now() - date1).total_seconds() > 0:
             self.modal_ui.stop()
 
-        self.event = Event(
-            await db_create_event_id(),
-            interaction.message.guild.id,
-            self.modal_ui.name_inp.value,
-            self.type_index,
-            self.modal_ui.comment_inp.value,
-            date1
-        )
+        try:
+            self.event = Event(
+                await db_create_event_id(),
+                interaction.message.guild.id,
+                self.modal_ui.name_inp.value,
+                self.type_index,
+                self.modal_ui.comment_inp.value,
+                date1,
+                date2
+            )
+        except Exception:
+            self.event = None
 
         await interaction.response.defer()
 

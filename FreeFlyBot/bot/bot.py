@@ -258,15 +258,17 @@ class Bot(BotBase):
         ):
             return await message.reply(ADD_TYPE_ERROR_MSG)
 
-        if await db_add_type(EventType(
-            await db_create_type_id(),
-            type_server_id,
-            type_name,
-            type_channel_id,
-            type_role_id
-        )):
-            return message.reply(ADD_TYPE_MSG.format(type_name))
-        else:
+        try:
+            typee = EventType(
+                await db_create_type_id(),
+                type_server_id,
+                type_name,
+                type_channel_id,
+                type_role_id
+            )
+            await db_add_type(typee)
+            return message.reply(ADD_TYPE_MSG.format(typee.type_name))
+        except Exception:
             return message.reply(ADD_TYPE_ERROR_MSG)
     
     # ! Удаление типа
