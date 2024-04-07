@@ -56,7 +56,15 @@ HELP_ADD_EVENT: Final = f'''Команда {BotCommands.BOT_ADD_EVENT_PREFIX} с
 - Тип события
 - дату
 - комментарии'''
-HELP_DELETE_EVENT: Final = f'''Команда {BotCommands.BOT_DELETE_EVENT_PREFIX} - удаляет событые. В качестве аргумента укажите номер события.'''
+HELP_DELETE_EVENT: Final = f'''Команда {BotCommands.BOT_DELETE_EVENT_PREFIX} - удаляет событые. \
+В качестве аргумента укажите номер события.'''
+HELP_ONJOIN: Final = f'''Используйте команду {BotCommands.ADD_ON_JOIN} \
+чтобы добавить действие при подключении человека к серверу. \
+Сначала с новой строки укажите в какой канал отправить приветственное сообщение, \
+на след строке укажите канал администрации и после на след строке само приветсвенное сообщение.\n\
+Чтобы удалить воспользуйтесь командой {BotCommands.DEL_ON_JOIN}'''
+HELP_ACTIONS: Final = f'''Добавьте кнопки к действиям onjoin. Воспользуйтесь командой {BotCommands.ADD_ON_JOIN_ACTIONS} укажите название и цвет.\n\
+Удалите кнопку командой {BotCommands.DEL_ON_JOIN_ACTIONS}'''
 
 HELP_COMMAND_NOT_FOUND: Final = '''Команда {} не найдена. Используейте !help для выводы всех команд\n'''
 

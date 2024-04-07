@@ -43,6 +43,8 @@ from message_text import (
     HELP_EVENTS,
     HELP_ADD_EVENT,
     HELP_DELETE_EVENT,
+    HELP_ACTIONS,
+    HELP_ONJOIN,
 
     EVENT_TIMER_MSG,
     ON_JOIN_ACTION_MSG,
@@ -270,6 +272,10 @@ class BotBase(discord.Client):
                         msg += HELP_ADD_TYPE
                     case BotCommands.BOT_DELETE_TYPE_PREFIX:
                         msg += HELP_DELETE_TYPE
+                    case BotCommands.ON_JOIN:
+                        msg += HELP_ONJOIN
+                    case BotCommands.ON_JOIN_ACTIONS:
+                        msg += HELP_ACTIONS
                     case _:
                         msg += HELP_COMMAND_NOT_FOUND.format(i)
             return await message.reply(msg)
