@@ -28,7 +28,7 @@ from settings import (
 
 
 class AddEventView(discord.ui.View):
-    def __init__(self, types: list[EventType], author):
+    def __init__(self, guild, types: list[EventType], author):
         super().__init__(timeout=DISCORD_MSH_TIMEOUT)
         self.author = author
         self.modal_ui = AddEventMobal()
@@ -39,7 +39,7 @@ class AddEventView(discord.ui.View):
         self.event: Event | None = None
 
         # Тип
-        self.event_type_sel = EventTypeSelector(types)
+        self.event_type_sel = EventTypeSelector(guild, types)
 
         self.add_item(self.event_type_sel)
         self.event_type_sel.callback = self.prefer_event_type
@@ -58,14 +58,18 @@ class AddEventView(discord.ui.View):
         if (datetime.now() - date1).total_seconds() > 0:
             self.modal_ui.stop()
 
-        self.event = Event(
-            await db_create_event_id(),
-            interaction.message.guild.id,
-            self.modal_ui.name_inp.value,
-            self.type_index,
-            self.modal_ui.comment_inp.value,
-            date1
-        )
+        try:
+            self.event = Event(
+                await db_create_event_id(),
+                interaction.message.guild.id,
+                self.modal_ui.name_inp.value,
+                self.type_index,
+                self.modal_ui.comment_inp.value,
+                date1,
+                date2
+            )
+        except Exception:
+            self.event = None
 
         await interaction.response.defer()
 

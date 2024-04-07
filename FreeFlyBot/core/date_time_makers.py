@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from core import create_log
 
 from settings import (
     POSSIBLE_DATE_FORMATS,
@@ -54,5 +55,5 @@ def make_datetime(date_str: str, time_str: str) -> tuple[datetime, datetime]:
 
         return date, date_adt
     except Exception as err:
-        print(err)
+        create_log(err, 'error')
         return datetime(2024, 1, 1, 1, 1, 1), datetime(2024, 1, 1, 1, 1, 1) 

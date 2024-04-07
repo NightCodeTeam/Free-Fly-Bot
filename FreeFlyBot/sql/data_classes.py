@@ -19,7 +19,8 @@ class Event:
             event_name: str,
             type_id: int,
             comment: str,
-            event_time: datetime
+            event_time: datetime,
+            event_extra_time: datetime
         ) -> None:
             self.event_id = event_id
             self.server_id = server_id
@@ -27,6 +28,7 @@ class Event:
             self.type_id = type_id
             self.comment = comment
             self.event_time = event_time
+            self.event_extra_time = event_extra_time
 
     def __str__(self) -> str:
         return f'ID: {self.event_id}\nServer ID: {self.server_id}\nName: {self.event_name}\nTYPE ID: {self.type_id}\nCOMMENT: {self.comment}\nDate: {self.event_time}'
@@ -100,6 +102,20 @@ class Event:
         else:
             raise SQLBadDataclassException(val)
 
+    @property
+    def event_extra_time(self) -> datetime:
+        return self.__event_extra_time
+
+    @event_extra_time.setter
+    def event_extra_time(self, val: datetime):
+        if sql_val_good(val):
+            if type(val) is datetime:
+                self.__event_extra_time = val
+            if type(val) is str:
+                self.__event_extra_time = datetime.strptime(val, '%Y-%m-%d %H:%M:%S')
+        else:
+            raise SQLBadDataclassException(val)
+
 
 class EventType:
     def __init__(
@@ -108,7 +124,7 @@ class EventType:
             server_id: int,
             type_name: str,
             channel_id: int,
-            role_id: int,
+            role_id: str,
         ) -> None:
             self.type_id = type_id
             self.server_id = server_id

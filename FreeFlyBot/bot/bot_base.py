@@ -126,8 +126,11 @@ class BotBase(discord.Client):
         return self.get_channel(int(channel_id[2:-1]))
     
     def try_get_role(self, guild: discord.Guild, role_id: str):
-        return discord.utils.get(guild.roles, id=int(role_id[3:-1]))
-    
+        if role_id.startswith('<'):
+            return discord.utils.get(guild.roles, id=int(role_id[3:-1]))
+        else:
+            return guild.default_role
+
     def get_role_or_channel(self, guild: discord.Guild, arg: str) -> Any:
         """Возвращает 1 из 3:
         - Дискорд канал
@@ -136,6 +139,8 @@ class BotBase(discord.Client):
         if arg.startswith('<#'):
             return self.try_get_channel(arg)
         elif arg.startswith('<@&'):
+            return self.try_get_role(guild, arg)
+        elif arg.startswith('@everyone'):
             return self.try_get_role(guild, arg)
 
     async def on_ready(self):
@@ -154,14 +159,16 @@ class BotBase(discord.Client):
         if len(message.content) == 0:
             return None
         
-        if not await db_get_server_by_id(message.guild.id).server_sub:
-            await message.reply(TAX_PATING)
-        
         if (
             not message.author.bot
             and message.content[0] == BOT_PREFIX
             # and message.author != self.user
         ):
+            server = await db_get_server_by_id(message.guild.id)
+            if server is not None:
+                if not server.server_sub:
+                    await message.reply(TAX_PATING)
+        
             # Если у пользователя нет прав использовать бота.
             # Разрешенными является: админ и типы событий на сервере
             if not await self.check_member_permisions(
@@ -220,10 +227,12 @@ class BotBase(discord.Client):
                     channel = self.get_channel(typee.channel_id)
                     #print(typee)
                     if typee is not None:
+                        guild = channel.guild
+                        role = guild.get_role(typee.role_id)
                         await self.send_msg(
                             typee.channel_id,
                             EVENT_TIMER_MSG.format(
-                                role=discord.utils.get(channel.guild.roles, id=typee.role_id).mention,
+                                role=role,
                                 name=nearest_event.event_name,
                                 comment=nearest_event.comment
                             )
@@ -293,6 +302,13 @@ class BotBase(discord.Client):
             channel_listen = self.get_channel(onjoin.channel_listen_id)
             view = OnJoinView(actions, member)
             await channel_listen.send(f'{member.mention} {onjoin.message}', view=view)
+            
+            
+            server = await db_get_server_by_id(member.guild.id)
+            if server is not None:
+                if not server.server_sub:
+                    await channel_listen.send(TAX_PATING)
+
             if not await view.modal.wait():
                 channel_admin = self.get_channel(onjoin.channel_admin_id)
                 await channel_admin.send(

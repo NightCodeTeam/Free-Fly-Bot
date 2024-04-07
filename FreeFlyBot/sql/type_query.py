@@ -15,7 +15,7 @@ async def db_add_type(data: EventType) -> bool:
                 f"""
                 INSERT INTO {TYPES_TABLE_NAME} (type_id, server_id, type_name, channel_id, role_id) 
                 VALUES ({data.type_id}, {data.server_id}, '{data.type_name}', {data.channel_id}, {data.role_id});
-                """   
+                """
             )
             await db.commit()
             return True
