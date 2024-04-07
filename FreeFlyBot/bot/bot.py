@@ -135,10 +135,13 @@ class Bot(BotBase):
         # ! Костыль
         # Разбираем сообщение на строки
         types = await self.get_server_types(message.guild.id)
+        if len(types) == 0:
+            return await message.reply(NO_TYPES_ON_SERVER)
+
         for i in types:
             if i.role_id not in list(map(lambda x: x.id, message.author.roles)):
                 types.remove(i)
-        view = AddEventView(types, message.author)
+        view = AddEventView(message.guild, types, message.author)
 
         await message.reply('Создайте событие:', view=view)
         
@@ -227,7 +230,7 @@ class Bot(BotBase):
         # ? Проверяем допуск автора
         if not self.__types_access_check(message.author, 'add_type'):
             return None
-        
+
         # Проверяем колличество аргументов
         if len(args) != 3:
             if len(args) > 3:
@@ -246,6 +249,8 @@ class Bot(BotBase):
                 type_channel_id = arg.id
             elif type(arg) is discord.role.Role:
                 type_role_id = arg.id
+            elif arg == '@everyone':
+                type_role_id = arg
             else:
                 type_name = i
 
@@ -256,6 +261,7 @@ class Bot(BotBase):
             or type_role_id is None
             or await db_get_type_by_name_and_server_id(message.guild.id, type_name) is not None
         ):
+            #print(type_role_id, type_name)
             return await message.reply(ADD_TYPE_ERROR_MSG)
 
         try:
@@ -267,9 +273,9 @@ class Bot(BotBase):
                 type_role_id
             )
             await db_add_type(typee)
-            return message.reply(ADD_TYPE_MSG.format(typee.type_name))
+            return await message.reply(ADD_TYPE_MSG.format(typee.type_name))
         except Exception:
-            return message.reply(ADD_TYPE_ERROR_MSG)
+            return await message.reply(ADD_TYPE_ERROR_MSG)
     
     # ! Удаление типа
     async def delete_type(self, message: discord.message.Message, *args):
@@ -298,9 +304,6 @@ class Bot(BotBase):
             else:
                 msg += DELETE_TYPE_NOT_FOUND.format(i)
         return await message.reply(msg)
-    
-    async def test(self, message: discord.message.Message, *args):
-        pass
 
     # ! События присоединения учасника
     async def on_join(self, msg: discord.message.Message):
@@ -407,3 +410,7 @@ class Bot(BotBase):
             if answer == '':
                 answer = 'Не удалось'
             await msg.reply(answer)
+
+    async def test(self, message: discord.message.Message, *args):
+        pass
+        #print(message.guild.default_role)

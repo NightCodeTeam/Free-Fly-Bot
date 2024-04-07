@@ -14,7 +14,7 @@ async def db_add_event(data: Event) -> bool:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
                 f"""
-                INSERT INTO {EVENTS_TABLE_NAME} (event_id, server_id, event_name, type_id, comment, event_time) 
+                INSERT INTO {EVENTS_TABLE_NAME} (event_id, server_id, event_name, type_id, comment, event_time, event_extra_time) 
                 VALUES ({data.event_id}, {data.server_id},
                 '{data.event_name}', {data.type_id}, 
                 '{data.comment}', '{data.event_time}', '{data.event_extra_time}');   

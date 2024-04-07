@@ -28,7 +28,7 @@ from settings import (
 
 
 class AddEventView(discord.ui.View):
-    def __init__(self, types: list[EventType], author):
+    def __init__(self, guild, types: list[EventType], author):
         super().__init__(timeout=DISCORD_MSH_TIMEOUT)
         self.author = author
         self.modal_ui = AddEventMobal()
@@ -39,7 +39,7 @@ class AddEventView(discord.ui.View):
         self.event: Event | None = None
 
         # Тип
-        self.event_type_sel = EventTypeSelector(types)
+        self.event_type_sel = EventTypeSelector(guild, types)
 
         self.add_item(self.event_type_sel)
         self.event_type_sel.callback = self.prefer_event_type

@@ -124,7 +124,7 @@ class EventType:
             server_id: int,
             type_name: str,
             channel_id: int,
-            role_id: int,
+            role_id: str,
         ) -> None:
             self.type_id = type_id
             self.server_id = server_id
