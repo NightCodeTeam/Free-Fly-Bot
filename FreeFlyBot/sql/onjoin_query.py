@@ -9,23 +9,6 @@ from settings import (
 )
 
 
-@dataclass
-class OnJoin:
-    onjoin_id: int
-    server_id: int
-    message: str
-    channel_listen_id: int
-    channel_admin_id: int
-
-
-@dataclass
-class OnJoinAction:
-    action_id: int
-    onjoin_id: int
-    button_name: str
-    button_color: str
-
-
 async def db_add_onjoin(data: OnJoin) -> bool:
     try:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
@@ -47,6 +30,9 @@ async def db_add_onjoin(data: OnJoin) -> bool:
 async def db_delete_onjoin(onjoin_id: int) -> bool:
     try:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
+            await db.execute(
+                f'''PRAGMA foreign_keys = ON; '''
+            )
             await db.execute(
                 f"""DELETE FROM {ON_JOIN_TABLE_NAME} WHERE onjoin_id = {onjoin_id};"""   
             )

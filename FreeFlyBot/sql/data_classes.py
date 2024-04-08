@@ -233,3 +233,158 @@ class DiscordServer:
             self.__server_sub = True if val == 1 else False
         else:
             raise SQLBadDataclassException(val)
+        
+
+class OnJoin:
+    def __init__(
+        self,
+        onjoin_id: int,
+        server_id: int,
+        message: int,
+        channel_listen_id: int,
+        channel_admin_id: int
+    ) -> None:
+        self.onjoin_id = onjoin_id
+        self.server_id = server_id
+        self.message = message
+        self.channel_listen_id = channel_listen_id
+        self.channel_admin_id = channel_admin_id
+
+    @property
+    def  onjoin_id(self) -> int:
+        return self.__onjoin_id
+    
+    
+    @onjoin_id.setter
+    def onjoin_id(self, val: int):
+        if sql_val_good(val):
+            self.__onjoin_id = val
+        else:
+            raise SQLBadDataclassException(val)
+        
+
+    @property
+    def  server_id(self) -> int:
+        return self.__server_id
+    
+    
+    @server_id.setter
+    def server_id(self, val: int):
+        if sql_val_good(val):
+            self.__server_id = val
+        else:
+            raise SQLBadDataclassException(val)
+        
+
+    @property
+    def message(self) -> int:
+        return self.__message
+    
+
+    @message.setter
+    def message(self, val: int):
+        if sql_val_good(val):
+            self.__message = val
+        else:
+            raise SQLBadDataclassException(val)
+        
+
+    @property
+    def  channel_listen_id(self) -> int:
+        return self.__channel_listen_id
+    
+
+    @channel_listen_id.setter
+    def channel_listen_id(self, val: int):
+        if sql_val_good(val):
+            self.__channel_listen_id = val
+        else:
+            raise SQLBadDataclassException(val)
+    
+
+    @property
+    def channel_admin_id(self) -> int:
+        return self.__channel_admin_id
+    
+
+    @channel_admin_id.setter
+    def channel_admin_id(self, val: int):
+        if sql_val_good(val):
+            self.__channel_admin_id = val
+        else:
+            raise SQLBadDataclassException(val)
+    
+
+
+
+
+
+
+
+
+
+class OnJoinAction:
+    def __init__(
+        self,
+        action_id: int,
+        onjoin_id: int,
+        button_name: str,
+        button_color: str
+    ) -> None:
+        self.action_id = action_id 
+        self.onjoin_id = onjoin_id 
+        self.button_name = button_name
+        self.button_color = button_color
+
+    @property
+    def action_id(self) -> int:
+        return self.__action_id
+    
+    @action_id.setter
+    def action_id(self, val: int):
+        if sql_val_good(val):
+            self.__action_id = val
+        else:
+            raise SQLBadDataclassException(val)
+    
+
+    @property
+    def onjoin_id(self) -> int:
+        return self.__onjoin_id
+    
+
+    @onjoin_id.setter
+    def onjoin_id(self, val: int):
+        if sql_val_good(val):
+            self.__onjoin_id = val
+        else:
+            raise SQLBadDataclassException(val)
+    
+
+    @property
+    def button_name(self) -> str:
+        return self.__button_name
+    
+
+    @button_name.setter
+    def button_name(self, val: int):
+        if sql_val_good(val):
+            self.__button_name = val
+        else:
+            raise SQLBadDataclassException(val)
+    
+
+    @property
+    def button_color(self) -> str: 
+        return self.__button_color  
+    
+
+    @button_color.setter
+    def button_color(self, val: int):
+        if sql_val_good(val):
+            self.__button_color = val
+        else:
+            raise SQLBadDataclassException(val)
+
+
+  

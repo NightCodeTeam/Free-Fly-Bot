@@ -38,7 +38,10 @@ async def db_delete_server(server_id: int) -> bool:
     try:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(
-                f'''DELETE FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id};'''
+                f'''PRAGMA foreign_keys = ON; '''
+            )
+            await db.execute(f'''
+            DELETE FROM {DS_SERVERS_TABLE_NAME} WHERE server_id = {server_id};'''
             )
             await db.commit()
             return True
