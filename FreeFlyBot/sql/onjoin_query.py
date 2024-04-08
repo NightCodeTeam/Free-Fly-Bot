@@ -9,23 +9,6 @@ from settings import (
 )
 
 
-@dataclass
-class OnJoin:
-    onjoin_id: int
-    server_id: int
-    message: int
-    channel_listen_id: int
-    channel_admin_id: int
-
-
-@dataclass
-class OnJoinAction:
-    action_id: int
-    onjoin_id: int
-    button_name: str
-    button_color: str
-
-
 async def db_add_onjoin(data: OnJoin) -> bool:
     try:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
