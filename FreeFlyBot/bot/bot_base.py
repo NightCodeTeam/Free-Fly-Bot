@@ -26,6 +26,7 @@ from sql import (
 
     db_types_list_by_server_id,
     db_get_type_by_name_and_server_id,
+    db_get_nearest_pre_ping,
 )
 
 from settings import (
@@ -219,6 +220,7 @@ class BotBase(discord.Client):
     async def timer(self):
         while True:
             nearest_event = await db_get_nearest_event()
+            nearest_pre_ping = await db_get_nearest_pre_ping()
             #print(nearest_event)
             if nearest_event is not None:
                 #seconds = datetime.now() - nearest_event.event_time
@@ -240,7 +242,13 @@ class BotBase(discord.Client):
                             )
                         )
                         await db_delete_event(nearest_event.event_id)
-                else:
+                elif (   
+                        (nearest_pre_ping is not None) and
+                        ((datetime.now() - nearest_pre_ping.event_extra_time).total_seconds() >= -10) and
+                        (not nearest_pre_ping.pre_pinged) and
+                        (nearest_pre_ping.event_extra_time != nearest_event.event_time)
+                     ):
+                    create_log(f'Event run {nearest_pre_ping.event_id}', 'info')
                     #print(f'sleep: {(datetime.now() - nearest_event.event_time).total_seconds()}')
                     await asyncio.sleep(10)
 
