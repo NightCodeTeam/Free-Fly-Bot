@@ -13,10 +13,10 @@ async def db_add_event(data: Event) -> bool:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
                 f"""
-                INSERT INTO {EVENTS_TABLE_NAME} (event_id, server_id, event_name, type_id, comment, event_time, event_extra_time) 
+                INSERT INTO {EVENTS_TABLE_NAME} (event_id, server_id, event_name, type_id, comment, event_time, event_extra_time, event_pre_pinged) 
                 VALUES ({data.event_id}, {data.server_id},
                 '{data.event_name}', {data.type_id}, 
-                '{data.comment}', '{data.event_time}', '{data.event_extra_time}');   
+                '{data.comment}', '{data.event_time}', '{data.event_extra_time}', {data.pre_pinged});   
                 """   
             )
             await db.commit()
@@ -59,7 +59,8 @@ async def db_get_events_by_type(*args) -> list[Event]:
                             type_id= row[3], 
                             comment= row[4],
                             event_time= row[5],
-                            event_extra_time= row[6]
+                            event_extra_time= row[6],
+                            pre_pinged=row[7]
                         )
                     )
             return ret_list
@@ -83,7 +84,8 @@ async def db_get_events_list() -> list[Event]:
                             type_id= row[3], 
                             comment= row[4],
                             event_time= row[5],
-                            event_extra_time= row[6]
+                            event_extra_time= row[6],
+                            pre_pinged=row[7]
                         )
                     )
             return ret_list
@@ -117,7 +119,8 @@ async def db_get_event_by_id(event_id: int) -> Event | None:
                             type_id= row[3], 
                             comment= row[4],
                             event_time= row[5],
-                            event_extra_time= row[6]
+                            event_extra_time= row[6],
+                            pre_pinged=row[7]
                         )
                     )
             return ret_event
@@ -140,7 +143,8 @@ async def db_get_nearest_event() -> Event | None:
                             type_id= row[3], 
                             comment= row[4],
                             event_time= row[5],
-                            event_extra_time= row[6]
+                            event_extra_time= row[6],
+                            pre_pinged=row[7]
                         )
                     )
             return ret_event
@@ -163,7 +167,8 @@ async def db_get_nearest_pre_ping() -> Event | None:
                             type_id= row[3], 
                             comment= row[4],
                             event_time= row[5],
-                            event_extra_time= row[6]
+                            event_extra_time= row[6],
+                            pre_pinged=row[7]
                         )
                     )
             return ret_event
