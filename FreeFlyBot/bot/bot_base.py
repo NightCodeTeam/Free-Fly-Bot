@@ -242,14 +242,29 @@ class BotBase(discord.Client):
                             )
                         )
                         await db_delete_event(nearest_event.event_id)
-                elif (   
+                elif (   # тут проверка что время препинга+ он еще не послан+ это не сам ивент
                         (nearest_pre_ping is not None) and
                         ((datetime.now() - nearest_pre_ping.event_extra_time).total_seconds() >= -10) and
                         (not nearest_pre_ping.pre_pinged) and
                         (nearest_pre_ping.event_extra_time != nearest_event.event_time)
                      ):
+                    
                     create_log(f'Event run {nearest_pre_ping.event_id}', 'info')
-                    #print(f'sleep: {(datetime.now() - nearest_event.event_time).total_seconds()}')
+                    typee = await db_get_type_by_id(nearest_pre_ping.type_id)
+                    channel = self.get_channel(typee.channel_id)
+                    if typee is not None:
+                        guild = channel.guild
+                        role = guild.get_role(typee.role_id)
+                        await self.send_msg(
+                            typee.channel_id,
+                            EVENT_TIMER_MSG.format(
+                                role=role,
+                                name=nearest_pre_ping.event_name,
+                                comment=nearest_pre_ping.comment
+                            )
+                        )
+                        #await db_delete_event(nearest_event.event_id)
+                else:
                     await asyncio.sleep(10)
 
     async def send_msg(self, channel_id: int, msg):
