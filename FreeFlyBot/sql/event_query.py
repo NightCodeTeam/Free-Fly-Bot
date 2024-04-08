@@ -174,3 +174,23 @@ async def db_get_nearest_pre_ping() -> Event | None:
             return ret_event
     except aiosqlite.Error as err:
         create_log(err, 'error')
+
+
+async def db_update_event_by_id(data: Event) -> bool:
+    try:
+        async with aiosqlite.connect(SQL_BD_NAME) as db:
+            await db.execute(          # если поля названы не как в ТЗ все превратится в тыкву...
+                f"""
+                UPDATE {EVENTS_TABLE_NAME} 
+                SET event_name = '{data.event_name}', comment = '{data.comment}', \
+                event_time = '{data.event_time}', \
+                event_extra_time = '{data.event_extra_time}', \
+                event_pre_pinged = {data.pre_pinged}
+                WHERE event_id = {data.event_id};
+                """
+            )
+            await db.commit()
+            return True
+    except aiosqlite.Error as err:
+        create_log(err, 'error')
+        return False

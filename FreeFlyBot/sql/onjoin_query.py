@@ -1,5 +1,5 @@
 import aiosqlite
-from dataclasses import dataclass
+from .data_classes import OnJoin, OnJoinAction
 from core import create_log
 
 from settings import (

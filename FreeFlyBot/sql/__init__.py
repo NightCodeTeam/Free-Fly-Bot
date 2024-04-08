@@ -2,6 +2,8 @@ from .data_classes import (
     EventType,
     Event,
     DiscordServer,
+    OnJoin,
+    OnJoinAction,
 )
 from .create_sql import create_bd
 from .adt_query import (
@@ -31,6 +33,7 @@ from .event_query import (
     db_get_nearest_event, #принимает event_id  возвращает ОБЪЕКТ Event
     db_get_nearest_event,
     db_get_nearest_pre_ping,
+    db_update_event_by_id,
 )
 
 
@@ -46,9 +49,6 @@ from .type_query import (
 
 
 from .onjoin_query import (
-    OnJoin,
-    OnJoinAction,
-
     db_add_onjoin,
     db_delete_onjoin,
     db_get_onjoin,
