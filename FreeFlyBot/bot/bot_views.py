@@ -33,6 +33,8 @@ class AddEventView(discord.ui.View):
         self.author = author
         self.modal_ui = AddEventMobal()
         self.modal_ui.on_submit = self.event_conferm
+        self.modal_ui.on_error = self.event_error
+        self.modal_ui.on_timeout = self.event_error
         self.types = types
         self.type_index = 0
 
@@ -52,7 +54,10 @@ class AddEventView(discord.ui.View):
         await interaction.response.send_modal(self.modal_ui)
         self.clear_items()
         self.stop()
-    
+
+    async def event_error(self):
+        self.event = None
+
     async def event_conferm(self, interaction: discord.Interaction):
         date1, date2 = make_datetime(self.modal_ui.date_inp.value, self.modal_ui.time_inp.value)
         if (datetime.now() - date1).total_seconds() > 0:
