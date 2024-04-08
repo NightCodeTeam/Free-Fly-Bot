@@ -48,7 +48,7 @@ def make_datetime(date_str: str, time_str: str) -> tuple[datetime, datetime]:
             f'%Y %m %d %H %M'
         )
         date_adt = None
-        if time_before != 0:
+        if time_before > 0:
             date_adt = date - timedelta(time_before)
         else:
             date_adt = date
