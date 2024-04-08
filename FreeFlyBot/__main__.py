@@ -2,7 +2,7 @@ from sys import argv
 from threading import Thread
 
 from core import create_log, get_env, update_env
-from sql import create_bd, Event
+from sql import create_bd
 from bot import Bot
 
 from os.path import exists
