@@ -13,7 +13,9 @@ def str_to_date(date_str: str) -> tuple[str, str, str]:
     for i in POSSIBLE_DATE_FORMATS:
         date_str = date_str.replace(i, ' ')
     date_list = date_str.split(sep=' ')
-    return (date_list[0], date_list[1], date_list[2])
+    if len(date_list) == 3:
+        return (date_list[0], date_list[1], date_list[2])
+    else: return [1,1,1]
 
 
 def str_to_time(time_str: str) -> tuple[tuple[str, ...], int]:
