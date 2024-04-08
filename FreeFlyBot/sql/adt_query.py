@@ -29,8 +29,17 @@ from settings import (
 async def db_get_ids(table: str) -> list:
     try:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
+            id_col = ''
+            if table == EVENTS_TABLE_NAME:
+                id_col = 'event_id'
+            elif table == TYPES_TABLE_NAME:
+                id_col = 'type_id'
+            elif table == ON_JOIN_TABLE_NAME:
+                id_col = 'onjoin_id'
+            elif table == ON_JOIN_ACTIONS_TABLE_NAME:
+                id_col = 'action_id'
             cursor = await db.execute(
-                f'''SELECT {'event_id' if table == EVENTS_TABLE_NAME else 'type_id'} FROM {table}'''
+                f'''SELECT {id_col} FROM {table}'''
             )
             ans = []
             async for row in cursor:
