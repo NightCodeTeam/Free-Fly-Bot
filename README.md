@@ -22,42 +22,10 @@
 - /deletetype - удалить тип на сервере
 - /updatetype - изменить тип на сервере
 
-### Таблицы SQL
+- /onjoin - что написать и в какой канал когда новый человек пришел
+- /addonjoin - добавить
+- /delonjoin - удалить
 
-#### Events
-
-| COLUMN NAME | TYPE    | ADT         |
-|------------|----------|-------------|
-| event_id   | INTEGER  | PRIMARY KEY |
-| server_id  | INTEGER  | NOT NULL    |
-| event_name | TEXT     | NOT NULL    |
-| type_id    | INTEGER  | NOT NULL    |
-| comment    | TEXT     |             |
-| event_time | DATETIME | NOT NULL    |
-
-#### Types
-
-| COLUMN NAME | TYPE    | ADT         |
-|-----------|---------|-------------|
-| type_id   | INTEGER | PRIMARY KEY |
-| server_id | INTEGER | NOT NULL    |
-| type_name | TEXT    | NOT NULL    |
-| channel   | TEXT    | NOT NULL    |
-
-#### Discord servers
-
-| COLUMN NAME | TYPE    | ADT         |
-|-------------|---------|-------------|
-| server_id   | INTEGER | PRIMARY KEY |
-| server_name | TEXT    | NOT NULL    |
-
-### Реализация
-
-Содержится 2 потока:
-
-1) Поток обрабатывающий работу с пользователями
-2) Потом с таймером отсчета
-
-Бот на discord.py
-
-База данных aiosqlite
+- /actions - Добавить действия при присоединении нового человека
+- /addaction - добавить действие
+- /delaction - удалить действие
