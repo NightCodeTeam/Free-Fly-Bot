@@ -53,7 +53,7 @@ class BotCommands:
 BOT_PREFIX: Final = "!"
 
 # ! SQL
-SQL_BLACK_LIST: Final = ["'","SELECT","--",'"',"DELETE",";" ]
+SQL_BLACK_LIST: Final = ["'","SELECT","--",'"',"DELETE",";","*","%",")","(",'\\' ]
 EVENTS_TABLE_NAME: Final = "events"
 TYPES_TABLE_NAME: Final = "types"
 DS_SERVERS_TABLE_NAME: Final = "servers"
