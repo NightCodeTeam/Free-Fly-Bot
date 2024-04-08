@@ -27,6 +27,8 @@ from sql import (
     db_types_list_by_server_id,
     db_get_type_by_name_and_server_id,
     db_get_nearest_pre_ping,
+
+    db_update_event_by_id,
 )
 
 from settings import (
@@ -255,6 +257,7 @@ class BotBase(discord.Client):
                     if typee is not None:
                         guild = channel.guild
                         role = guild.get_role(typee.role_id)
+                        nearest_pre_ping.pre_pinged = True
                         await self.send_msg(
                             typee.channel_id,
                             EVENT_TIMER_MSG.format(
@@ -263,7 +266,8 @@ class BotBase(discord.Client):
                                 comment=nearest_pre_ping.comment
                             )
                         )
-                        #await db_delete_event(nearest_event.event_id)
+                        
+                        await db_update_event_by_id(nearest_pre_ping)
                 else:
                     await asyncio.sleep(10)
 
