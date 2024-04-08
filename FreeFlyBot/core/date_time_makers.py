@@ -31,9 +31,9 @@ def str_to_time(time_str: str) -> tuple[tuple[str, ...], int]:
         minuts = 0
         for i in adv_time_list:
             if i[-1] in POSSIBLE_HOUR_FORMATS:
-                hours = int(i[:-1])
+                hours = abs(int(i[:-1]))
             elif i[-1] in POSSIBLE_MINUT_FORMATS:
-                minuts = int(i[:-1])
+                minuts = abs(int(i[:-1]))
         minuts_before = hours*60 + minuts
     return tuple(main_time_list), minuts_before
 
@@ -48,7 +48,7 @@ def make_datetime(date_str: str, time_str: str) -> tuple[datetime, datetime]:
             f'%Y %m %d %H %M'
         )
         date_adt = None
-        if time_before != 0:
+        if time_before > 0:
             date_adt = date - timedelta(time_before)
         else:
             date_adt = date
