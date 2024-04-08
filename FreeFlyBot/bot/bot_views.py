@@ -57,6 +57,8 @@ class AddEventView(discord.ui.View):
         date1, date2 = make_datetime(self.modal_ui.date_inp.value, self.modal_ui.time_inp.value)
         if (datetime.now() - date1).total_seconds() > 0:
             self.modal_ui.stop()
+        if (datetime.now() - date2).total_seconds() > 0:
+            self.modal_ui.stop()
 
         try:
             self.event = Event(
