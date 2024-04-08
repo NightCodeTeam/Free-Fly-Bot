@@ -20,7 +20,8 @@ class Event:
             type_id: int,
             comment: str,
             event_time: datetime,
-            event_extra_time: datetime
+            event_extra_time: datetime,
+            pre_pinged: bool = False
         ) -> None:
             self.event_id = event_id
             self.server_id = server_id
@@ -29,6 +30,7 @@ class Event:
             self.comment = comment
             self.event_time = event_time
             self.event_extra_time = event_extra_time
+            self.pre_pinged = pre_pinged
 
     def __str__(self) -> str:
         return f'ID: {self.event_id}\nServer ID: {self.server_id}\nName: {self.event_name}\nTYPE ID: {self.type_id}\nCOMMENT: {self.comment}\nDate: {self.event_time}'

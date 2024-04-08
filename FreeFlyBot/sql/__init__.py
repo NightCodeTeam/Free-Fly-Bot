@@ -30,6 +30,7 @@ from .event_query import (
     db_get_event_by_id,
     db_get_nearest_event, #принимает event_id  возвращает ОБЪЕКТ Event
     db_get_nearest_event,
+    db_get_nearest_pre_ping,
 )
 
 
