@@ -48,6 +48,9 @@ async def db_delete_onjoin(onjoin_id: int) -> bool:
     try:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(
+                f'''PRAGMA foreign_keys = ON; '''
+            )
+            await db.execute(
                 f"""DELETE FROM {ON_JOIN_TABLE_NAME} WHERE onjoin_id = {onjoin_id};"""   
             )
             await db.commit()
