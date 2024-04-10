@@ -8,24 +8,18 @@ from core import create_log
 from sql import (
     Event,
     EventType,
-    DiscordServer,
 
-    db_create_event_id,
     db_create_type_id,
 
     db_add_event,
     db_get_events_by_type,
     db_delete_event,
-    db_get_event_by_id,
 
     db_add_type,
-    db_check_type_for_exist,
     db_delete_type,
-    db_types_list,
     db_get_type_by_id,
 
     db_get_type_by_id,
-    db_types_list_by_server_id,
     db_get_type_by_name_and_server_id,
 
     OnJoin,
@@ -49,7 +43,6 @@ from message_text import (
     NO_TYPES_ON_SERVER,
     ADD_TYPE_MSG,
     ADD_TYPE_ERROR_MSG,
-    ADD_TYPE_ALREADY_EXISTS,
     DELETE_TYPE_NOT_FOUND,
     DELETE_TYPE_MSG,
     EVENT_MSG,
@@ -92,6 +85,7 @@ class Bot(BotBase):
             event_type = await db_get_type_by_id(i.type_id)
             if event_type.role_id in role_list:
                 ret_events.append(i)
+        create_log('For member {member} events: {ret_events}')
         return ret_events
 
     async def events(self, message: discord.message.Message, *args):
