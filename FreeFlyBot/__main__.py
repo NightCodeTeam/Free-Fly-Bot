@@ -1,5 +1,4 @@
 from sys import argv
-from threading import Thread
 
 from core import create_log, get_env, update_env
 from sql import create_bd
@@ -19,6 +18,7 @@ def main(args):
 
 if __name__ == "__main__":
     try:
+        create_log('Run main: {argv}')
         main(argv[1:])
     except Exception as err:
         create_log(err, "crit")
