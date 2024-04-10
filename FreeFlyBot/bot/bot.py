@@ -378,6 +378,7 @@ class Bot(BotBase):
                 )
                 await db_add_onjoin_action(action)
                 return await msg.reply(ON_JOIN_ACTIONS_MSG.format(
+                    aid=action.action_id,
                     name=action.button_name,
                     color=action.button_color
                 ))
