@@ -155,12 +155,16 @@ class Bot(BotBase):
                 if await db_add_event(view.event):
                     typee = await db_get_type_by_id(view.type_index)
                     if typee is None:
-                        return await message.reply(ADD_EVENT_CANT_CREATE)
-                    return await message.reply(ADD_EVENT_MSG.format(
+                        view = None
+                        return await message.reply(ADD_EVENT_CANT_CREATE)            
+                    await message.reply(ADD_EVENT_MSG.format(
                         name=view.event.event_name,
                         type=typee.type_name,
                         date=view.event.event_time
                     ))
+                    view = None
+                    return None
+        view = None
         return await message.reply(ADD_EVENT_CANT_CREATE)
 
     # ! Удаление события
