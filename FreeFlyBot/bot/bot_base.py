@@ -353,6 +353,7 @@ class BotBase(discord.Client):
                         msg=view.user_comment
                     )
                 )
+            view = None
 
     # ! При присоединении
     async def on_join(self, msg: discord.message.Message):
