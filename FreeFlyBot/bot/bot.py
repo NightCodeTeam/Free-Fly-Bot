@@ -84,7 +84,7 @@ class Bot(BotBase):
         role_list  = list(map(lambda x: x.id, member.roles))# сптсок роль айда у пользователя
         for i in events:
             event_type = await db_get_type_by_id(i.type_id)
-            if event_type.role_id in role_list:
+            if (event_type.role_id in role_list) or(self.check_member_is_admin(member)):
                 ret_events.append(i)
         create_log('For member {member} events: {ret_events}')
         return ret_events
@@ -132,12 +132,14 @@ class Bot(BotBase):
         types = await self.get_server_types(message.guild.id)
         if len(types) == 0:
             return await message.reply(NO_TYPES_ON_SERVER)
-
-        for i in types:
-            if i.role_id not in list(map(lambda x: x.id, message.author.roles)):
-                types.remove(i)
+        if not self.check_member_is_admin(message.author):
+            for i in types:
+                if i.role_id not in list(map(lambda x: x.id, message.author.roles)):
+                    types.remove(i)
+        if len(types) == 0:
+            return await message.reply(NO_TYPES_ON_SERVER)
         view = AddEventView(message.guild, types, message.author)
-
+        
         await message.reply('Создайте событие:', view=view)
         
         if not await view.modal_ui.wait():
