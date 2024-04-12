@@ -41,6 +41,7 @@ from message_text import (
     TOO_FEW_ARGS,
     TYPE_MSG,
     NO_TYPES_ON_SERVER,
+    NO_PERMITTED_TYPES,
     ADD_TYPE_MSG,
     ADD_TYPE_ERROR_MSG,
     DELETE_TYPE_NOT_FOUND,
@@ -285,7 +286,7 @@ class Bot(BotBase):
         # ! Удаление типа
         if len(args) == 0:
             return await message.reply(TOO_FEW_ARGS)
-        
+
         server_types_names = await self.get_server_types_names(message.guild.id)
         
         msg = ''
