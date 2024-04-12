@@ -75,6 +75,7 @@ HELP_COMMAND_NOT_FOUND: Final = '''Команда {} не найдена. Исп
 
 TYPE_MSG: Final = '''Тип: {name} Канал: {channel} Роль: {role}\n'''
 NO_TYPES_ON_SERVER: Final = '''Еще небыли созданы типы событий, используйте команду !addtype'''
+NO_PERMITTED_TYPES: Final = '''У вас нет разрешений создавать события. Запросите соотвествующую роль у администрации'''
 
 ADD_TYPE_MSG: Final = '''Тип {} создан!'''
 ADD_TYPE_ERROR_MSG: Final = '''Мне не удалось создать тип, проверьте правильность и попробуйте снова'''
