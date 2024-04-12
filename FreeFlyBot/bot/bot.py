@@ -286,7 +286,7 @@ class Bot(BotBase):
         # ! Удаление типа
         if len(args) == 0:
             return await message.reply(TOO_FEW_ARGS)
-        
+
         server_types_names = await self.get_server_types_names(message.guild.id)
         
         msg = ''
