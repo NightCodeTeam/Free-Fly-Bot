@@ -1,3 +1,4 @@
+from tkinter import NO
 import discord
 import datetime
 
@@ -136,8 +137,10 @@ class Bot(BotBase):
             for i in types:
                 if i.role_id not in list(map(lambda x: x.id, message.author.roles)):
                     types.remove(i)
+
         if len(types) == 0:
-            return await message.reply(NO_TYPES_ON_SERVER)
+            return await message.reply(NO_PERMITTED_TYPES)
+
         view = AddEventView(message.guild, types, message.author)
         
         await message.reply('Создайте событие:', view=view)
