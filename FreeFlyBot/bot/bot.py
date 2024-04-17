@@ -72,6 +72,7 @@ from message_text import (
     ON_JOIN_DEL_CANT_CREATE,
 
     ON_JOIN_ACTION_DEL,
+    EVENT_TIMER_MSG,
 )
 
 
@@ -156,12 +157,22 @@ class Bot(BotBase):
                     typee = await db_get_type_by_id(view.type_index)
                     if typee is None:
                         view = None
-                        return await message.reply(ADD_EVENT_CANT_CREATE)            
-                    await message.reply(ADD_EVENT_MSG.format(
-                        name=view.event.event_name,
-                        type=typee.type_name,
-                        date=view.event.event_time
-                    ))
+                        return await message.reply(ADD_EVENT_CANT_CREATE)  
+                    typee = await db_get_type_by_id(view.event.type_id)  
+                    channel = self.get_channel(typee.channel_id)  #тут мы посылаем пинг в свой канал как в таймере... 
+                    guild = channel.guild
+                    role = guild.get_role(typee.role_id)   
+                    await self.send_msg(typee.channel_id,
+                                    role=role.mention if role.mention is not None else role,
+                                    name=view.event.event_name,
+                                    time=view.event.event_time.strftime('%Y-%m-%d %H:%M'),
+                                    comment=view.event.comment
+                                    )
+                    #await message.reply(ADD_EVENT_MSG.format( это то что было, на всякий случай
+                    #    name=view.event.event_name,
+                    #    type=typee.type_name,
+                    #    date=view.event.event_time
+                    #))
                     view = None
                     return None
         view = None
