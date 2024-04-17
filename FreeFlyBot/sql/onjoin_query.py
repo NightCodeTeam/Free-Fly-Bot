@@ -68,9 +68,9 @@ async def db_add_onjoin_action(data: OnJoinAction) -> bool:
         async with aiosqlite.connect(SQL_BD_NAME) as db:
             await db.execute(
                 f"""
-                INSERT INTO {ON_JOIN_ACTIONS_TABLE_NAME} (action_id, onjoin_id, button_name, button_color) 
+                INSERT INTO {ON_JOIN_ACTIONS_TABLE_NAME} (action_id, onjoin_id, button_name, button_color, role_id) 
                 VALUES ({data.action_id}, {data.onjoin_id},
-                '{data.button_name}', '{data.button_color}');   
+                '{data.button_name}', '{data.button_color}',{data.role_id});   
                 """   
             )
             await db.commit()
@@ -105,7 +105,8 @@ async def db_get_onjoin_actions(on_join_id: int) -> list[OnJoinAction]:
                         action_id=row[0],
                         onjoin_id=row[1],
                         button_name=row[2],
-                        button_color=row[3]
+                        button_color=row[3],
+                        role_id=row[4]
                     ))
                 return ret_on_join
     except aiosqlite.Error as err:

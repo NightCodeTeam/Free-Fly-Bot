@@ -395,7 +395,8 @@ class Bot(BotBase):
                     await db_create_onjoin_action_id(),
                     onjoin.onjoin_id,
                     args[0],
-                    args[1]
+                    args[1],
+                    args[3]
                 )
                 await db_add_onjoin_action(action)
                 return await msg.reply(ON_JOIN_ACTIONS_MSG.format(
