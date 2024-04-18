@@ -355,10 +355,11 @@ class BotBase(discord.Client):
                     ),
                     view=adm_view
                 )
-                if not await view.wait():
-                    guild = channel_admin.guild
-                    role = guild.get_role(view.action.role_id)
-                    await member.add_roles(role)
+                if not await adm_view.wait():
+                    if adm_view.give:
+                        guild = channel_admin.guild
+                        role = guild.get_role(view.action.role_id)
+                        await member.add_roles(role)
                 adm_view = None
             view = None
 
