@@ -17,7 +17,7 @@ POSSIBLE_MINUT_FORMATS: Final = ('m', 'м')
 
 # ! Дискорд модальные окна
 # ? AddEvent
-DISCORD_MSH_TIMEOUT: Final = 180
+DISCORD_MSH_TIMEOUT: Final = 600
 ADD_EVENT_MODAL_NAME: Final = 'Создание события!'
 ADD_EVENT_VIEW_NAME: Final = 'Название:'
 ADD_EVENT_VIEW_NAME_PLACEHOLDER: Final = 'Название события'
@@ -130,5 +130,5 @@ CREATE_TABLE_ON_JOIN_ACTIONS: Final = f"""CREATE TABLE IF NOT EXISTS {ON_JOIN_AC
     onjoin_id INTEGER NOT NULL,
     button_name VARCHAR({ON_JOIN_ACTION_BUTTON_MAX_CHAR}) NOT NULL,
     button_color VARCHAR({ON_JOIN_ACTION_BUTTON_COLOR_MAX_CHAR}) NOT NULL,
-    FOREIGN KEY(onjoin_id) REFERENCES {ON_JOIN_TABLE_NAME}(onjoin_id) ON DELETE CASCADE),
-    role_id INTEGER NOT NULL;"""
+    role_id INTEGER NOT NULL,
+    FOREIGN KEY(onjoin_id) REFERENCES {ON_JOIN_TABLE_NAME}(onjoin_id) ON DELETE CASCADE);"""

@@ -4,7 +4,7 @@ import asyncio
 from typing import Any
 from datetime import datetime
 from core import create_log
-from .bot_views import OnJoinView
+from .bot_views import OnJoinView, OnJoinAdminMsg
 from sql import (
     Event,
     EventType,
@@ -345,14 +345,21 @@ class BotBase(discord.Client):
 
             if not await view.modal.wait():
                 channel_admin = self.get_channel(onjoin.channel_admin_id)
+                adm_view = OnJoinAdminMsg()
                 await channel_admin.send(
                     ON_JOIN_ACTION_MSG.format(
                         nick=member.mention,
                         name=view.user_name,
-                        role=view.action_name,
+                        role=view.action.button_name,
                         msg=view.user_comment
-                    )
+                    ),
+                    view=adm_view
                 )
+                if not await view.wait():
+                    guild = channel_admin.guild
+                    role = guild.get_role(view.action.role_id)
+                    await member.add_roles(role)
+                adm_view = None
             view = None
 
     # ! При присоединении

@@ -85,12 +85,13 @@ class AddEventView(discord.ui.View):
 
 
 class OnJoinButton(discord.ui.Button):
-    def __init__(self, button_name: str, button_color: str):
+    def __init__(self, button_name: str, button_color: str, action):
         super().__init__(
             label=button_name,
             style=self.get_style(button_color)
         )
         self.pressed = False
+        self.action = action
 
     async def callback(self, interaction):
         self.pressed = True
@@ -122,12 +123,13 @@ class OnJoinView(discord.ui.View):
         self.buttons = []
         self.user_name = ''
         self.user_comment = ''
-        self.action_name = ''
+        self.action = None
 
         for i in actions:
             button = OnJoinButton(
                 i.button_name,
-                i.button_color
+                i.button_color,
+                i
             )
             button.call = self.on_click
             self.buttons.append(button)
@@ -139,7 +141,7 @@ class OnJoinView(discord.ui.View):
     async def on_click(self, interaction: discord.Interaction):
         for i in self.buttons:
             if i.pressed:
-                self.action_name = i.label
+                self.action = i.action
         await interaction.response.send_modal(self.modal)
         self.clear_items()
         self.stop()
@@ -152,3 +154,35 @@ class OnJoinView(discord.ui.View):
 
         self.modal.clear_items()
         self.modal.stop()
+
+
+class OnJoinAdminMsg(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=DISCORD_MSH_TIMEOUT)
+        self.give = False
+
+        self.confirm = discord.ui.Button(
+            label='Дать роль',
+            style=discord.ButtonStyle.green
+        )
+        self.confirm.callback = self.confirm_action
+
+        self.cancel = discord.ui.Button(
+            label='Отмена',
+            style=discord.ButtonStyle.red
+        )
+        self.cancel.callback = self.cancel_action
+
+        self.add_item(self.confirm)
+        self.add_item(self.cancel)
+
+    async def confirm_action(self, interaction):
+        self.give = True
+        await interaction.response.defer()
+        self.clear_items()
+        self.stop()
+    
+    async def cancel_action(self, interaction):
+        await interaction.response.defer()
+        self.clear_items()
+        self.stop()
