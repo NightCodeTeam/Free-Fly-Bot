@@ -331,12 +331,14 @@ class OnJoinAction:
         action_id: int,
         onjoin_id: int,
         button_name: str,
-        button_color: str
+        button_color: str,
+        role_id: int
     ) -> None:
         self.action_id = action_id 
         self.onjoin_id = onjoin_id 
         self.button_name = button_name
         self.button_color = button_color
+        self.role_id = role_id
 
     @property
     def action_id(self) -> int:
@@ -387,6 +389,22 @@ class OnJoinAction:
             self.__button_color = val
         else:
             raise SQLBadDataclassException(val)
+        
+
+
+    @property
+    def role_id(self) -> int: 
+        return self.__role_id 
+    
+
+    @role_id.setter
+    def role_id(self, val: int):
+        if sql_val_good(val):
+            self.__role_id = val
+        else:
+            raise SQLBadDataclassException(val)        
+    
+    
 
 
   
