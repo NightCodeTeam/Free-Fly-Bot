@@ -218,6 +218,7 @@ class BotBase(discord.Client):
                     await self.test(message)
                 case _:
                     await message.reply(HELP_COMMAND_NOT_FOUND.format(args[0]))
+            await message.delete()
 
     async def timer(self):
         while True:

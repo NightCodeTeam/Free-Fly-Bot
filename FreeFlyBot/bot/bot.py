@@ -385,6 +385,7 @@ class Bot(BotBase):
                 await msg.reply(ON_JOIN_ACTIONS_NOT_FOUND)
 
     async def add_on_join_action(self, msg: discord.message.Message, *args):
+        create_log(f'Add action called with args: {args}')
         if not self.__types_access_check(msg.author, 'add_on_join_action'):
             return None
         if args[1] not in ACTIONS_COLORS:
@@ -397,7 +398,7 @@ class Bot(BotBase):
                     onjoin.onjoin_id,
                     args[0],
                     args[1],
-                    args[3]
+                    args[2]
                 )
                 await db_add_onjoin_action(action)
                 return await msg.reply(ON_JOIN_ACTIONS_MSG.format(

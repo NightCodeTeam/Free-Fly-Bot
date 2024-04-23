@@ -32,7 +32,7 @@ class AddEventView(discord.ui.View):
         super().__init__(timeout=DISCORD_MSH_TIMEOUT)
         self.author = author
         self.modal_ui = AddEventMobal()
-        self.modal_ui.on_submit = self.event_conferm
+        self.modal_ui.on_submit = self.event_confirm
         self.modal_ui.on_error = self.event_error
         self.modal_ui.on_timeout = self.event_error
         self.types = types
@@ -52,13 +52,15 @@ class AddEventView(discord.ui.View):
     async def prefer_event_type(self, interaction):
         self.type_index = self.types[int(self.event_type_sel.values[0])].type_id
         await interaction.response.send_modal(self.modal_ui)
+        message = await interaction.original_response()
+        await message.delete()
         self.clear_items()
         self.stop()
 
     async def event_error(self):
         self.event = None
 
-    async def event_conferm(self, interaction: discord.Interaction):
+    async def event_confirm(self, interaction: discord.Interaction):
         date1, date2 = make_datetime(self.modal_ui.date_inp.value, self.modal_ui.time_inp.value)
         if (datetime.now() - date1).total_seconds() > 0:
             self.modal_ui.stop()
@@ -96,6 +98,10 @@ class OnJoinButton(discord.ui.Button):
     async def callback(self, interaction):
         self.pressed = True
         await self.call(interaction)
+
+        message = await interaction.original_response()
+        await message.delete()
+
         return interaction
     
     async def call(self, interaction):
@@ -119,7 +125,7 @@ class OnJoinView(discord.ui.View):
         super().__init__(timeout=DISCORD_MSH_TIMEOUT)
         self.author = member
         self.modal = OnJoinMobal()
-        self.modal.on_submit = self.conferm
+        self.modal.on_submit = self.confirm
         self.buttons = []
         self.user_name = ''
         self.user_comment = ''
@@ -143,14 +149,26 @@ class OnJoinView(discord.ui.View):
             if i.pressed:
                 self.action = i.action
         await interaction.response.send_modal(self.modal)
+        
+        message = await interaction.original_response()
+        await message.delete()
+
         self.clear_items()
         self.stop()
+    
+    async def on_timeout(self, interaction) -> None:
+        message = await interaction.original_response()
+        await message.delete()
+        return await super().on_timeout()
 
-    async def conferm(self, interaction: discord.Interaction):
+    async def confirm(self, interaction: discord.Interaction):
         self.user_name = self.modal.name.value
         self.user_comment = self.modal.comment.value
 
         await interaction.response.send_message(ON_JOIN_ALL_GOOD)
+        # message = await interaction.original_response()
+        # await message.delete()
+
 
         self.modal.clear_items()
         self.modal.stop()
@@ -179,10 +197,20 @@ class OnJoinAdminMsg(discord.ui.View):
     async def confirm_action(self, interaction):
         self.give = True
         await interaction.response.defer()
+        
+        message = await interaction.original_response()
+        await message.reply(message.content)
+        await message.delete()
+
         self.clear_items()
         self.stop()
     
     async def cancel_action(self, interaction):
         await interaction.response.defer()
+        
+        message = await interaction.original_response()
+        await message.reply(message.content)
+        await message.delete()
+
         self.clear_items()
         self.stop()
