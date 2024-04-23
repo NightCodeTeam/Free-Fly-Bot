@@ -285,7 +285,7 @@ class BotBase(discord.Client):
     async def help(self, message: discord.message.Message, *args):
         create_log(f"Help called with args: {args}", 'debug')
         if len(args) == 0:
-            return await message.reply(HELP_MSG)
+            reply_msg = await message.reply(HELP_MSG)
         else:
             msg = ''
             for i in args:
@@ -309,8 +309,8 @@ class BotBase(discord.Client):
                     case _:
                         msg += HELP_COMMAND_NOT_FOUND.format(i)
             reply_msg = await message.reply(msg)
-            await sleep(30000)
-            return await reply_msg.delete()
+        await asyncio.sleep(30)
+        return await reply_msg.delete()
     
     async def events(self, message: discord.message.Message, *args):
         pass
