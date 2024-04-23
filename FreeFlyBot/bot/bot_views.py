@@ -1,9 +1,10 @@
 import discord
 from datetime import datetime
+
 from .bot_selectors import EventTypeSelector
 from .bot_mobal import AddEventMobal, OnJoinMobal
 from sql import EventType, Event, OnJoinAction, db_create_event_id
-from core import make_datetime
+from core import make_datetime, create_log
 
 from settings import (
     ACTIONS_COLORS,
@@ -52,12 +53,13 @@ class AddEventView(discord.ui.View):
     async def prefer_event_type(self, interaction):
         self.type_index = self.types[int(self.event_type_sel.values[0])].type_id
         await interaction.response.send_modal(self.modal_ui)
-        message = await interaction.original_response()
-        await message.delete()
-        self.clear_items()
+        #message = await interaction.original_response()
+        #await message.delete()
+        #self.clear_items()
         self.stop()
 
-    async def event_error(self):
+    async def event_error(self, *args):
+        create_log(f'error in create event: {args}', 'error')
         self.event = None
 
     async def event_confirm(self, interaction: discord.Interaction):
@@ -77,13 +79,13 @@ class AddEventView(discord.ui.View):
                 date1,
                 date2
             )
-        except Exception:
+        except Exception as err:
+            create_log(err)
             self.event = None
 
         await interaction.response.defer()
-
+        self.modal_ui.clear_items()
         self.modal_ui.stop()
-        #self.modal_ui.clear_items()
 
 
 class OnJoinButton(discord.ui.Button):
@@ -99,8 +101,8 @@ class OnJoinButton(discord.ui.Button):
         self.pressed = True
         await self.call(interaction)
 
-        message = await interaction.original_response()
-        await message.delete()
+        #message = await interaction.original_response()
+        #await message.delete()
 
         return interaction
     
