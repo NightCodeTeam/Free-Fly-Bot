@@ -1,4 +1,5 @@
 from email import message
+from time import sleep
 import discord
 import asyncio
 from typing import Any
@@ -306,7 +307,9 @@ class BotBase(discord.Client):
                         msg += HELP_ACTIONS
                     case _:
                         msg += HELP_COMMAND_NOT_FOUND.format(i)
-            return await message.reply(msg)
+            reply_msg = await message.reply(msg)
+            await sleep(30000)
+            return await reply_msg.delete()
     
     async def events(self, message: discord.message.Message, *args):
         pass
