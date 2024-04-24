@@ -240,7 +240,7 @@ class BotBase(discord.Client):
                         await self.send_msg(
                             typee.channel_id,
                             EVENT_TIMER_MSG.format(
-                                role=role.mention if role.mention is not None else role,
+                                role=role.mention if ((role.mention is not None)or(str(role) != '@everyone')) else role,
                                 name=nearest_event.event_name,
                                 time='СЕЙЧАС',
                                 comment=nearest_event.comment
@@ -264,7 +264,7 @@ class BotBase(discord.Client):
                         await self.send_msg(
                             typee.channel_id,
                             EVENT_TIMER_MSG.format(
-                                role=role.mention if role.mention is not None else role,
+                                role=role.mention if ((role.mention is not None)or(str(role) != '@everyone')) else role,
                                 name=nearest_pre_ping.event_name,
                                 time=nearest_pre_ping.event_time.strftime('%Y-%m-%d %H:%M'),
                                 comment=nearest_pre_ping.comment
