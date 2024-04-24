@@ -163,7 +163,7 @@ class Bot(BotBase):
                     role = guild.get_role(typee.role_id)   
                     await self.send_msg(typee.channel_id,
                                         EVENT_TIMER_MSG.format(
-                                            role=role.mention if role.mention is not None else role,
+                                            role=role.mention if ((role.mention is not None)or(str(role) != '@everyone')) else role,
                                             name=view.event.event_name,
                                             time=view.event.event_time.strftime('%Y-%m-%d %H:%M'),
                                             comment=view.event.comment
