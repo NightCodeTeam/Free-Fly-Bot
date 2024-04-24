@@ -84,6 +84,10 @@ class AddEventView(discord.ui.View):
             self.event = None
 
         await interaction.response.defer()
+
+        message = await interaction.original_response()
+        await message.delete()
+
         self.modal_ui.clear_items()
         self.modal_ui.stop()
 
@@ -158,9 +162,10 @@ class OnJoinView(discord.ui.View):
         self.clear_items()
         self.stop()
     
-    async def on_timeout(self, interaction) -> None:
-        message = await interaction.original_response()
-        await message.delete()
+    async def on_timeout(self, *interaction) -> None:
+        create_log(f'Test AdminMsg timeout: {interaction}', 'info')
+        #message = await interaction.original_response()
+        #await message.delete()
         return await super().on_timeout()
 
     async def confirm(self, interaction: discord.Interaction):
@@ -216,3 +221,9 @@ class OnJoinAdminMsg(discord.ui.View):
 
         self.clear_items()
         self.stop()
+
+    async def on_timeout(self, *interaction) -> None:
+        create_log(f'Test AdminMsg timeout: {interaction}', 'info')
+        #message = await interaction.original_response()
+        #await message.reply(message.content)
+        return await super().on_timeout()
