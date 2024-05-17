@@ -266,7 +266,7 @@ class BotBase(discord.Client):
                             EVENT_TIMER_MSG.format(
                                 role=role.mention if role.mention is not None else role,
                                 name=nearest_pre_ping.event_name,
-                                time=(nearest_pre_ping.event_time - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M') + 'ET',
+                                time=(nearest_pre_ping.event_time - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M') + ' ET',
                                 comment=nearest_pre_ping.comment
                             )
                         )

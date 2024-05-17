@@ -60,7 +60,7 @@ class AddEventMobal(discord.ui.Modal):
         # Время
         self.time_inp = discord.ui.TextInput(
             label=ADD_EVENT_TIME_NAME,
-            placeholder= f'{(datetime.now() + timedelta(minutes=5)).strftime('%H:%M')} (время по ET)',    #ADD_EVENT_TIME_PLACEHOLDER,
+            placeholder= f'{(datetime.now() + timedelta(minutes=5) - timedelta(hours=3)).strftime('%H:%M')} (время по ET)',    #ADD_EVENT_TIME_PLACEHOLDER,
             max_length=EVENT_TIME_MAX_CHAR,
             #row=1
         )
