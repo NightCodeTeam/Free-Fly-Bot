@@ -3,7 +3,7 @@ from time import sleep
 import discord
 import asyncio
 from typing import Any
-from datetime import datetime
+from datetime import datetime, timedelta
 from core import create_log
 from .bot_views import OnJoinView, OnJoinAdminMsg
 from sql import (
@@ -266,7 +266,7 @@ class BotBase(discord.Client):
                             EVENT_TIMER_MSG.format(
                                 role=role.mention if ((role.mention is not None)and(str(role) != '@everyone')) else role,
                                 name=nearest_pre_ping.event_name,
-                                time=nearest_pre_ping.event_time.strftime('%Y-%m-%d %H:%M'),
+                                time=(nearest_pre_ping.event_time - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M') + 'ET',
                                 comment=nearest_pre_ping.comment
                             )
                         )

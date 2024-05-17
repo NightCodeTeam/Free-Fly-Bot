@@ -55,7 +55,7 @@ def make_datetime(date_str: str, time_str: str) -> tuple[datetime, datetime]:
         else:
             date_adt = date
 
-        return date, date_adt
+        return date + timedelta(hours=3), date_adt + timedelta(hours=3)
     except Exception as err:
         create_log(err, 'error')
         return datetime(2024, 1, 1, 1, 1, 1), datetime(2024, 1, 1, 1, 1, 1) 

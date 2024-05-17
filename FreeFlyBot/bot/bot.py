@@ -165,7 +165,7 @@ class Bot(BotBase):
                                         EVENT_TIMER_MSG.format(
                                             role=role.mention if ((role.mention is not None)and(str(role) != '@everyone')) else role,
                                             name=view.event.event_name,
-                                            time=view.event.event_time.strftime('%Y-%m-%d %H:%M'),
+                                            time=(view.event.event_time - datetime.timedelta(hours=3)).strftime('%Y-%m-%d %H:%M') + 'ET',
                                             comment=view.event.comment
                                         )
                                     )
