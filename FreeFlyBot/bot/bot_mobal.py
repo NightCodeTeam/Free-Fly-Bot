@@ -1,6 +1,6 @@
 import discord
 from typing import Any
-
+from datetime import date, datetime, timedelta
 from core import create_log
 from sql import EventType, Event
 
@@ -52,7 +52,7 @@ class AddEventMobal(discord.ui.Modal):
         # Дата
         self.date_inp = discord.ui.TextInput(
             label=ADD_EVENT_DATE_NAME,
-            placeholder=ADD_EVENT_DATE_PLACEHOLDER,
+            placeholder= date.today().strftime('%Y.%m.%d'), #ADD_EVENT_DATE_PLACEHOLDER,
             max_length=EVENT_DATE_MAX_CHAR,
             #row=1
         )
@@ -60,7 +60,7 @@ class AddEventMobal(discord.ui.Modal):
         # Время
         self.time_inp = discord.ui.TextInput(
             label=ADD_EVENT_TIME_NAME,
-            placeholder=ADD_EVENT_TIME_PLACEHOLDER,
+            placeholder= f'{(datetime.now() + timedelta(minutes=5)).strftime('%H:%M')} (время по ET)',    #ADD_EVENT_TIME_PLACEHOLDER,
             max_length=EVENT_TIME_MAX_CHAR,
             #row=1
         )
