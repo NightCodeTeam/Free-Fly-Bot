@@ -1,4 +1,4 @@
-from os import environ, path, listdir
+from os import environ
 from dotenv import load_dotenv
 from .exceptions import LoadTokenException
 from settings import ENV_FILE
@@ -11,6 +11,6 @@ def update_env():
 def get_env(name) -> str:
     data = environ.get(name)
     if data is None:
-        raise LoadTokenException()
+        raise LoadTokenException(name)
     else:
         return data

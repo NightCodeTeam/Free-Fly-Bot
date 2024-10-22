@@ -1,0 +1,19 @@
+# Python and IDEs
+__pycache__
+venv
+.vs
+.vscode
+.idea
+.env
+
+# Pyinstall
+*.manifest
+*.spec
+*.exe
+
+# Settings
+*.log
+test.*
+Loot *
+settings.toml
+data
