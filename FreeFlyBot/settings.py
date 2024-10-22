@@ -15,6 +15,9 @@ FOLDER_FILES: Final = 'data'
 # ! SQL
 SQL_DATABASE_NAME: Final = 'db.sqlite3'
 SQL_EXCEPT_VALUES: Final = (
+    'CREATE',
+    'UPDATE',
+    'DELETE',
     'OR',
     'AND',
 )

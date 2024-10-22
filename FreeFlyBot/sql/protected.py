@@ -6,7 +6,7 @@ from settings import SQL_EXCEPT_CHARS, SQL_EXCEPT_VALUES
 
 def parse_arg(word: str):
     # ! Слово не в запрещенных
-    if word in SQL_EXCEPT_VALUES:
+    if word.capitalize() in SQL_EXCEPT_VALUES:
         create_log(f'Unsecured sql request: -> {word}')
         raise SQLInjectionException('', word)
 
@@ -18,6 +18,7 @@ def parse_arg(word: str):
 
 
 def sql_protected_async(func):
+    """Принимаем Асинхронную функцию, проверяем чтобы не было опасных вставок"""
     async def wrapped(*args, **kwargs):
         for arg in args:
             if type(arg) is str:
