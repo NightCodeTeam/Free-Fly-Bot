@@ -4,3 +4,4 @@ from .exceptions import LoadTokenException
 
 
 init_logger()
+update_env()

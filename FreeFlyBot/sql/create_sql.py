@@ -26,6 +26,5 @@ def create_bd():
     except sqlite3.Error as error:
         create_log('>>> Error in creating sql database', 'error')
         create_log(error, 'error')
-        create_log(f'Delete sql database {SQL_DATABASE_NAME}', 'info')
         delete_file(SQL_DATABASE_NAME)
         exit(1)

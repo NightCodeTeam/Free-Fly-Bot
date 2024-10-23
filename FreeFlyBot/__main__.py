@@ -1,9 +1,12 @@
+import asyncio
 from sys import argv
 from core.debug import create_log
+from bot.bot_main import Bot
 
 
 def main(args: list):
-    pass
+    bot = Bot()
+    asyncio.run(bot.get_updates())
 
 
 if __name__ == "__main__":
