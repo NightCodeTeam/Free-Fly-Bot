@@ -10,4 +10,4 @@ class User:
 @dataclass(frozen=True, slots=True)
 class UserBanned:
     user_id: int
-    reason: str = 'не указано'
+    reason: str = 'нет'

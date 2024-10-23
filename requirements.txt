@@ -1,4 +1,6 @@
 fastapi
 uvicorn
+requests
+aiohttp
 aiosqlite
 python-dotenv
