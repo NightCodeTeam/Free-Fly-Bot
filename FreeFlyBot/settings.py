@@ -1,13 +1,6 @@
 from typing import Final
 
 
-# ! DEBUG
-DEBUG: Final = True
-LOGGER_LEVEL: Final = 'debug'
-MAIN_LOGGER: Final = 'logger'
-MAIN_LOGGER_MAX_BITES: Final = 1_000_000
-ERROR_LOGGER: Final = 'error'
-
 # ! Основа
 ENV_FILE: Final = '.env'
 FOLDER_FILES: Final = 'data'
@@ -46,3 +39,6 @@ SQL_CREATE_TABLE_TELE_GROUPS: Final = f'''CREATE TABLE IF NOT EXISTS {SQL_TABLE_
 SQL_CREATE_TABLE_IP_BANS: Final = f'''CREATE TABLE IF NOT EXISTS {SQL_TABLE_IP_BANS} (
     user_id INTEGER PRIMARY KEY,
     reason VARCHAR(30);'''
+
+# ! Bot
+BOT_MAX_UPDATES: Final = 100

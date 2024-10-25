@@ -1,0 +1,26 @@
+2024-10-25 12:10:12,691 CRITICAL 'HttpTeleBot' object has no attribute '_HttpTeleBot__get'
+Traceback (most recent call last):
+  File "G:\CODING\_Projects\Free-Fly-Bot\FreeFlyBot\__main__.py", line 26, in <module>
+    main(argv[1:])
+  File "G:\CODING\_Projects\Free-Fly-Bot\FreeFlyBot\__main__.py", line 20, in main
+    asyncio.run(run_bots())
+  File "C:\Users\bodro\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\bodro\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\bodro\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "G:\CODING\_Projects\Free-Fly-Bot\FreeFlyBot\__main__.py", line 12, in run_bots
+    await bot.run()
+  File "G:\CODING\_Projects\Free-Fly-Bot\FreeFlyBot\bot_tele\bot_main.py", line 13, in run
+    await self.get_updates()
+  File "G:\CODING\_Projects\Free-Fly-Bot\FreeFlyBot\bot_tele\bot_main.py", line 17, in get_updates
+    results = await self.client.get_updates(self.last_update)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\CODING\_Projects\Free-Fly-Bot\FreeFlyBot\bot_tele\bot_requests.py", line 14, in get_updates
+    return await self.__get(
+                 ^^^^^^^^^^
+AttributeError: 'HttpTeleBot' object has no attribute '_HttpTeleBot__get'
