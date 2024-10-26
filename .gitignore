@@ -13,7 +13,9 @@ venv
 
 # Settings
 *.log
+*.log.*
 test.*
 Loot *
 settings.toml
 data
+*.sqlite3

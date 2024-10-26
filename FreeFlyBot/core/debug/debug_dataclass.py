@@ -9,6 +9,13 @@ HandlerMode = Literal['a', 'w']
 class HandlerConfig:
     filename: str = 'default.log'
     mode: HandlerMode = 'a'
+    encoding: str = 'utf-8'
+    formatter_str: str = "%(asctime)s %(levelname)s %(message)s"
+
+
+@dataclass(slots=True, frozen=True)
+class StreamHandlerConfig:
+    stream: None = None
     formatter_str: str = "%(asctime)s %(levelname)s %(message)s"
 
 
@@ -22,4 +29,4 @@ class RotatingHandlerConfig(HandlerConfig):
 class LoggerConfig:
     name: str
     level: Level
-    handlers: tuple[HandlerConfig | RotatingHandlerConfig] = (HandlerConfig(),)
+    handlers: tuple | list = (HandlerConfig(),)

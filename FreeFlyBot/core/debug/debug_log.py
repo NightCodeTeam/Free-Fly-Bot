@@ -34,13 +34,13 @@ def call_log(
     level_name: Level = 'debug',
     loggers_names: list | tuple | None = None
 ):
-    def decorator(func):
+    def decorator(function):
         def wrapper(*args, **kwargs):
             create_log(
-                f'{func.__name__} args: {args} kwargs {kwargs}',
+                f'{function.__name__} args: {args} kwargs {kwargs}',
                 level_name,
                 loggers_names
             )
-            return func(*args, **kwargs)
+            return function(*args, **kwargs)
         return wrapper
     return decorator

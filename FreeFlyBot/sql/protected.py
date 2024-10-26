@@ -28,7 +28,7 @@ def check_args(args: list | tuple):
 def sql_protected_async(func):
     """Принимаем Асинхронную функцию, проверяем чтобы не было опасных вставок"""
     async def wrapped(*args, **kwargs):
-        check_args(args)
+        check_args((*args, *kwargs.values()))
 
         return await func(*args, **kwargs)
     return wrapped
@@ -37,7 +37,7 @@ def sql_protected_async(func):
 def sql_protected(func):
     """Принимаем синхронную функцию, проверяем чтобы не было опасных вставок"""
     def wrapped(*args, **kwargs):
-        check_args(args)
+        check_args((*args, *kwargs.values()))
 
         return func(*args, **kwargs)
     return wrapped
