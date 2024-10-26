@@ -44,3 +44,9 @@ SQL_CREATE_TABLE_USER_BANS: Final = f'''CREATE TABLE IF NOT EXISTS {SQL_TABLE_US
 
 # ! Bot
 BOT_MAX_UPDATES: Final = 100
+
+BOT_PREFIX: Final = '/'
+
+class BotCommands:
+    HELP = "help"
+    START = "start"

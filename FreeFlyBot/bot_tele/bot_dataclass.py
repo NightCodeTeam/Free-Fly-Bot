@@ -27,7 +27,7 @@ class Message:
     user: User
     chat: Chat
     date: int
-    text: str
+    text: str | None
 
 
 @dataclass(frozen=True, slots=True)
