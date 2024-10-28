@@ -1,22 +1,15 @@
 import asyncio
 from sys import argv
 from core.debug import create_log
-#from api.fastapi_main import ServerMain
+from api.fastapi_main import ServerMain
 from bot_tele.bot_main import TeleBot
 
 
 async def run_bots():
-
-    print('start')
-    bot = TeleBot()
+    bot = ServerMain()
     await bot.run()
-    #server = ServerMain()
-    #server.run()
 
 def main(args: list):
-    #server = ServerMain()
-    #server.run()
-    print('start????')
     asyncio.run(run_bots())
 
 

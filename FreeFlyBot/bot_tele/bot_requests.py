@@ -29,11 +29,9 @@ class HttpTeleBot(HttpMakerAsync):
                 try:
                     if not await sql_user_in_bans(update['message']['from']['id']):
                         ans.append(self.get_update(update))
-
-                    self.last_update = update['update_id'] + 1
-
                 except KeyError as e:
                     create_log(e, 'error')
+                self.last_update = update['update_id'] + 1
         return ans
 
     async def sent_msg(self, chat_id: int, message: str, addition_params: dict | None = None) -> bool:

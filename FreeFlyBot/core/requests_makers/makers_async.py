@@ -1,3 +1,5 @@
+import asyncio
+
 import aiohttp
 from core.debug import create_log
 from .requests_dataclasses import ResponseData
@@ -8,13 +10,12 @@ class HttpMakerAsync:
         self._base_url = base_url
         self._headers = headers
         self.__session = aiohttp.ClientSession(base_url=base_url, headers=headers)
-    #    self.__update_session()
 
-    #def __update_session(self):
-    #    self.__session = aiohttp.ClientSession(
-    #        base_url=self._base_url,
-    #        headers=self._headers
-    #    )
+    async def close_session(self):
+        await self.__session.close()
+
+    def __del__(self):
+        del self.__session
 
     async def _get(
             self,

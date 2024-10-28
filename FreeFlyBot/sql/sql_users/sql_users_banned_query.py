@@ -28,7 +28,6 @@ async def sql_get_banned_users() -> list[UserBanned]:
 
 
 @sql_protected_async
-@call_log()
 async def sql_user_in_bans(user_id: int | None = None, user_name: str | None = None) -> bool:
     if user_id is None and user_name is None:
         create_log(f'sql_del_user_ban > no args', 'error')
@@ -45,7 +44,6 @@ async def sql_user_in_bans(user_id: int | None = None, user_name: str | None = N
         return False
 
 
-@call_log()
 @sql_protected_async
 async def sql_add_user_ban(user: UserBanned) -> bool:
     try:
@@ -61,7 +59,6 @@ async def sql_add_user_ban(user: UserBanned) -> bool:
         return False
 
 
-@call_log()
 @sql_protected_async
 async def sql_del_user_ban(user_id: int | None = None, user_name: str | None = None) -> bool:
     if user_id is None and user_name is None:
