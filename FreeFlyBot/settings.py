@@ -44,9 +44,20 @@ SQL_CREATE_TABLE_USER_BANS: Final = f'''CREATE TABLE IF NOT EXISTS {SQL_TABLE_US
 
 # ! Bot
 BOT_MAX_UPDATES: Final = 100
+BOT_SLEEP_TIME_IN_SEC: Final = 1
 
 BOT_PREFIX: Final = '/'
 
 class BotCommands:
     HELP = "help"
     START = "start"
+    TEST = "test"
+
+BOT_TEST_GOODS = [
+    [{'text': f'Конфера', 'callback_data': f'0'}],
+    [{'text': f'Табак', 'callback_data': f'1'}],
+    [{'text': f'Хлеб', 'callback_data': f'2'}],
+    [{'text': f'Пивко', 'callback_data': f'3'}],
+    [{'text': f'Вода', 'callback_data': f'4'}],
+    [{"text": "Ввести текст", "switch_inline_query_current_chat": ""}],
+]

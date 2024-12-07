@@ -1,8 +1,7 @@
-import asyncio
-
 import aiohttp
 from core.debug import create_log
-from .requests_dataclasses import ResponseData
+from .makers_exceptions import RequestMethodNotFoundException
+from .requests_dataclasses import ResponseData, Method
 
 
 class HttpMakerAsync:
@@ -15,50 +14,58 @@ class HttpMakerAsync:
         await self.__session.close()
 
     def __del__(self):
-        del self.__session
+        pass
+        #del self.__session
 
-    async def _get(
+    async def _make(
             self,
             url: str,
+            method: Method,
             data: dict | None = None,
             json: dict | None = None,
             params: dict | None = None,
             headers: dict | None = None,
     ) -> ResponseData | None:
         try:
-            async with self.__session.get(
-                url=url,
-                data=data,
-                json=json,
-                params=params,
-                headers=headers
-            ) as response:
-                return await self.__get_response_data(response)
-
-        except aiohttp.ClientConnectionError:
-            create_log(f'Connection error {self._base_url}{url}', 'error')
-            return None
-
-    async def _post(
-            self,
-            url: str,
-            data: dict | None = None,
-            json: dict | None = None,
-            params: dict | None = None,
-            headers: dict | None = None,
-    ) -> ResponseData | None:
-        try:
-            async with self.__session.post(
-                url=url,
-                data=data,
-                json=json,
-                params=params,
-                headers=headers
-            ) as response:
-                return await self.__get_response_data(response)
-
-        except aiohttp.ClientConnectionError:
-            create_log(f'Connection error {self._base_url}{url}', 'error')
+            res = None
+            # ! Делаем запрос
+            match method:
+                case 'GET':
+                    res = await self.__session.get(
+                        url=url,
+                        data=data,
+                        json=json,
+                        params=params,
+                        headers=headers
+                    )
+                case 'POST':
+                    res = await self.__session.post(
+                        url=url,
+                        data=data,
+                        json=json,
+                        params=params,
+                        headers=headers
+                    )
+                case 'PUT':
+                    res = await self.__session.put(
+                        url=url,
+                        data=data,
+                        json=json,
+                        params=params,
+                        headers=headers
+                    )
+                case 'DELETE':
+                    res = await self.__session.delete(
+                        url=url,
+                        data=data,
+                        json=json,
+                        params=params,
+                        headers=headers
+                    )
+            if res is not None:
+                return await self.__get_response_data(res)
+            raise RequestMethodNotFoundException(method)
+        except aiohttp.exceptions.ConnectionError:
             return None
 
     @staticmethod

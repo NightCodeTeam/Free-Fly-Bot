@@ -31,6 +31,21 @@ class Message:
 
 
 @dataclass(frozen=True, slots=True)
+class CallbackQuery:
+    id: int
+    user: User
+    message: Message
+    chat_instance: int
+    data: str
+
+
+@dataclass(frozen=True, slots=True)
 class Update:
     update_id: int
     message: Message
+
+
+@dataclass(frozen=True, slots=True)
+class UpdateCallback:
+    update_id: int
+    callback_query: CallbackQuery
